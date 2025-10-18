@@ -1,13 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import connectDB from './config.js';
+import router from './taskController.js'
+
 const app = express();
 
-app.use(express.json());
+connectDB();
 
 app.use(cors());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-connectDB();
+
+app.use(router);
 
 app.get('/', (req, res) => {
     res.json({ message: "Hola from backend" });
