@@ -6,7 +6,6 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 export default function PrioritySelect({ value, onChange }) {
-    // const [priority, setPriority] = React.useState('');
 
     const handleChange = (event) => {
         onChange(event.target.value);

@@ -87,7 +87,7 @@ export default function NewTaskModal() {
                     </Typography>
 
                     <form onSubmit={handleSubmit}>
-                        <Stack spacing={3}>  {/* ✅ Changed to spacing={3} for better spacing */}
+                        <Stack spacing={3}>
                             <TextField
                                 value={title}
                                 onChange={setTitle}
@@ -117,14 +117,14 @@ export default function NewTaskModal() {
                                 <Button
                                     onClick={handleClose}
                                     variant="outlined"
-                                    disabled={loading}  // ✅ Disable when loading
+                                    disabled={loading}
                                 >
                                     Cancel
                                 </Button>
                                 <Button
                                     type="submit"
                                     variant="contained"
-                                    disabled={loading}  // ✅ Disable when loading
+                                    disabled={loading}
                                     sx={{
                                         backgroundColor: '#5340f7',
                                         '&:hover': {
@@ -132,7 +132,7 @@ export default function NewTaskModal() {
                                         }
                                     }}
                                 >
-                                    {loading ? 'Creating...' : 'Create Task'}  {/* ✅ Show loading text */}
+                                    {loading ? 'Creating...' : 'Create Task'}
                                 </Button>
                             </Stack>
                         </Stack>
