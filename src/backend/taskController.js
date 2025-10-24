@@ -21,7 +21,12 @@ router.post('/api/taskmanager/task', async (req, res) => {
         res.status(201).json(saveTask)
     }
     catch (error) {
-        res.status(500).json({ message: "Error Updating the Task", error })
+        console.error('Full error:', error);
+        console.error('Error name:', error.name);
+        res.status(500).json({
+            message: "Error Updating the Task", error: error.message,
+            details: error.errors
+        })
     }
 })
 

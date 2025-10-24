@@ -1,25 +1,25 @@
 import mongoose from "mongoose";
 
 const tasksSchema = mongoose.Schema({
-    taskTitle: {
+    title: {
         type: String,
         required: [true, 'Task title is required'],
         trim: true,
         maxlength: [100, 'Title cannot exceed 100 characters']
     },
 
-    taskDescription: {
+    description: {
         type: String,
         trim: true,
         maxlength: [500, 'Description cannot exceed 500 characters']
     },
 
-    taskDueDate: {
+    dueDate: {
         type: Date,
         required: [true, 'Due date is required']
     },
 
-    taskPriority: {
+    priority: {
         type: String,
         required: [true, 'Priority is required'],
         enum: {
@@ -28,7 +28,7 @@ const tasksSchema = mongoose.Schema({
         default: 'medium'
     },
 
-    taskStatus: {
+    status: {
         type: String,
         required: true,
         enum: {
