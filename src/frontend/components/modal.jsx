@@ -25,7 +25,7 @@ const style = {
     p: 4,
 };
 
-export default function NewTaskModal() {
+export default function NewTaskModal({ setTaskList }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -60,6 +60,7 @@ export default function NewTaskModal() {
         try {
             const response = await axios.post("http://localhost:3000/api/taskmanager/task", TaskData);
             console.log("Task Data Submitted Successfully", response.data);
+            setTaskList((prev) => [...prev, response.data]);
             alert('Task created successfully!');
             handleClose();
         }
