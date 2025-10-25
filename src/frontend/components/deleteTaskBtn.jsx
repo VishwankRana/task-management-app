@@ -1,9 +1,9 @@
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function DeleteTaskBtn() {
+export default function DeleteTaskBtn({ onDelete }) {
     return (
-        <Button size='small' startIcon={<DeleteIcon />}
+        <Button size='small' startIcon={<DeleteIcon />} onClick={onDelete}
             sx={{
                 backgroundColor: '#fc0303',
                 color: 'white',

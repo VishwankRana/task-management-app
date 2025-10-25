@@ -19,6 +19,16 @@ export default function TaskList() {
         }
     };
 
+
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(`http://localhost:3000/api/taskmanager/task/${id}`);
+            setTaskList(prev => prev.filter(task => task._id !== id && task.id !== id));
+        } catch (err) {
+            console.error("❌ Failed to delete Task:", err.message);
+        }
+    }
+
     return (
         <div>
             <NewTaskModal setTaskList={setTaskList} />
@@ -36,7 +46,7 @@ export default function TaskList() {
                     <div className="text-center bg-red-500">No tasks added yet</div>
                 ) : (
                     taskList.map((task) => (
-                        <TaskTile key={task._id || task.id} task={task} />
+                        <TaskTile key={task._id || task.id} task={task} onDelete={handleDelete} />
                     ))
                 )}
             </div>

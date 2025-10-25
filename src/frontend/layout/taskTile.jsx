@@ -2,7 +2,7 @@ import DeleteTaskBtn from "../components/deleteTaskBtn";
 import EditTaskBtn from "../components/EditTaskBtn";
 
 
-export default function TaskTile({ task }) {
+export default function TaskTile({ task, onDelete }) {
     const formatDate = (dateString) => {
         if (!dateString) return 'No date';
         const date = new Date(dateString);
@@ -30,7 +30,7 @@ export default function TaskTile({ task }) {
                     </div>
 
                     <div>
-                        <DeleteTaskBtn />
+                        <DeleteTaskBtn onDelete={() => onDelete(task._id || task.id)} />
                     </div>
 
                     <div>
