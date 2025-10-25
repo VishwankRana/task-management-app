@@ -6,7 +6,7 @@ import Modal from '@mui/material/Modal';
 import Stack from '@mui/material/Stack';
 import { Button } from '@mui/material';
 import axios from 'axios';
-import NewTaskButton from './button';
+import NewTaskButton from './NewTaskBtn';
 import PrioritySelect from './PrioritySelect';
 import StatusSelect from './StatusSelect';
 import DueDatePicker from './DueDatePicker';

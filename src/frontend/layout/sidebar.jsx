@@ -10,7 +10,7 @@ export default function Sidebar({ children }) {
                     <Button variant="contained"
                         sx={{
                             width: '100%',
-                            background: '#F06543'
+                            background: '#d97757'
                         }}
 
                     >My Tasks</Button>

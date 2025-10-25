@@ -1,5 +1,6 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import DeleteTaskBtn from "../components/deleteTaskBtn";
+import EditTaskBtn from "../components/EditTaskBtn";
+
 
 export default function TaskTile({ task }) {
     const formatDate = (dateString) => {
@@ -10,28 +11,30 @@ export default function TaskTile({ task }) {
 
     return (
         <div className="taskTileDiv">
-            <div className="w-full bg-[#e7ede5] p-4 rounded-2xl">
-                <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 items-center">
-                    <h3 className="font-[Tahoma] font-semibold">Task</h3>
-                    <h3 className="font-[Tahoma] font-semibold text-center">Due Date</h3>
-                    <h3 className="font-[Tahoma] font-semibold text-center">Priority</h3>
-                    <h3 className="font-[Tahoma] font-semibold text-center">Status</h3>
-                </div>
-                <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 mt-5 p-1 bg-[#f3df089f] rounded-[5px] items-center">
+            <div className="w-full bg-[#e7ede5] rounded-2xl">
+                <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] gap-4 mt-5 p-1 bg-[#d97757] rounded-[5px] items-center">
                     <div>
-                        <p className="font-medium">{task.title}</p>
+                        <p className="font-medium text-white">{task.title}</p>
                         {task.description && (
                             <p className="text-sm text-gray-600 mt-1">{task.description}</p>
                         )}
                     </div>
-                    <div className="text-center">
+                    <div className="text-center text-white">
                         <p>{formatDate(task.dueDate)}</p>
                     </div>
-                    <div className="text-center">
+                    <div className="text-center text-white">
                         <p>{task.priority}</p>
                     </div>
-                    <div className="text-center">
+                    <div className="text-center text-white">
                         <p>{task.status}</p>
+                    </div>
+
+                    <div>
+                        <DeleteTaskBtn />
+                    </div>
+
+                    <div>
+                        <EditTaskBtn />
                     </div>
                 </div>
             </div>

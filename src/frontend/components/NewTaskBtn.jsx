@@ -5,7 +5,7 @@ export default function NewTaskButton({ onClick, ...props }) {
             onClick={onClick}
             {...props}
             sx={{
-                backgroundColor: '#F06543',
+                backgroundColor: '#d97757',
                 color: 'white',
                 padding: '12px 24px',
                 fontSize: '16px',
