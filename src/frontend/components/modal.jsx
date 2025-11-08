@@ -26,8 +26,6 @@ const style = {
 
 export default function NewTaskModal({ setTaskList }) {
     const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [priority, setPriority] = useState("");
@@ -47,7 +45,6 @@ export default function NewTaskModal({ setTaskList }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
         const TaskData = {
             title,
             description,
@@ -117,14 +114,14 @@ export default function NewTaskModal({ setTaskList }) {
                                 <Button
                                     onClick={handleClose}
                                     variant="outlined"
-                                    disabled={loading}
+
                                 >
                                     Cancel
                                 </Button>
                                 <Button
                                     type="submit"
                                     variant="contained"
-                                    disabled={loading}
+
                                     sx={{
                                         backgroundColor: '#5340f7',
                                         '&:hover': {
@@ -132,7 +129,7 @@ export default function NewTaskModal({ setTaskList }) {
                                         }
                                     }}
                                 >
-                                    {loading ? 'Creating...' : 'Create Task'}
+
                                 </Button>
                             </Stack>
                         </Stack>

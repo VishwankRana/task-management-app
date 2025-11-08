@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 
-export default function Sidebar({ children }) {
+export default function Sidebar() {
     return (
 
         <aside className="w-64 bg-[#F1FAEE] rounded-xl shadow-lg overflow-y-auto">
@@ -13,7 +13,7 @@ export default function Sidebar({ children }) {
                             background: '#d97757'
                         }}
 
-                    >My Tasks</Button>
+                    >Dashboard</Button>
                 </nav>
             </div>
         </aside>

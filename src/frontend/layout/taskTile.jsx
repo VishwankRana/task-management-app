@@ -1,8 +1,9 @@
-import DeleteTaskBtn from "../components/deleteTaskBtn";
+import DeleteTaskBtn from "../components/DeleteTaskBtn";
 import EditTaskBtn from "../components/EditTaskBtn";
 
 
 export default function TaskTile({ task, onDelete }) {
+
     const formatDate = (dateString) => {
         if (!dateString) return 'No date';
         const date = new Date(dateString);

@@ -1,7 +1,7 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+import TaskTile from '../layout/TaskTile';
 import NewTaskModal from './Modal';
-import TaskTile from '../layout/taskTile';
 
 export default function TaskList() {
     const [taskList, setTaskList] = useState([]);
@@ -23,7 +23,7 @@ export default function TaskList() {
     const handleDelete = async (id) => {
         try {
             await axios.delete(`http://localhost:3000/api/taskmanager/task/${id}`);
-            setTaskList(prev => prev.filter(task => task._id !== id && task.id !== id));
+            setTaskList(prev => prev.filter(task => task._id !== id && task.id !== id)); // this
         } catch (err) {
             console.error("❌ Failed to delete Task:", err.message);
         }
@@ -42,7 +42,6 @@ export default function TaskList() {
                 </div>
 
                 {taskList.length === 0 ? (
-                    // <p className="text-center text-gray-500 py-4">No tasks yet. Create your first task!</p>
                     <div className="text-center bg-red-500">No tasks added yet</div>
                 ) : (
                     taskList.map((task) => (
