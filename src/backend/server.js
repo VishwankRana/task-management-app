@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import connectDB from './config.js';
 import router from './taskController.js'
+import ProjectsRouter from './projectsController.js'
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(router);
+app.use(ProjectsRouter);
 
 app.get('/', (req, res) => {
     res.json({ message: "Hola from backend" });

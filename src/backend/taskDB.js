@@ -37,10 +37,6 @@ const tasksSchema = mongoose.Schema({
         default: 'pending'
     }
 
-    // categories: {
-
-    // }
-
 }, {
     timestamps: true
 });
