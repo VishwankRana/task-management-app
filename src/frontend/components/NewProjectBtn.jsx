@@ -8,7 +8,7 @@ export default function NewProjectBtn({openNewPrjModal}) {
     const { setOpenNewPrjModal } = useProject();
 
     return (
-        < Button variant="contained"
+        <Button variant="contained"
                  onClick={() => setOpenNewPrjModal(true)}
             sx={{
                 background: "#d97757",

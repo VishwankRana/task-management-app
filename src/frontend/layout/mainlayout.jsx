@@ -8,7 +8,7 @@ export default function MainLayout() {
 
   return (
     <>
-      <main className="flex-1 bg-[#F1FAEE] rounded-xl shadow-lg overflow-y-auto p-10">
+      <main className="flex-1 bg-[#fbf8f5] rounded-xl shadow-lg overflow-y-auto p-10">
         <Outlet />
       </main>
 

@@ -22,7 +22,7 @@ const projectsSchema = mongoose.Schema({
 
         projectPriority:{
             type: String,
-            enum: ['low', 'medium', 'high', 'urgent']
+            enum: ['Low', 'Medium', 'High', 'Urgent']
         },
 
         projectStartDate: {

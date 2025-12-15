@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import TaskTile from '../layout/TaskTile';
-import NewTaskModal from './Modal';
+import NewTaskModal from './NewTaskModal';
 
 export default function TaskList() {
     const [taskList, setTaskList] = useState([]);
@@ -31,7 +31,7 @@ export default function TaskList() {
 
     return (
         <div>
-            <NewTaskModal setTaskList={setTaskList} />
+            {/* <NewTaskModal setTaskList={setTaskList} /> */}
 
             <div className="w-full bg-[#e7ede5] p-4 rounded-2xl mt-4">
                 <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] gap-4 items-center mb-4">

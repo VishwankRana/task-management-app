@@ -1,43 +1,58 @@
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 
-export default function PrioritySelect({ value, onChange }) {
 
-    const handleChange = (event) => {
-        onChange(event.target.value);
-    };
 
-    return (
-        <Box sx={{ minWidth: 120 }}>
-            <FormControl fullWidth>
-                <InputLabel id="priority-select-label">Priority</InputLabel>
-                <Select
-                    labelId="priority-select-label"
-                    id="priority-select"
-                    value={value}
-                    label="Priority"
-                    onChange={handleChange}
-                    sx={{
-                        '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#e0e0e0',
-                        },
-                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#5340f7',
-                        },
-                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#5340f7',
-                        }
-                    }}
-                >
-                    <MenuItem value="low">Low</MenuItem>
-                    <MenuItem value="medium">Medium</MenuItem>
-                    <MenuItem value="high">High</MenuItem>
-                    <MenuItem value="urgent">Urgent</MenuItem>
-                </Select>
-            </FormControl>
-        </Box>
-    );
+export default function PrioritySelect({ priority, setPriority }) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = (value) => {
+    if (value) setPriority(value); 
+    setAnchorEl(null);
+  };
+
+  return (
+    <div>
+      <Button
+        id="priority-button"
+        aria-controls={open ? "priority-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+        variant="outlined"
+        sx={{
+            color: "#374151",        
+            borderColor: "#374151",
+            "&:hover": {
+            borderColor: "#374151",
+            backgroundColor: "#F3F4F6", 
+        },
+  }}
+      >
+        {priority || "Select Priority"}
+      </Button>
+
+      <Menu
+        id="priority-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={() => handleClose(null)}
+        MenuListProps={{
+          "aria-labelledby": "priority-button",
+        }}
+      >
+        <MenuItem onClick={() => handleClose("Low")}>Low</MenuItem>
+        <MenuItem onClick={() => handleClose("Medium")}>Medium</MenuItem>
+        <MenuItem onClick={() => handleClose("High")}>High</MenuItem>
+        <MenuItem onClick={() => handleClose("Urgent")}>Urgent</MenuItem>
+      </Menu>
+    </div>
+  );
 }

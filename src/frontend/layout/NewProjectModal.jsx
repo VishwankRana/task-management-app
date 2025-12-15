@@ -1,9 +1,11 @@
-import Button from "@mui/material/Button";
-import CloseIcon from "@mui/icons-material/Close";
 import { IconButton } from "@mui/material";
 import { useState } from "react";
-import dayjs from "dayjs";
 import { useProject } from "../context/ProjectContext"; 
+import ProjectPriorityMenu from "../components/ProjectPriority"
+import ProjectStatusMenu from "../components/ProjectStatus";
+import Button from "@mui/material/Button";
+import CloseIcon from "@mui/icons-material/Close";
+import dayjs from "dayjs";
 
 export default function NewProjectModal() {
   const { openNewPrjModal, setOpenNewPrjModal, setProjects } = useProject();
@@ -86,6 +88,8 @@ export default function NewProjectModal() {
         </div>
 
         <form onSubmit={handleSubmit}>
+          <div>
+          <div>
           <label htmlFor="projectName" className="block font-medium text-gray-700">
             Project Name
           </label>
@@ -97,7 +101,9 @@ export default function NewProjectModal() {
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
           />
+          </div>
 
+          <div>
           <label htmlFor="description" className="block font-medium text-gray-700">
             Description
           </label>
@@ -109,31 +115,25 @@ export default function NewProjectModal() {
             value={projectDescription}
             onChange={(e) => setProjectDescription(e.target.value)}
           />
-
-          <label htmlFor="status" className="block font-medium text-gray-700">
+          </div>
+          
+          <div className="flex justify-between mb-2">
+          <div>
+          <label htmlFor="status" className="font-medium text-gray-700">
             Status
           </label>
-          <input
-            type="text"
-            id="status"
-            className="w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Status of your project"
-            value={projectStatus}
-            onChange={(e) => setProjectStatus(e.target.value)}
-          />
+          <ProjectStatusMenu projectStatus={projectStatus} setProjectStatus={setProjectStatus}/>
+          </div>
 
-          <label htmlFor="priority" className="block font-medium text-gray-700">
+          <div>
+          <label htmlFor="priority" className="font-medium text-gray-700">
             Priority
           </label>
-          <input
-            type="text"
-            id="priority"
-            className="w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Priority of your project"
-            value={projectPriority}
-            onChange={(e) => setProjectPriority(e.target.value)}
-          />
+          <ProjectPriorityMenu projectPriority={projectPriority} setProjectPriority={setProjectPriority}/>
+          </div>
+          </div>
 
+          <div>
           <label htmlFor="StartDate" className="block font-medium text-gray-700">
             Start Date
           </label>
@@ -144,7 +144,9 @@ export default function NewProjectModal() {
             value={projectStartDate}
             onChange={(e) => setProjectStartDate(e.target.value)}
           />
-
+          </div>
+          
+          <div>
           <label htmlFor="EndDate" className="block font-medium text-gray-700">
             End Date
           </label>
@@ -155,6 +157,8 @@ export default function NewProjectModal() {
             value={projectEndDate}
             onChange={(e) => setProjectEndDate(e.target.value)}
           />
+          </div>
+          </div>
 
           <div className="flex justify-end w-full">
             <Button

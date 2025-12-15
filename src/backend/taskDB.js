@@ -23,18 +23,18 @@ const tasksSchema = mongoose.Schema({
         type: String,
         required: [true, 'Priority is required'],
         enum: {
-            values: ['low', 'medium', 'high', 'urgent'],
+            values: ['Low', 'Medium', 'High', 'Urgent'],
         },
-        default: 'medium'
+        default: 'Medium'
     },
 
     status: {
         type: String,
         required: true,
         enum: {
-            values: ['pending', 'in-progress', 'completed', 'cancelled'],
+            values: ['Pending', 'In-progress', 'Completed', 'Cancelled'],
         },
-        default: 'pending'
+        default: 'Pending'
     }
 
 }, {

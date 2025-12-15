@@ -6,7 +6,7 @@ export default function Sidebar() {
 
     return (
 
-        <aside className="w-64 bg-[#F1FAEE] rounded-xl shadow-lg overflow-y-auto">
+        <aside className="w-64 bg-[#fbf8f5] rounded-xl shadow-lg overflow-y-auto">
             <div className="">
                 <div className="mb-8 text-[30px] font-[1000]   text-[#1D3557] p-6">Just do it.</div>
                 <nav className='p-2'>
@@ -24,10 +24,21 @@ export default function Sidebar() {
                         onClick={() => navigate("/projects")}
                         sx={{
                             width: '100%',
-                            background: '#d97757'
+                            background: '#d97757',
+                            marginBottom: '10px'
+                    
                         }}
 
                     >Projects</Button>
+
+                    <Button variant="contained"
+                        onClick={() => navigate("/tasks")}
+                        sx={{
+                            width: '100%',
+                            background: '#d97757'
+                        }}
+
+                    >Tasks</Button>
                 </nav>
             </div>
         </aside >

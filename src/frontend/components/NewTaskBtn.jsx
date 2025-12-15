@@ -1,19 +1,14 @@
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 export default function NewTaskButton({ onClick, ...props }) {
     return (
         <Button
             onClick={onClick}
             {...props}
+            variant="contained"
             sx={{
-                backgroundColor: '#d97757',
-                color: 'white',
-                padding: '12px 24px',
-                fontSize: '16px',
-                borderRadius: '8px',
-                '&:hover': {
-                    backgroundColor: '#F09D51',
+                    background: "#d97757",
                 }
-            }}
+            }
         >
             Add Task
         </Button >

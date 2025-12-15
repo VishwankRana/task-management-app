@@ -7,7 +7,7 @@ export default function TaskTile({ task, onDelete }) {
     const formatDate = (dateString) => {
         if (!dateString) return 'No date';
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
+        return date.toLocaleDateString('en-GB'); 
     };
 
     return (

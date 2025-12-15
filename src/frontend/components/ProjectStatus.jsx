@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
-export default function ProjectStatusMenu({ status, setStatus }) {
+export default function ProjectStatusMenu({ projectStatus, setProjectStatus }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -12,7 +12,7 @@ export default function ProjectStatusMenu({ status, setStatus }) {
   };
 
   const handleClose = (value) => {
-    if (value) setStatus(value);
+    if (value) setProjectStatus(value);
     setAnchorEl(null);
   };
 
@@ -34,7 +34,7 @@ export default function ProjectStatusMenu({ status, setStatus }) {
         },
   }}
       >
-        {status || "Select Status"}
+        {projectStatus || "Select Status"}
       </Button>
 
       <Menu
@@ -46,10 +46,11 @@ export default function ProjectStatusMenu({ status, setStatus }) {
           "aria-labelledby": "status-button",
         }}
       >
-        <MenuItem onClick={() => handleClose("Pending")} >Pending</MenuItem>
-        <MenuItem onClick={() => handleClose("Completed") }>Completed</MenuItem>
-        <MenuItem onClick={() => handleClose("In-progress")} >In-Progress</MenuItem>
-        <MenuItem onClick={() => handleClose("Cancelled")} >Cancelled</MenuItem>
+        <MenuItem onClick={() => handleClose("Planning")}>Planning</MenuItem>
+        <MenuItem onClick={() => handleClose("Active")}>Active</MenuItem>
+        <MenuItem onClick={() => handleClose("Completed")}>Completed</MenuItem>
+        <MenuItem onClick={() => handleClose("On hold")}>On Hold</MenuItem>
+        <MenuItem onClick={() => handleClose("Cancelled")}>Cancelled</MenuItem>
       </Menu>
     </div>
   );
