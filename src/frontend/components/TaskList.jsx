@@ -12,7 +12,7 @@ export default function TaskList() {
 
     const fetchTaskList = async () => {
         try {
-            const taskRes = await axios.get("http://localhost:3000/api/taskmanager/task");
+            const taskRes = await axios.get("http://localhost:3000/api/taskmanager/tasks");
             setTaskList(taskRes.data);
         } catch (err) {
             console.error("❌ Failed to fetch Task:", err.message);
@@ -22,7 +22,7 @@ export default function TaskList() {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:3000/api/taskmanager/task/${id}`);
+            await axios.delete(`http://localhost:3000/api/taskmanager/tasks/${id}`);
             setTaskList(prev => prev.filter(task => task._id !== id && task.id !== id)); // this
         } catch (err) {
             console.error("❌ Failed to delete Task:", err.message);

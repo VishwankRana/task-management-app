@@ -14,6 +14,7 @@ export default function App() {
         <Route element={<MainLayout />}>
         <Route path="/" element={<DashboardLayout />} />
         <Route path="/projects" element={<ProjectLayout />} />
+        {/* <Route path="/projects/:projectId/tasks" element="TasksLayout"/> */}
         <Route path="/tasks" element={<TasksLayout/>}/>
         </Route>
       </Routes>

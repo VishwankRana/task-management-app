@@ -3,19 +3,27 @@ import Tasks from '../backend/taskDB.js';
 
 const router = express.Router();
 
-router.get('/api/taskmanager/task', async (req, res) => {
+router.get('/api/taskmanager/projects/:projectId/tasks', async (req, res) => {
     try {
-        const allTasks = await Tasks.find();
-        res.status(200).json(allTasks);
+        // const allTasks = await Tasks.find();
+        const { projectId } = req.params;
+        const findTask = await Tasks.find({ projectId})
+        res.status(200).json(findTask);
     }
     catch (err) {
         res.status(500).json({ message: "Error fetching Tasks", error: err })
     }
 });
 
-router.post('/api/taskmanager/task', async (req, res) => {
+router.post('/api/taskmanager/projects/:projectId/tasks', async (req, res) => {
     try {
-        const newTask = new Tasks(req.body);
+        // const newTask = new Tasks(req.body);
+        const { projectId } = req.params;
+        const newTask = new Tasks({
+            ...req.body,
+            projectId
+        })
+        
         const saveTask = await newTask.save();
 
         res.status(201).json(saveTask)
@@ -30,7 +38,7 @@ router.post('/api/taskmanager/task', async (req, res) => {
     }
 })
 
-router.delete('/api/taskmanager/task/:id', async (req, res) => {
+router.delete('/api/taskmanager/tasks/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const deleteTasks = await Tasks.findByIdAndDelete(id);
@@ -45,7 +53,7 @@ router.delete('/api/taskmanager/task/:id', async (req, res) => {
     }
 })
 
-router.put('/api/taskmanager/task/:id', async (req, res) => {
+router.put('/api/taskmanager/tasks/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const updatedTasks = await Tasks.findByIdAndUpdate(id, req.body, { new: true, runValidators: true })

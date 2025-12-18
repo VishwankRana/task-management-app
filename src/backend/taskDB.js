@@ -35,6 +35,12 @@ const tasksSchema = mongoose.Schema({
             values: ['Pending', 'In-progress', 'Completed', 'Cancelled'],
         },
         default: 'Pending'
+    },
+
+    projectId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
+        required: true
     }
 
 }, {

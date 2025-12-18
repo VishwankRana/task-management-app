@@ -1,5 +1,6 @@
 import express from 'express'
 import Projects from './projectsDB.js'
+import Tasks from "./taskDB.js"
 
 const ProjectsRouter = express.Router();
 
@@ -26,15 +27,18 @@ ProjectsRouter.post('/api/taskmanager/projects', async (req, res) => {
 ProjectsRouter.delete('/api/taskmanager/projects/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedProject = await Projects.findByIdAndDelete(id);
+        const project = await Projects.findById(id);
 
-        if (!deletedProject) {
+        if (!project) {
             return res.status(404).json({ message: "Project not found" });
         }
 
-        res.status(200).json({ message: "Project deleted", deletedProject });
+        const deletedTasks = await Tasks.deleteMany({ projectId: id});
+        const deletedProjects = await Projects.findByIdAndDelete(id);
+
+        res.status(200).json({ message: "Project and related tasks deleted", deletedProjects,deletedTasks });
     } catch (err) {
-        res.status(500).json({ message: "Failed to delete project", error: err });
+        res.status(500).json({ message: "Failed to delete project", error: err.message });
     }
 });
 
