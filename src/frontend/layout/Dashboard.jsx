@@ -19,7 +19,7 @@ const { projects } = useProject();
       <>
       <Stack spacing={3} alignItems="flex-start">
         <h1 className="text-[30px] font-[1000]   text-[#1D3557]">Dashboard</h1>
-        <TaskList />
+        {/* <TaskList /> */}
         <NewProjectBtn/>
 
         <div className="flex justify-between w-full">

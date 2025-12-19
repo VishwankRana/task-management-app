@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@mui/material';
 import { IconButton } from "@mui/material";
+import { useParams } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from 'axios';
 import NewTaskButton from './NewTaskBtn';
@@ -28,6 +29,7 @@ export default function NewTaskModal({ setTaskList }) {
     const [status, setStatus] = useState("");
     const [dueDate, setDueDate] = useState("");
     
+    const { projectId } = useParams();
 
     const handleOpen = () => setOpen(true);
 
@@ -69,14 +71,14 @@ export default function NewTaskModal({ setTaskList }) {
         };
 
         try {
-            const response = await axios.post("http://localhost:3000/api/taskmanager/task", TaskData);
+            const response = await axios.post(`http://localhost:3000/api/taskmanager/projects/${projectId}/tasks`, TaskData); 
             console.log("Task Data Submitted Successfully", response.data);
             setTaskList((prev) => [...prev, response.data]);
             alert('Task created successfully!');
             handleClose();
         }
         catch (err) {
-            console.error('Error creating task:', err);
+            console.error('Error creating task:', err.message);
             const errorMessage = err.response?.data?.message || err.message;
             alert(`Failed to create task. Please try again: ${errorMessage}`);
         }
@@ -175,3 +177,5 @@ export default function NewTaskModal({ setTaskList }) {
         </>
       );
 }
+
+// /api/taskmanager/task
