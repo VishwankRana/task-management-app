@@ -46,7 +46,7 @@ export default function TaskList() {
                     <div className="text-center bg-red-500">No tasks added yet</div>
                 ) : (
                     taskList.map((task) => (
-                        <TaskTile key={task._id || task.id} task={task} onDelete={handleDelete} />
+                        <TaskTile key={task._id || task.id} task={task} onDelete={handleDelete} setTaskList={setTaskList} />
                     ))
                 )}
             </div>

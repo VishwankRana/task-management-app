@@ -30,15 +30,6 @@ export default function Sidebar() {
                         }}
 
                     >Projects</Button>
-
-                    <Button variant="contained"
-                        onClick={() => navigate("/tasks")}
-                        sx={{
-                            width: '100%',
-                            background: '#d97757'
-                        }}
-
-                    >Tasks</Button>
                 </nav>
             </div>
         </aside >
