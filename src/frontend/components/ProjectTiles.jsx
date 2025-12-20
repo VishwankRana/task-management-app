@@ -25,7 +25,6 @@ export default function ProjectTiles(){
                 to={`/projects/${project._id}/tasks`}
             >
             <div
-                // key={project._id}
                 className="h-40 w-80 border border-black p-4 rounded-lg bg-[#f0efe7] flex flex-col justify-between"
                 
             >

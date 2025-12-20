@@ -1,5 +1,4 @@
 import DeleteTaskBtn from "../components/DeleteTaskBtn";
-import EditTaskBtn from "../components/EditTaskBtn";
 import EditTaskModal from "../components/EditTaskModal";
 
 

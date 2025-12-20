@@ -4,12 +4,29 @@ import Tasks from "./taskDB.js"
 
 const ProjectsRouter = express.Router();
 
-ProjectsRouter.get('/api/taskmanager/projects', async (req, res) => {
+ProjectsRouter.get('/api/taskmanager/projects/', async (req, res) => {
     try {
         const allProjects = await Projects.find();
         res.status(200).json(allProjects);
     } catch (err) {
         res.status(500).json({ message: "Error fetching Projects", error: err });
+    }
+});
+
+ProjectsRouter.get('/api/taskmanager/projects/:id', async (req, res) => {
+    try {
+        const project = await Projects.findById(req.params.id);
+
+        if (!project) {
+            return res.status(404).json({ message: "Project not found" });
+        }
+
+        res.status(200).json(project);
+    } catch (err) {
+        res.status(500).json({
+            message: "Failed to fetch project",
+            error: err.message
+        });
     }
 });
 
