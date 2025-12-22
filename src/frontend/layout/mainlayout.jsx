@@ -12,10 +12,7 @@ export default function MainLayout() {
         <Outlet />
       </main>
 
-      <NewProjectModal 
-        openNewPrjModal={openNewPrjModal}
-        setOpenNewPrjModal={setOpenNewPrjModal}
-      />
+      <NewProjectModal openNewPrjModal={openNewPrjModal} setOpenNewPrjModal={setOpenNewPrjModal}/>
     </>
   );
 }

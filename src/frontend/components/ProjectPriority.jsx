@@ -12,13 +12,13 @@ export default function ProjectPriorityMenu({ projectPriority, setProjectPriorit
   };
 
   const handleClose = (value) => {
-    if (value) setProjectPriority(value); // update priority when selecting
+    if (value) setProjectPriority(value); 
     setAnchorEl(null);
   };
 
   return (
     <div>
-      {/* Button that shows current priority */}
+      
       <Button
         id="priority-button"
         aria-controls={open ? "priority-menu" : undefined}
@@ -38,7 +38,7 @@ export default function ProjectPriorityMenu({ projectPriority, setProjectPriorit
         {projectPriority || "Select Priority"}
       </Button>
 
-      {/* Dropdown menu */}
+      
       <Menu
         id="priority-menu"
         anchorEl={anchorEl}

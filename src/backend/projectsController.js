@@ -23,6 +23,7 @@ ProjectsRouter.get('/api/taskmanager/projects/:id', async (req, res) => {
 
         res.status(200).json(project);
     } catch (err) {
+        console.error("Get project error:", err);
         res.status(500).json({
             message: "Failed to fetch project",
             error: err.message
@@ -75,7 +76,8 @@ ProjectsRouter.put('/api/taskmanager/projects/:id', async (req, res) => {
 
         res.status(200).json({ message: "Project updated", updatedProject });
     } catch (err) {
-        res.status(500).json({ message: "Failed to update project", error: err });
+        console.error("Update error:", err);
+        res.status(500).json({ message: "Failed to update project", error: err.message || err });
     }
 });
 

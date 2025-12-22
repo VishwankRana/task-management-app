@@ -83,9 +83,7 @@ export default function EditTaskModal({ task, setTaskList }) {
         try {
           let response;
           if (task && task._id) {
-            // Edit existing task -> backend expects PUT /api/taskmanager/tasks/:id
             response = await axios.put(`http://localhost:3000/api/taskmanager/tasks/${task._id}`, TaskData);
-            // Replace the updated task in the list
             setTaskList((prev) => prev.map((t) => (t._id === response.data._id ? response.data : t)));
             alert('Task updated successfully!');
           } 

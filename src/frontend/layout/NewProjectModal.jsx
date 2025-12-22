@@ -103,19 +103,19 @@ export default function NewProjectModal() {
           />
           </div>
 
-          <div>
-          <label htmlFor="description" className="block font-medium text-gray-700">
-            Description
-          </label>
-          <input
-            type="text"
-            id="description"
-            className="w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Describe your project"
-            value={projectDescription}
-            onChange={(e) => setProjectDescription(e.target.value)}
-          />
-          </div>
+            <div>
+            <label htmlFor="description" className="block font-medium text-gray-700">
+              Description
+            </label>
+            <input
+              type="text"
+              id="description"
+              className="w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Describe your project"
+              value={projectDescription}
+              onChange={(e) => setProjectDescription(e.target.value)}
+            />
+            </div>
           
           <div className="flex justify-between mb-2">
           <div>

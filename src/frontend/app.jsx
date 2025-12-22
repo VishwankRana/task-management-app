@@ -18,6 +18,8 @@ export default function App() {
         <Route path="/projects/:projectId/tasks" element={<TasksLayout />}/>
         </Route>
       </Routes>
+
+      
     </div>
   );
 }
