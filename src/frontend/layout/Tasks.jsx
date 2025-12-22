@@ -1,16 +1,21 @@
 import { Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ArrowBackButton from "../components/ArrowBackButton";
 import axios from "axios";
-
 import NewTaskModal from "../components/NewTaskModal";
+import ArrowBackButton from "../components/ArrowBackButton";
 import TaskList from "../components/TaskList";
+import ProjectNavigationTabs from "../components/ProjectNavigationTabs";
+import TasksCalenderView from "./TasksCalenderView";
+import TasksAnalyticsView from "./TasksAnalyticsView";
+import TasksSettingsView from "./TasksSettingsView";
 
 export default function TasksLayout() {
   const { projectId } = useParams();
   const [taskList, setTaskList] = useState([]);
   const [projectTitle, setProjectTitle] = useState(null);
+  const [activeTab, setActiveTab] = useState("tasks");
+
 
   useEffect(() => {
     if (!projectId) return;
@@ -33,7 +38,7 @@ export default function TasksLayout() {
 
   return (
     <Stack spacing={3} alignItems="flex-start">
-      <h1 className="text-[30px] font-bold text-[#1D3557]">TASKS</h1>
+      <h1 className="text-[30px] font-bold text-[#1D3557]">Tasks</h1>
       <div className="flex w-full justify-between">
       <div className="flex items-center">
       <div className="mr-4"><ArrowBackButton /></div>
@@ -65,7 +70,15 @@ export default function TasksLayout() {
         </div>
       </div>
 
-      <TaskList taskList={taskList} setTaskList={setTaskList} />
+      <ProjectNavigationTabs activeTab = {activeTab} setActiveTab={setActiveTab}/>
+      <div>
+
+        {activeTab === "tasks" && <TaskList taskList={taskList} setTaskList={setTaskList} /> }
+        {activeTab === "calendar" && <TasksCalenderView taskList={taskList}/> }
+        {activeTab === "analytics" && <TasksAnalyticsView /> }
+        {activeTab === "settings" && <TasksSettingsView/> }
+      
+      </div>
     </Stack>
   );
 }

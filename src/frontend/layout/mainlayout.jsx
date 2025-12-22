@@ -12,7 +12,6 @@ export default function MainLayout() {
         <Outlet />
       </main>
 
-      {/* Modal renders once for all routes */}
       <NewProjectModal 
         openNewPrjModal={openNewPrjModal}
         setOpenNewPrjModal={setOpenNewPrjModal}
