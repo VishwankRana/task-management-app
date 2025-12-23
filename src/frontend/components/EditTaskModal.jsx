@@ -6,7 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import PrioritySelect from './PrioritySelect';
 import StatusSelect from './StatusSelect';
 import EditTaskBtn from './EditTaskBtn';
-
+import DeleteTaskBtn from './DeleteTaskBtn';
 
 const style = {
     position: 'absolute',
@@ -172,7 +172,10 @@ export default function EditTaskModal({ task, setTaskList }) {
                </div>
               </div>
     
-              <div className="flex justify-end w-full">
+              <div className="flex justify-between w-full">
+
+                <DeleteTaskBtn/>
+
                 <Button
                   variant="contained"
                   type="submit"
@@ -184,6 +187,7 @@ export default function EditTaskModal({ task, setTaskList }) {
                 >
                   Edit Task
                 </Button>
+
               </div>
             </form>
           </div>

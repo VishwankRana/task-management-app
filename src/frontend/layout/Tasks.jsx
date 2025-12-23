@@ -71,14 +71,10 @@ export default function TasksLayout() {
       </div>
 
       <ProjectNavigationTabs activeTab = {activeTab} setActiveTab={setActiveTab}/>
-      <div>
-
         {activeTab === "tasks" && <TaskList taskList={taskList} setTaskList={setTaskList} /> }
         {activeTab === "calendar" && <TasksCalenderView taskList={taskList}/> }
-        {activeTab === "analytics" && <TasksAnalyticsView /> }
+        {activeTab === "analytics" && <TasksAnalyticsView taskList={taskList} /> }
         {activeTab === "settings" && <TasksSettingsView projectId={projectId}/> }
-      
-      </div>
     </Stack>
   );
 }

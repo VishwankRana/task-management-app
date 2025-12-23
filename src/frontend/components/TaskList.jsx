@@ -25,7 +25,7 @@ export default function TaskList() {
     const handleDelete = async (id) => {
         try {
              await axios.delete(`http://localhost:3000/api/taskmanager/tasks/${id}`);
-            setTaskList(prev => prev.filter(task => task._id !== id)); // this
+            setTaskList(prev => prev.filter(task => task._id !== id));
         } catch (err) {
             console.error("❌ Failed to delete Task:", err.message);
         }
@@ -35,11 +35,11 @@ export default function TaskList() {
         <div>
 
             <div className="w-full bg-[#e7ede5] p-4 rounded-2xl mt-4">
-                <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] gap-4 items-center mb-4">
+                <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-4 items-center mb-4">
                     <h3 className="font-[Tahoma] font-semibold">Task</h3>
-                    <h3 className="font-[Tahoma] font-semibold text-center">Due Date</h3>
                     <h3 className="font-[Tahoma] font-semibold text-center">Priority</h3>
                     <h3 className="font-[Tahoma] font-semibold text-center">Status</h3>
+                    <h3 className="font-[Tahoma] font-semibold text-center">Due Date</h3>
                 </div>
 
                 {taskList.length === 0 ? (
