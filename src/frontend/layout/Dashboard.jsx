@@ -19,14 +19,13 @@ const { projects } = useProject();
       <>
       <Stack spacing={3} alignItems="flex-start">
         <h1 className="text-[30px] font-[1000]   text-[#1D3557]">Dashboard</h1>
-        {/* <TaskList /> */}
         <NewProjectBtn/>
 
         <div className="flex justify-between w-full">
           <TotalProjectTile />
           <CompletedProjects />
           <MyTasksTile />
-          <OverDueTile />
+          {/* <OverDueTile />  */}
         </div>
 
         <div className="w-full flex justify-between">
@@ -35,10 +34,10 @@ const { projects } = useProject();
             <RecentActivity />
           </div>
 
-          <div className="flex flex-col justify-between mb-21">
+          <div className="flex flex-col justify-between">
             <MyTasksSummary />
-            <OverdueSummary />
             <InProgressSummary />
+            <OverdueSummary />
           </div>
         </div>
       </Stack>

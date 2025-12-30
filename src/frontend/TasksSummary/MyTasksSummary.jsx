@@ -1,16 +1,45 @@
+import useTasks from "../hooks/useTasks";
+
 export default function MyTasksSummary() {
-    return (
-        <div>
-            <div className="bg-[#F2EBCA] border-2 border-black w-[20em] h-[8em] rounded-xl">
-                <div className="border-b-2 border-black">
-                    <h1 className="pl-5">My Tasks</h1>
-                </div>
 
-                <div className="flex justify-center items-center h-[6em]">
-                    <p>No My Tasks</p>
-                </div>
+  const { tasks, loading } = useTasks();
 
-            </div>
-        </div>
-    );
+  const topTasks = tasks.slice(0, 2);
+
+  return (
+    <div className="bg-[#F2EBCA] border-2 border-black w-[20em] rounded-xl mb-2">
+
+      <div className="border-b-2 border-black">
+        <h1 className="pl-5 py-1 font-semibold">My Tasks</h1>
+      </div>
+
+      <div className="p-2 space-y-2">
+        
+        {loading && <p>Loading…</p>}
+
+        {!loading && topTasks.length === 0 && (
+          <p className="text-sm text-gray-600">
+            No tasks assigned
+          </p>
+        )}
+
+        {!loading && topTasks.map(task => (
+          <div
+            key={task._id}
+            className="bg-[#cbc499] rounded-md p-2 border border-black"
+          >
+            <h2 className="text-sm font-medium">
+              {task.title}
+            </h2>
+
+            <p className="text-xs text-gray-700">
+              {task.priority} priority
+            </p>
+          </div>
+        ))}
+
+      </div>
+
+    </div>
+  );
 }

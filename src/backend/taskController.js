@@ -3,6 +3,16 @@ import Tasks from '../backend/taskDB.js';
 
 const router = express.Router();
 
+router.get('/api/taskmanager/tasks', async(req,res) => {
+    try{
+        const allProjects = await Tasks.find();
+        res.status(200).json(allProjects); 
+    }
+    catch (err) {
+        res.status(500).json({ message: "Error fetching all Tasks", error: err })
+    }
+})
+
 router.get('/api/taskmanager/projects/:projectId/tasks', async (req, res) => {
     try {
         // const allTasks = await Tasks.find();
