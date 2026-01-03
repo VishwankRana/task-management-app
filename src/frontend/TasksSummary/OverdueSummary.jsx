@@ -5,21 +5,27 @@ export default function OverdueSummary() {
   const { overdueTasks, loading } = useTasks();
 
   const topOverdueTasks = overdueTasks
-    .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate)) // nearest overdue first
+    .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
     .slice(0, 2);
 
   return (
-    <div className="bg-[#F2EBCA] border-2 border-black w-[20em] rounded-xl">
+    <div className="w-[20em] rounded-2xl border border-[#b0121c]
+                    bg-[#ffe6e8] shadow-md hover:shadow-lg
+                    transition-all duration-200">
 
-      <div className="border-b-2 border-black">
-        <h1 className="pl-5 py-1 font-semibold text-black">
+      {/* Header */}
+      <div className="border-b border-[#b0121c] px-4 py-2">
+        <h1 className="text-sm font-semibold text-[#6d0a10]">
           Overdue Tasks
         </h1>
       </div>
 
-      <div className="p-2 space-y-2">
+      {/* Body */}
+      <div className="p-3 space-y-2">
 
-        {loading && <p>Loading…</p>}
+        {loading && (
+          <p className="text-sm text-gray-600">Loading…</p>
+        )}
 
         {!loading && topOverdueTasks.length === 0 && (
           <p className="text-sm text-gray-600 text-center">
@@ -30,20 +36,23 @@ export default function OverdueSummary() {
         {!loading && topOverdueTasks.map(task => (
           <div
             key={task._id}
-            className="bg-[#f3f0df] rounded-md p-2 border border-black"
+            className="rounded-lg border border-[#b0121c]
+                       bg-white shadow-sm p-2"
           >
-            <h2 className="text-sm font-medium">
+            <h2 className="text-sm font-semibold text-[#4b0b10]">
               {task.title}
             </h2>
 
-            <div className="flex justify-between">
-            <p className="text-xs text-gray-700">
-              {task.priority} priority
-            </p>
+            <div className="flex justify-between mt-1">
 
-            <p className="text-xs text-red-700">
-              Due: {new Date(task.dueDate).toLocaleDateString()}
-            </p>
+              <p className="text-xs font-medium text-[#b0121c]">
+                {task.priority} priority
+              </p>
+
+              <p className="text-xs font-semibold text-[#d21320]">
+                Due: {new Date(task.dueDate).toLocaleDateString()}
+              </p>
+
             </div>
           </div>
         ))}

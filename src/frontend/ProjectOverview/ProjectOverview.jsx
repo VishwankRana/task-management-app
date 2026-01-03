@@ -1,26 +1,34 @@
 import Button from '@mui/material/Button';
-import ProjectOverviewTile from "./projectOverviewTile"
-import ArrowForwardButton from "../components/ArrowForwardButton"
-
+import ProjectOverviewTile from "./projectOverviewTile";
+import ArrowForwardButton from "../components/ArrowForwardButton";
 
 export default function ProjectOverview() {
-    return (
-        <div className='bg-[#F2EBCA] h-[23em] w-[48em] flex flex-col rounded-xl border-2 border-black'>
-            <div className='p-3 border-b-2 border-black flex justify-between items-center'>
-                <h1 className='text-[20px]'>Project Overview</h1>
-                <h1>View all projects <ArrowForwardButton/></h1>
-            </div>
+  return (
+    <div className="h-[23em] w-[48em] flex flex-col rounded-2xl 
+                    border border-[#1f4d63] bg-[#e8f4ff]
+                    shadow-md hover:shadow-lg transition-all duration-200">
 
-            <div className='w-full h-full p-3'>
-                {/* <Button variant="contained"
-                    sx={{ background: "#d97757" }}
-                >
-                    Create your first Project
-                </Button> */}
-                <ProjectOverviewTile/>
-            </div>
+      {/* Header */}
+      <div className="p-3 border-b border-[#1f4d63] 
+                      flex justify-between items-center">
+
+        <h1 className="text-[18px] font-semibold text-[#1f4d63]">
+          Project Overview
+        </h1>
+
+        <div className="flex items-center gap-1 
+                        text-sm font-medium text-[#1f4d63]
+                        cursor-pointer hover:opacity-80">
+          View all projects
+          <ArrowForwardButton />
         </div>
+      </div>
 
-    )
+      {/* Content */}
+      <div className="w-full h-full p-4">
+        <ProjectOverviewTile />
+      </div>
 
+    </div>
+  );
 }

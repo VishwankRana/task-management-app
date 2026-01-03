@@ -16,7 +16,7 @@ export default function RecentActivityTile() {
   return (
     <>
       {!loading && topTasks.map(t => (
-        <div key={t._id} className="bg-[#f3f0df] border border-[#d6d2b4] rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow duration-200 mb-3">
+        <div key={t._id} className="bg-[#f4f6fb] border border-[#d4d9e6] rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow duration-200 mb-3">
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-lg font-semibold text-gray-900">{t.title}</h1>
