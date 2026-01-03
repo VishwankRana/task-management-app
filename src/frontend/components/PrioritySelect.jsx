@@ -28,13 +28,19 @@ export default function PrioritySelect({ priority, setPriority }) {
         onClick={handleClick}
         variant="outlined"
         sx={{
-            color: "#374151",        
-            borderColor: "#374151",
-            "&:hover": {
-            borderColor: "#374151",
-            backgroundColor: "#F3F4F6", 
-        },
-  }}
+  color: "#374151",
+  borderColor: "#374151",
+  width: "100%",          // <-- align width
+  height: "40px",         // <-- match input height
+  justifyContent: "flex-start",
+  borderRadius: "8px",
+  marginTop: "5px",
+  textTransform: "none",
+  "&:hover": {
+    borderColor: "#374151",
+    backgroundColor: "#F3F4F6",
+  },
+}}
       >
         {priority || "Select Priority"}
       </Button>

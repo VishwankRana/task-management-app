@@ -6,7 +6,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import axios from 'axios';
 import NewTaskButton from './NewTaskBtn';
 import PrioritySelect from './PrioritySelect';
-import StatusSelect from './StatusSelect';
+import TaskStatusMenu from './StatusSelect';
+import TaskTypeMenu from './TypeSelect';
 
 
 const style = {
@@ -28,6 +29,7 @@ export default function NewTaskModal({ setTaskList }) {
     const [priority, setPriority] = useState("");
     const [status, setStatus] = useState("");
     const [dueDate, setDueDate] = useState("");
+    const [taskType, setTaskType] = useState("");
     
     const { projectId } = useParams();
 
@@ -40,6 +42,7 @@ export default function NewTaskModal({ setTaskList }) {
         setPriority("");
         setStatus("");
         setDueDate("");
+        setTaskType("");
     };
 
     const handleSubmit = async (e) => {
@@ -57,17 +60,24 @@ export default function NewTaskModal({ setTaskList }) {
             alert('Please select a status');
             return;
         }
+
+        if (!taskType) {
+            alert('Please select a task type');
+            return;
+        }
+
         if (!dueDate) {
             alert('Please select a due date');
             return;
         }
 
         const TaskData = {
-            title: title.trim(),
-            description,
-            priority,
-            status,
-            dueDate
+          title: title.trim(),
+          description,
+          priority,
+          status,
+          type: taskType,
+          dueDate
         };
 
         try {
@@ -126,36 +136,38 @@ export default function NewTaskModal({ setTaskList }) {
                       onChange={(e) => setDescription(e.target.value)}
                     />
                </div>
-              
-                <div className="flex justify-between mb-2">
-                    <div>
-                    <label htmlFor="status" className="font-medium text-gray-700">
-                      Status
-                    </label>
-                    <StatusSelect status={status} setStatus={setStatus}/>
-                    </div>
-        
-                    <div>
-                    <label htmlFor="priority" className="font-medium text-gray-700">
-                      Priority
-                    </label>
-                    <PrioritySelect priority={priority} setPriority={setPriority}/>
-                    </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+
+  <div>
+    <label className="font-medium text-gray-700">Status</label>
+    <TaskStatusMenu status={status} setStatus={setStatus} />
+  </div>
+
+  <div>
+    <label className="font-medium text-gray-700">Priority</label>
+    <PrioritySelect priority={priority} setPriority={setPriority} />
+  </div>
+
+  <div>
+    <label className="font-medium text-gray-700">Type</label>
+    <TaskTypeMenu taskType={taskType} setTaskType={setTaskType} />
+  </div>
+
+  <div>
+    <label className="font-medium text-gray-700">Due Date</label>
+    <input
+      type="date"
+      id="DueDate"
+      className="w-full p-2 border rounded-lg mt-1 mb-3
+                 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      value={dueDate}
+      onChange={(e) => setDueDate(e.target.value)}
+    />
+  </div>
+
+</div>
                 </div>
-    
-              <div>
-                   <label htmlFor="DueDate" className="block font-medium text-gray-700">
-                     Due Date
-                   </label>
-                   <input
-                     type="date"
-                     id="DueDate"
-                     className="w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                     value={dueDate}
-                     onChange={(e) => setDueDate(e.target.value)}
-                   />
-               </div>
-              </div>
     
               <div className="flex justify-end w-full">
                 <Button
@@ -177,5 +189,3 @@ export default function NewTaskModal({ setTaskList }) {
         </>
       );
 }
-
-// /api/taskmanager/task

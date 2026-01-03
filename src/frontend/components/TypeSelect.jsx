@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
-export default function TaskStatusMenu({ status, setStatus }) {
+export default function TaskTypeMenu({ taskType, setTaskType }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -12,15 +12,15 @@ export default function TaskStatusMenu({ status, setStatus }) {
   };
 
   const handleClose = (value) => {
-    if (value) setStatus(value);
+    if (value) setTaskType(value);
     setAnchorEl(null);
   };
 
   return (
     <div>
       <Button
-        id="status-button"
-        aria-controls={open ? "status-menu" : undefined}
+        id="taskType-button"
+        aria-controls={open ? "taskType-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
@@ -28,8 +28,8 @@ export default function TaskStatusMenu({ status, setStatus }) {
         sx={{
   color: "#374151",
   borderColor: "#374151",
-  width: "100%",          // <-- align width
-  height: "40px",         // <-- match input height
+  width: "100%",          
+  height: "40px",         
   justifyContent: "flex-start",
   borderRadius: "8px",
   marginTop: "6px",
@@ -40,22 +40,23 @@ export default function TaskStatusMenu({ status, setStatus }) {
   },
 }}
       >
-        {status || "Select Status"}
+        {taskType || "Select Type"}
       </Button>
 
       <Menu
-        id="status-menu"
+        id="taskType-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={() => handleClose(null)}
         MenuListProps={{
-          "aria-labelledby": "status-button",
+          "aria-labelledby": "taskType-button",
         }}
       >
-        <MenuItem onClick={() => handleClose("Pending")} >Pending</MenuItem>
-        <MenuItem onClick={() => handleClose("Completed") }>Completed</MenuItem>
-        <MenuItem onClick={() => handleClose("In-progress")} >In-Progress</MenuItem>
-        <MenuItem onClick={() => handleClose("Cancelled")} >Cancelled</MenuItem>
+        <MenuItem onClick={() => handleClose("Bug")} >Bug</MenuItem>
+        <MenuItem onClick={() => handleClose("Feature") }>Feature</MenuItem>
+        <MenuItem onClick={() => handleClose("Task")} >Task</MenuItem>
+        <MenuItem onClick={() => handleClose("Improvement")} >Improvement</MenuItem>
+        <MenuItem onClick={() => handleClose("Other")} >Other</MenuItem>
       </Menu>
     </div>
   );

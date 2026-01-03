@@ -28,6 +28,15 @@ const tasksSchema = mongoose.Schema({
         default: 'Medium'
     },
 
+    type:{
+        type: String,
+        required: true,
+        enum: {
+            values: ['Bug', 'Feature', 'Task', 'Improvement', 'Other'],
+        },
+        default: 'Task'
+    },
+
     status: {
         type: String,
         required: true,

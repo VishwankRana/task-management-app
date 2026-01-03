@@ -32,7 +32,7 @@ export default function TaskList() {
     }
 
     return (
-        <div>
+        <div className='flex justify-center w-full'>
 
             <div className="w-full bg-[#e7ede5] p-4 rounded-2xl mt-4">
                 <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-4 items-center mb-4">
@@ -40,6 +40,7 @@ export default function TaskList() {
                     <h3 className="font-[Tahoma] font-semibold text-center">Priority</h3>
                     <h3 className="font-[Tahoma] font-semibold text-center">Status</h3>
                     <h3 className="font-[Tahoma] font-semibold text-center">Due Date</h3>
+                    <h3 className="font-[Tahoma] font-semibold text-center">Type</h3>
                 </div>
 
                 {taskList.length === 0 ? (

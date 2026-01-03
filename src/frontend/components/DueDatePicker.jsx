@@ -17,6 +17,18 @@ export default function DueDatePicker({ value, onChange }) {
                 value={value ? dayjs(value) : null}
                 onChange={handleChange}
                 slotProps={{ textField: { fullWidth: true } }}
+                sx={{
+  color: "#374151",
+  borderColor: "#374151",
+  width: "100%",          
+  height: "40px",         
+  justifyContent: "flex-start",
+  textTransform: "none",
+  "&:hover": {
+    borderColor: "#374151",
+    backgroundColor: "#F3F4F6",
+  },
+}}
             />
         </LocalizationProvider>
     );

@@ -26,7 +26,7 @@ export default function InProgressSummary() {
         {!loading && topInProgressTasks.map(task => (
           <div
             key={task._id}
-            className="bg-[#cbc499] rounded-md p-2 border border-black"
+            className="bg-[#f3f0df] rounded-md p-2 border border-black"
           >
             <h2 className="text-sm font-medium">
               {task.title}

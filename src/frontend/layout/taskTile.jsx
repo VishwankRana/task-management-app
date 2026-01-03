@@ -48,11 +48,17 @@ export default function TaskTile({ onDelete, task, setTaskList }) {
                         <p>{formatDate(task?.dueDate)}</p>
                     </div>
 
-                    <div>
-                        <EditTaskModal task={task} setTaskList={setTaskList} />
-                    </div>
+
+                        <div className="text-center text-white">
+                            <p>{task?.type}</p>
+                        </div>
                 </div>
             </div>
         </div>
     );
 }
+
+
+{/* <div>
+    <EditTaskModal task={task} setTaskList={setTaskList} />
+</div> */}
