@@ -25,7 +25,6 @@ const { projects } = useProject();
           <TotalProjectTile />
           <CompletedProjects />
           <MyTasksTile />
-          {/* <OverDueTile />  */}
         </div>
 
         <div className="w-full flex justify-between">
@@ -34,7 +33,7 @@ const { projects } = useProject();
             <RecentActivity />
           </div>
 
-          <div className="flex flex-col justify-between">
+          <div className="flex flex-col justify-between h-[36em]">
             <MyTasksSummary />
             <InProgressSummary />
             <OverdueSummary />

@@ -1,8 +1,8 @@
 import Button from '@mui/material/Button';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { useNavigate } from 'react-router-dom';
 
-export default function ArrowBackButton() {
+export default function ArrowForwardButton() {
 
 const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ const navigate = useNavigate();
         },
       }}
     >
-      <ArrowBackRoundedIcon fontSize="small" 
+      <ArrowForwardRoundedIcon fontSize="small" 
           sx = {{
             width: 20,
             height: 20,
