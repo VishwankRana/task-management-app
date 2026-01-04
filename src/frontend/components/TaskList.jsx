@@ -10,19 +10,20 @@ export default function TaskList() {
 
   useEffect(() => {
     if (!projectId) return;
+
+    const fetchTaskList = async () => {
+      try {
+        const taskRes = await axios.get(
+          `http://localhost:3000/api/taskmanager/projects/${projectId}/tasks`
+        );
+        setTaskList(taskRes.data);
+      } catch (err) {
+        console.error("❌ Failed to fetch Task:", err.message);
+      }
+    };
+
     fetchTaskList();
   }, [projectId]);
-
-  const fetchTaskList = async () => {
-    try {
-      const taskRes = await axios.get(
-        `http://localhost:3000/api/taskmanager/projects/${projectId}/tasks`
-      );
-      setTaskList(taskRes.data);
-    } catch (err) {
-      console.error("❌ Failed to fetch Task:", err.message);
-    }
-  };
 
   const handleDelete = async (id) => {
     try {

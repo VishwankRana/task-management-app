@@ -1,5 +1,4 @@
-export default function TaskTile({ onDelete, task, setTaskList }) {
-
+export default function TaskTile({ task }) {
   const formatDate = (dateString) => {
     if (!dateString) return "No date";
     const date = new Date(dateString);
@@ -23,18 +22,15 @@ export default function TaskTile({ onDelete, task, setTaskList }) {
 
   return (
     <div className="w-full">
-
       <div className="rounded-2xl border border-[#d1d5db] bg-white shadow-sm hover:shadow-md transition mb-5">
-
         {/* Row */}
-        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr]
-                        gap-4 p-3 items-center">
-
+        <div
+          className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr]
+                        gap-4 p-3 items-center"
+        >
           {/* Title + Description */}
           <div>
-            <p className="font-semibold text-[#1f2937]">
-              {task?.title}
-            </p>
+            <p className="font-semibold text-[#1f2937]">{task?.title}</p>
 
             {task?.description && (
               <p className="text-sm text-gray-600 mt-1 line-clamp-2">
@@ -45,7 +41,9 @@ export default function TaskTile({ onDelete, task, setTaskList }) {
 
           {/* Priority */}
           <div className="flex justify-center">
-            <span className={`${priorityClass()} px-3 py-1 rounded-lg text-sm font-semibold`}>
+            <span
+              className={`${priorityClass()} px-3 py-1 rounded-lg text-sm font-semibold`}
+            >
               {task?.priority}
             </span>
           </div>
@@ -64,7 +62,6 @@ export default function TaskTile({ onDelete, task, setTaskList }) {
           <div className="text-center font-medium text-gray-700">
             {task?.type}
           </div>
-
         </div>
       </div>
     </div>
