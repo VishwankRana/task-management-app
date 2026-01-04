@@ -98,7 +98,7 @@ export default function NewTaskModal({ setTaskList }) {
         <>
         <NewTaskButton onClick={handleOpen} />
         {open && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40">
+        <div className="fixed inset-0 z-1000 flex items-center justify-center bg-black/40">
           <div className="w-[450px] bg-white shadow-xl rounded-xl p-6 border border-gray-200 mx-auto">
             <div className="w-full flex items-center justify-between">
             <h1 className="text-2xl font-semibold mb-4 text-gray-800">Create a New Task</h1>
@@ -169,18 +169,29 @@ export default function NewTaskModal({ setTaskList }) {
 </div>
                 </div>
     
-              <div className="flex justify-end w-full">
+              <div className="flex  justify-end w-full">
                 <Button
-                  variant="contained"
-                  type="submit"
-                  sx={{
-                    backgroundColor: "#db7657",
-                    paddingY: "12px",
-                    "&:hover": { backgroundColor: "#c65d3e" },
-                  }}
-                >
-                  Create Task
-                </Button>
+      type='submit'
+      variant="contained"
+      sx={{
+        px: 3,
+        py: 1,
+        textTransform: "none",
+        fontWeight: 700,
+        borderRadius: "999px",
+        backgroundColor: "#d97757",
+        boxShadow: "0 4px 10px rgba(217,119,87,0.25)",
+        "& .MuiSvgIcon-root": {
+          fontSize: "1.2rem",
+        },
+        "&:hover": {
+          backgroundColor: "#c76546",
+          boxShadow: "0 6px 14px rgba(217,119,87,0.35)",
+        },
+      }}
+    >
+      Create Task
+    </Button>
               </div>
             </form>
           </div>

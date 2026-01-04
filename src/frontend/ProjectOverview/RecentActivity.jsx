@@ -2,7 +2,7 @@ import RecentActivityTile from "./RecentActivityTile";
 
 export default function RecentActivity() {
   return (
-    <div className="min-h-[23em] w-[48em] flex flex-col
+    <div className="min-h-[23em] w-[55em] flex flex-col
                     rounded-2xl border border-[#1f4d63]
                     bg-[#e8f4ff]
                     shadow-md hover:shadow-lg

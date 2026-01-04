@@ -37,44 +37,72 @@ export default function TasksLayout() {
   const pendingTasks = taskList.filter(t => t.status === "Pending").length;
 
   return (
-    <Stack spacing={3} alignItems="flex-start">
-      <h1 className="text-[30px] font-bold text-[#1D3557]">Tasks</h1>
-      <div className="flex w-full justify-between">
-      <div className="flex items-center">
+    <Stack spacing={3} alignItems="flex-start" className="w-full">
+
+      <div className="border-black border-b-2 w-full p-5">
+      <div className="flex items-center justify-between ">
+        <h1 className="text-[30px] font-bold text-[#1D3557]">
+      Tasks
+      </h1>
+      <NewTaskModal setTaskList={setTaskList} />
+      </div>  
+      <p className="text-[#1d3559]">Tasks workspace - manage, analyze & track progress</p>
+      </div>
+      
+      <div className="flex items-center px-5">
       <div className="mr-4"><ArrowBackButton /></div>
       <h1 className="text-[30px] font-bold text-[#1D3557]"> {projectTitle ? projectTitle.projectName : "Loading..."}</h1>
       </div>
-      <NewTaskModal setTaskList={setTaskList} />
-      </div>  
 
 
-      <div className="flex w-full justify-between">
-        <div className="w-55 h-20 p-2 border-2 rounded bg-[#eeefe6]">
-          <p className="font-semibold">Total Tasks</p>
-          <h2 className="text-3xl font-bold">{totalTasks}</h2>
+       <div className="w-full grid grid-cols-4 gap-4 px-5">
+
+        <div className="rounded-2xl border border-[#1d3557] bg-[#e8f0ff]
+                        p-3 shadow-sm hover:shadow-md transition">
+          <p className="text-sm font-medium text-[#1d3557]">Total Tasks</p>
+          <h2 className="text-3xl font-extrabold text-[#1d3557]">
+            {totalTasks}
+          </h2>
         </div>
 
-        <div className="w-55 h-20 p-2 border-2 rounded bg-[#eeefe6]">
-          <p className="font-semibold">Completed</p>
-          <h2 className="text-3xl font-bold">{completedTasks}</h2>
+        <div className="rounded-2xl border border-[#2a7a35] bg-[#e9f7ec]
+                        p-3 shadow-sm hover:shadow-md transition">
+          <p className="text-sm font-medium text-[#2a7a35]">Completed</p>
+          <h2 className="text-3xl font-extrabold text-[#1c4d23]">
+            {completedTasks}
+          </h2>
         </div>
 
-        <div className="w-55 h-20 p-2 border-2 rounded bg-[#eeefe6]">
-          <p className="font-semibold">Pending</p>
-          <h2 className="text-3xl font-bold">{pendingTasks}</h2>
+        <div className="rounded-2xl border border-[#c7a10a] bg-[#fff7d6] p-3 shadow-sm hover:shadow-md transition">
+          <p className="text-sm font-medium text-[#8a6d09]">
+            Pending
+          </p>
+          <h2 className="text-3xl font-extrabold text-[#6b5407]">
+            {pendingTasks}
+          </h2>
         </div>
 
-        <div className="w-55 h-20 p-2 border-2 rounded bg-[#eeefe6]">
-          <p className="font-semibold">In Progress</p>
-          <h2 className="text-3xl font-bold">{inProgressTasks}</h2>
+
+        <div className="rounded-2xl border border-[#6b7280] bg-[#eef1f6] p-3 shadow-sm hover:shadow-md transition">
+          <p className="text-sm font-medium text-[#4b5563]">
+            In Progress
+            </p>
+          
+          <h2 className="text-3xl font-extrabold text-[#374151]">
+            {inProgressTasks}
+          </h2>
+
         </div>
+
       </div>
 
+      <div className="px-5 w-full">
       <ProjectNavigationTabs activeTab = {activeTab} setActiveTab={setActiveTab}/>
         {activeTab === "tasks" && <TaskList taskList={taskList} setTaskList={setTaskList} /> }
         {activeTab === "calendar" && <TasksCalenderView taskList={taskList}/> }
         {activeTab === "analytics" && <TasksAnalyticsView taskList={taskList} /> }
         {activeTab === "settings" && <TasksSettingsView projectId={projectId}/> }
+      </div>  
     </Stack>
   );
 }

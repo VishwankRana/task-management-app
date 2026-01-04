@@ -4,53 +4,77 @@ import axios from 'axios';
 import TaskTile from '../layout/TaskTile';
 
 export default function TaskList() {
-    const { projectId } = useParams();
-    const [taskList, setTaskList] = useState([]);
 
-    useEffect(() => {
-        if (!projectId) return;
-        fetchTaskList();
-    }, [projectId]);
+  const { projectId } = useParams();
+  const [taskList, setTaskList] = useState([]);
 
-    const fetchTaskList = async () => {
-        try {
-            const taskRes = await axios.get(`http://localhost:3000/api/taskmanager/projects/${projectId}/tasks`);
-            setTaskList(taskRes.data);
-        } catch (err) {
-            console.error("❌ Failed to fetch Task:", err.message);
-        }
-    };
+  useEffect(() => {
+    if (!projectId) return;
+    fetchTaskList();
+  }, [projectId]);
 
-
-    const handleDelete = async (id) => {
-        try {
-             await axios.delete(`http://localhost:3000/api/taskmanager/tasks/${id}`);
-            setTaskList(prev => prev.filter(task => task._id !== id));
-        } catch (err) {
-            console.error("❌ Failed to delete Task:", err.message);
-        }
+  const fetchTaskList = async () => {
+    try {
+      const taskRes = await axios.get(
+        `http://localhost:3000/api/taskmanager/projects/${projectId}/tasks`
+      );
+      setTaskList(taskRes.data);
+    } catch (err) {
+      console.error("❌ Failed to fetch Task:", err.message);
     }
+  };
 
-    return (
-        <div className='flex justify-center w-full'>
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(
+        `http://localhost:3000/api/taskmanager/tasks/${id}`
+      );
+      setTaskList(prev => prev.filter(task => task._id !== id));
+    } catch (err) {
+      console.error("❌ Failed to delete Task:", err.message);
+    }
+  };
 
-            <div className="w-full bg-[#e7ede5] p-4 rounded-2xl mt-4">
-                <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-4 items-center mb-4">
-                    <h3 className="font-[Tahoma] font-semibold">Task</h3>
-                    <h3 className="font-[Tahoma] font-semibold text-center">Priority</h3>
-                    <h3 className="font-[Tahoma] font-semibold text-center">Status</h3>
-                    <h3 className="font-[Tahoma] font-semibold text-center">Due Date</h3>
-                    <h3 className="font-[Tahoma] font-semibold text-center">Type</h3>
-                </div>
+  return (
+    <div className="flex justify-center w-full my-6">
 
-                {taskList.length === 0 ? (
-                    <div className="text-center bg-red-500">No tasks added yet</div>
-                ) : (
-                    taskList.map((task) => (
-                        <TaskTile key={task._id || task.id} task={task} onDelete={handleDelete} setTaskList={setTaskList} />
-                    ))
-                )}
-            </div>
+      <div className="w-full rounded-2xl border border-[#d6d3cd]
+                      bg-white shadow-sm">
+
+        {/* Header Bar */}
+        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr]
+                        gap-4 px-4 py-2 rounded-t-2xl
+                        bg-[#fff1e3] border-b border-[#c9b5a3]">
+
+          <h3 className="font-semibold text-[#3a2b20]">Task</h3>
+          <h3 className="font-semibold text-center text-[#3a2b20]">Priority</h3>
+          <h3 className="font-semibold text-center text-[#3a2b20]">Status</h3>
+          <h3 className="font-semibold text-center text-[#3a2b20]">Due Date</h3>
+          <h3 className="font-semibold text-center text-[#3a2b20]">Type</h3>
+
         </div>
-    );
+
+        {/* Task Rows */}
+        <div className="p-3 space-y-3">
+
+          {taskList.length === 0 ? (
+            <div className="text-sm text-gray-600 text-center py-4">
+              No tasks added yet
+            </div>
+          ) : (
+            taskList.map(task => (
+              <TaskTile
+                key={task._id || task.id}
+                task={task}
+                onDelete={handleDelete}
+                setTaskList={setTaskList}
+              />
+            ))
+          )}
+
+        </div>
+
+      </div>
+    </div>
+  );
 }

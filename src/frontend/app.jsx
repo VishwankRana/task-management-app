@@ -8,9 +8,8 @@ import Tasks from "./layout/Tasks.jsx"
 
 export default function App() {
   return (
-    <div className="flex h-screen p-5 gap-5 bg-[#f4f4ed]">
+    <div className="flex">
       <Sidebar />
-
       <Routes>
         <Route element={<MainLayout />}>
         <Route path="/" element={<DashboardLayout />} />

@@ -3,11 +3,12 @@ import { useState } from "react";
 const week_days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export default function TasksCalenderView({ taskList = [] }) {
+
   const today = new Date();
   const todayKey = today.toISOString().split("T")[0];
 
   const [currentDate, setCurrentDate] = useState(today);
-  const [activeDay, setActiveDay] = useState(null); 
+  const [activeDay, setActiveDay] = useState(null);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -20,16 +21,12 @@ export default function TasksCalenderView({ taskList = [] }) {
     setActiveDay(null);
   };
 
+  // Group tasks by date (ignore completed/cancelled)
   const tasksByDate = taskList.reduce((acc, task) => {
-    if (task.status === "Completed" || task.status === "Cancelled") {
-      return acc;
-    }
+    if (task.status === "Completed" || task.status === "Cancelled") return acc;
 
-    const dateKey = new Date(task.dueDate)
-      .toISOString()
-      .split("T")[0];
-
-    acc[dateKey] = (acc[dateKey] || 0) + 1;
+    const key = new Date(task.dueDate).toISOString().split("T")[0];
+    acc[key] = (acc[key] || 0) + 1;
     return acc;
   }, {});
 
@@ -39,57 +36,82 @@ export default function TasksCalenderView({ taskList = [] }) {
       : null;
 
   const upcomingTasks = taskList
-    .filter((task) => {
-      if (task.status === "Completed" || task.status === "Cancelled") {
-        return false;
-      }
+    .filter(task => {
+      if (task.status === "Completed" || task.status === "Cancelled") return false;
 
       if (!selectedDate) return true;
 
-      const taskDate = new Date(task.dueDate)
-        .toISOString()
-        .split("T")[0];
-
+      const taskDate = new Date(task.dueDate).toISOString().split("T")[0];
       return taskDate === selectedDate;
     })
     .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
+  // 🎨 STATUS BADGE COLOR SYSTEM
+  const statusBadgeClass = (status) => {
+    switch (status) {
+
+      case "In-progress":
+        return "bg-[#fff1e3] text-[#b4530d] border-[#e4c4a8]"; // orange
+
+      case "Pending":
+        return "bg-[#fff7d1] text-[#7a6308] border-[#e8ce69]"; // yellow
+
+      case "Completed":
+        return "bg-[#e9f7ec] text-[#2a7a35] border-[#9cdfb0]"; // green
+
+      case "Overdue":
+        return "bg-[#ffe4e4] text-[#9b1c1c] border-[#f5a3a3]"; // red
+
+      case "Cancelled":
+        return "bg-[#f1f1f1] text-[#6b7280] border-[#d1d5db]"; // gray
+
+      default:
+        return "bg-[#ececec] text-[#555] border-[#d6d6d6]";
+    }
+  };
+
   return (
     <div className="flex w-280 justify-between">
 
-      <div className="rounded-xl border border-white/10 bg-[#eeeee6] p-6 h-107 w-180 overflow-hidden">
+      {/* =========================
+          CALENDAR PANEL
+      ==========================*/}
+      <div className="rounded-2xl border border-[#d6d3cd] bg-white shadow-sm p-6 h-107 w-180 my-5 overflow-hidden">
 
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-l font-semibold text-black flex items-center gap-2">
-            📅 Task Calendar
+          <h2 className="text-lg font-semibold text-[#b4530d]">
+            Task Calendar
           </h2>
 
-          <div className="flex items-center gap-4 text-black">
-            <button onClick={() => changeMonth(-1)} className="opacity-60 hover:opacity-100">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => changeMonth(-1)}
+              className="text-[#b4530d] font-bold opacity-70 hover:opacity-100"
+            >
               ‹
             </button>
 
-            <span className="font-medium">
-              {currentDate.toLocaleString("default", {
-                month: "long",
-                year: "numeric",
-              })}
+            <span className="font-medium text-[#1f2937]">
+              {currentDate.toLocaleString("default", { month: "long", year: "numeric" })}
             </span>
 
-            <button onClick={() => changeMonth(1)} className="opacity-60 hover:opacity-100">
+            <button
+              onClick={() => changeMonth(1)}
+              className="text-[#b4530d] font-bold opacity-70 hover:opacity-100"
+            >
               ›
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-7 gap-3 mb-3 text-sm text-black">
-          {week_days.map((day) => (
-            <div key={day} className="text-center">
-              {day}
-            </div>
+        {/* Week Row */}
+        <div className="grid grid-cols-7 gap-3 mb-2 text-sm text-[#6b4e0b] font-medium">
+          {week_days.map(day => (
+            <div key={day} className="text-center">{day}</div>
           ))}
         </div>
 
+        {/* Calendar Grid */}
         <div className="grid grid-cols-7 gap-3">
 
           {Array.from({ length: firstDayOfMonth }).map((_, i) => (
@@ -97,49 +119,61 @@ export default function TasksCalenderView({ taskList = [] }) {
           ))}
 
           {Array.from({ length: daysInMonth }).map((_, i) => {
-            const day = i + 1;
-            const isActive = activeDay === day;
 
-            const cellDateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-            const isToday = cellDateKey === todayKey;
-            const taskCount = tasksByDate[cellDateKey] || 0;
+            const day = i + 1;
+
+            const cellKey =
+              `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+            const isToday = cellKey === todayKey;
+            const isActive = activeDay === day;
+            const taskCount = tasksByDate[cellKey] || 0;
 
             return (
               <button
                 key={day}
                 onClick={() => setActiveDay(day)}
-                className={`h-13 w-20 rounded-lg
-                  flex flex-col items-center justify-center
-                  transition cursor-pointer
+                className={`
+                  h-13 w-20 rounded-lg flex flex-col items-center justify-center
+                  transition cursor-pointer border
+
                   ${
-                    isActive ? "bg-blue-600 text-white" : "bg-[#D7D7CE] hover:bg-[#E8EADF]"
+                    isToday
+                      ? "bg-[#d97757] text-white border-[#b86242]"
+                      : isActive
+                      ? "bg-white border-[#d97757] text-[#b4530d]"
+                      : "bg-[#E7E6DF] border-[#c9c7b8] hover:bg-[#f5eee6]"
                   }
-                  ${ isToday ? "bg-[#d97658] text-white" : "bg-[#D7D7CE] hover:bg-[#E8EADF]"}`}
+                `}
               >
-                <span className="text-sm font-medium">{day}</span>
+                <span className="text-sm font-semibold">{day}</span>
 
                 {taskCount > 0 && (
-                  <span className="text-xs">
+                  <span className="text-xs font-medium text-[#6b4e0b]">
                     {taskCount} task{taskCount > 1 ? "s" : ""}
                   </span>
                 )}
               </button>
             );
           })}
+
         </div>
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-[#eeeee6] p-6 w-90 h-107 flex flex-col">
+      {/* =========================
+          UPCOMING TASKS PANEL
+      ==========================*/}
+      <div className="rounded-2xl border border-[#d6d3cd] bg-white shadow-sm p-6 w-90 h-107 flex flex-col my-5">
 
         <div className="flex justify-between items-center mb-3">
-          <p className="text-l font-semibold text-black">
+          <p className="text-lg font-semibold text-[#1f2937]">
             Upcoming Tasks
           </p>
 
           {selectedDate && (
             <button
               onClick={() => setActiveDay(null)}
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-[#b4530d] hover:underline"
             >
               Clear filter
             </button>
@@ -147,30 +181,40 @@ export default function TasksCalenderView({ taskList = [] }) {
         </div>
 
         <div className="space-y-3 flex-1 overflow-y-auto">
+
           {upcomingTasks.length === 0 && (
             <p className="text-sm text-gray-600">
               No tasks for this day
             </p>
           )}
 
-          {upcomingTasks.map((task) => (
+          {upcomingTasks.map(task => (
             <div
               key={task._id}
-              className="bg-[#d6d7cc] w-full rounded-xl p-3"
+              className="bg-white border border-[#e2d9cc] rounded-xl p-3 shadow-sm"
             >
               <div className="flex justify-between">
-                <p className="font-medium">{task.title}</p>
-                <p className="text-sm">{task.status}</p>
+                <p className="font-semibold text-[#1f2937]">
+                  {task.title}
+                </p>
+
+                <span
+                  className={`text-xs px-2 py-1 rounded-lg border font-semibold
+                    ${statusBadgeClass(task.status)}`}
+                >
+                  {task.status}
+                </span>
               </div>
 
-              <p className="text-sm text-gray-700">
+              <p className="text-sm text-gray-600 mt-1">
                 Due: {new Date(task.dueDate).toDateString()}
               </p>
             </div>
           ))}
-        </div>
-      </div>
 
+        </div>
+
+      </div>
     </div>
   );
 }

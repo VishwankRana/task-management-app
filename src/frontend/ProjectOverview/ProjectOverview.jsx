@@ -1,10 +1,9 @@
-import Button from '@mui/material/Button';
 import ProjectOverviewTile from "./projectOverviewTile";
 import ArrowForwardButton from "../components/ArrowForwardButton";
 
 export default function ProjectOverview() {
   return (
-    <div className="h-[23em] w-[48em] flex flex-col rounded-2xl 
+    <div className="h-[23em] w-[55em] flex flex-col rounded-2xl 
                     border border-[#1f4d63] bg-[#e8f4ff]
                     shadow-md hover:shadow-lg transition-all duration-200">
 

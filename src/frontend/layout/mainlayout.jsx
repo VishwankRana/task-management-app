@@ -1,18 +1,17 @@
 import { Outlet } from "react-router-dom";
+import Dashboard from "./Dashboard";
 import NewProjectModal from "./NewProjectModal";
 import { useProject } from "../context/ProjectContext";  
 
 export default function MainLayout() {
-  // Get modal state from context
   const { openNewPrjModal, setOpenNewPrjModal } = useProject();
 
   return (
     <>
-      <main className="flex-1 bg-[#fbf8f5] rounded-xl shadow-lg overflow-y-auto p-10">
-        <Outlet />
-      </main>
-
+    <div className="pl-64 min-h-screen w-full">
+      <Outlet />
       <NewProjectModal openNewPrjModal={openNewPrjModal} setOpenNewPrjModal={setOpenNewPrjModal}/>
+    </div>
     </>
   );
 }

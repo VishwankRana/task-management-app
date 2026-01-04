@@ -1,45 +1,46 @@
+import ViewListRoundedIcon from "@mui/icons-material/ViewListRounded";
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
+import QueryStatsRoundedIcon from "@mui/icons-material/QueryStatsRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 
-export default function ProjectNavigationTabs({activeTab, setActiveTab}) {
+export default function ProjectNavigationTabs({ activeTab, setActiveTab }) {
+
+  const tabs = [
+    { id: "tasks", label: "Tasks", icon: <ViewListRoundedIcon fontSize="small" /> },
+    { id: "calendar", label: "Calendar", icon: <CalendarMonthRoundedIcon fontSize="small" /> },
+    { id: "analytics", label: "Analytics", icon: <QueryStatsRoundedIcon fontSize="small" /> },
+    { id: "settings", label: "Settings", icon: <SettingsRoundedIcon fontSize="small" /> }
+  ];
+
+  const activeIndex = tabs.findIndex(t => t.id === activeTab);
 
   return (
-    <div className="flex h-9 w-120 border-2 rounded-lg bg-[#fdf8f4]">
+    <div className="relative flex h-11 rounded-2xl border border-[#c7661a]
+                    bg-[#fff1e3] shadow-sm px-1">
 
-      <button
-        onClick={() => setActiveTab("tasks")}
-        className={`flex justify-center items-center w-30 border-r-2 rounded-l-lg font-semibold
-          transition-colors duration-200 cursor-pointer
-          ${activeTab === "tasks" ? "bg-[#cfcfc2]" : "bg-[#fdf8f4] hover:bg-[#cfcfc2]"}`}
-      >
-        Tasks
-      </button>
+      {/* Sliding active indicator */}
+      <div
+        className="absolute top-1 bottom-1 w-1/4 rounded-xl 
+                   bg-white shadow-md transition-all duration-300 ease-out"
+        style={{ transform: `translateX(${activeIndex * 100}%)` }}
+      />
 
-      <button
-        onClick={() => setActiveTab("calendar")}
-        className={`flex justify-center items-center w-30 border-r-2 font-semibold
-          transition-colors duration-200 cursor-pointer
-          ${activeTab === "calendar" ? "bg-[#cfcfc2]" : "bg-[#fdf8f4] hover:bg-[#cfcfc2]"}`}
-      >
-        Calendar
-      </button>
-
-      <button
-        onClick={() => setActiveTab("analytics")}
-        className={`flex justify-center items-center w-30 border-r-2 font-semibold
-          transition-colors duration-200 cursor-pointer
-          ${activeTab === "analytics" ? "bg-[#cfcfc2]" : "bg-[#fdf8f4] hover:bg-[#cfcfc2]"}`}
-      >
-        Analytics
-      </button>
-
-      <button
-        onClick={() => setActiveTab("settings")}
-        className={`flex justify-center items-center w-30 rounded-r-lg font-semibold
-          transition-colors duration-200 cursor-pointer
-          ${activeTab === "settings" ? "bg-[#cfcfc2]" : "bg-[#fdf8f4] hover:bg-[#cfcfc2]"}`}
-      >
-        Settings
-      </button>
-
+      {tabs.map(tab => (
+        <button
+          key={tab.id}
+          onClick={() => setActiveTab(tab.id)}
+          className={`relative z-10 flex-1 flex items-center justify-center gap-2
+                      text-sm font-semibold transition-all duration-200 rounded-xl
+                      ${
+                        activeTab === tab.id
+                          ? "text-[#b4530d]"
+                          : "text-[#b4530d]/60 hover:text-[#b4530d]"
+                      }`}
+        >
+          {tab.icon}
+          {tab.label}
+        </button>
+      ))}
     </div>
   );
 }

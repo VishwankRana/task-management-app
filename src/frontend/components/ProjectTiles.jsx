@@ -1,52 +1,62 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function ProjectTiles(){
+export default function ProjectTiles() {
 
-    const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState([]);
 
-    useEffect(() =>{
-        fetch("http://localhost:3000/api/taskmanager/projects")
-            .then(res=>res.json())
-            .then(data =>{
-                setProjects(data);
-            })
-            .catch(err => {
-                console.error(err);
-            })
-    }, []);
+  useEffect(() => {
+    fetch("http://localhost:3000/api/taskmanager/projects")
+      .then(res => res.json())
+      .then(data => setProjects(data))
+      .catch(err => console.error(err));
+  }, []);
 
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 
+                    gap-6 w-full">
+      {projects.map(project => (
+        <Link
+          key={project._id}
+          to={`/projects/${project._id}/tasks`}
+        >
+          <div
+            className="h-40 w-full rounded-2xl border 
+                       border-[#1d3557] bg-[#e8f0ff]
+                       p-4 shadow-sm hover:shadow-lg
+                       hover:-translate-y-0.5
+                       transition-all duration-200 flex flex-col justify-between"
+          >
 
-    return (
-    <div className="flex flex-wrap justify-between gap-4">
-        {projects.map(project => (
-            <Link 
-                key={project._id}
-                to={`/projects/${project._id}/tasks`}
-            >
-            <div
-                className="h-40 w-80 border border-black p-4 rounded-lg bg-[#f0efe7] flex flex-col justify-between"
-                
-            >
-                <div>
-                    <h1 className="text-xl font-bold">
-                        {project.projectName}
-                    </h1>
+            {/* Title + Description */}
+            <div>
+              <h1 className="text-lg font-bold text-[#1D3557]">
+                {project.projectName}
+              </h1>
 
-                    <p className="line-clamp-2 text-sm">{project.projectDescription}</p>
-                </div>
-
-                <div className="flex justify-between">
-                    <h3 className="font-semibold">
-                        {project.projectStatus}
-                    </h3>
-
-                    <h3 className="font-semibold">
-                        {project.projectPriority} Priority
-                    </h3>
-                </div>
+              <p className="text-sm text-gray-700 mt-1 line-clamp-2">
+                {project.projectDescription || "No description"}
+              </p>
             </div>
-            </Link>
-        ))}
+
+            {/* Footer Meta */}
+            <div className="flex justify-between items-center mt-2">
+
+              <span className="px-3 py-1 text-xs font-semibold 
+                               rounded-full bg-white text-[#1d3557]
+                               border border-[#1d3557]">
+                {project.projectStatus || "Planning"}
+              </span>
+
+              <span className="text-xs font-bold text-[#1d3557]">
+                {project.projectPriority} Priority
+              </span>
+
+            </div>
+
+          </div>
+        </Link>
+      ))}
     </div>
-)};
+  );
+}

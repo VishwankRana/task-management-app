@@ -162,16 +162,27 @@ export default function NewProjectModal() {
 
           <div className="flex justify-end w-full">
             <Button
-              variant="contained"
-              type="submit"
-              sx={{
-                backgroundColor: "#db7657",
-                paddingY: "12px",
-                "&:hover": { backgroundColor: "#c65d3e" },
-              }}
-            >
-              Create Project
-            </Button>
+      variant="contained"
+      onClick={() => setOpenNewPrjModal(true)}
+      sx={{
+        px: 3,
+        py: 1,
+        textTransform: "none",
+        fontWeight: 700,
+        borderRadius: "999px",
+        backgroundColor: "#d97757",
+        boxShadow: "0 4px 10px rgba(217,119,87,0.25)",
+        "& .MuiSvgIcon-root": {
+          fontSize: "1.2rem",
+        },
+        "&:hover": {
+          backgroundColor: "#c76546",
+          boxShadow: "0 6px 14px rgba(217,119,87,0.35)",
+        },
+      }}
+    >
+      Create Project
+    </Button>
           </div>
         </form>
       </div>
