@@ -1,16 +1,83 @@
-# React + Vite
+# Task Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack task management app built with React, Vite, Express, and MongoDB.
 
-Currently, two official plugins are available:
+The app is centered around projects and tasks. Users can create projects, open a project workspace, add tasks, track progress, and view task data in list, calendar, and analytics views.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- Dashboard with project and task summary cards
+- Create and view projects
+- Project-specific task workspace
+- Create tasks with status, priority, type, and due date
+- Task list view
+- Calendar view for upcoming task deadlines
+- Analytics view with status and priority charts
+- Project settings page for updating project details
+- REST API for projects and tasks
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- React
+- Vite
+- Tailwind CSS
+- Material UI
+- Express
+- MongoDB with Mongoose
+- Chart.js
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Routes
+
+- `/` - Dashboard
+- `/projects` - All projects
+- `/projects/:projectId/tasks` - Task workspace for a project
+
+## API
+
+Projects:
+
+- `GET /api/taskmanager/projects`
+- `GET /api/taskmanager/projects/:id`
+- `POST /api/taskmanager/projects`
+- `PUT /api/taskmanager/projects/:id`
+- `DELETE /api/taskmanager/projects/:id`
+
+Tasks:
+
+- `GET /api/taskmanager/tasks`
+- `GET /api/taskmanager/projects/:projectId/tasks`
+- `POST /api/taskmanager/projects/:projectId/tasks`
+- `PUT /api/taskmanager/tasks/:id`
+- `DELETE /api/taskmanager/tasks/:id`
+
+## Local Setup
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the frontend:
+
+```bash
+npm run dev
+```
+
+Start the backend:
+
+```bash
+node src/backend/server.js
+```
+
+MongoDB should be running locally. The current connection string is:
+
+```text
+mongodb://localhost:27017/TaskManagerDB
+```
+
+## Notes
+
+- The frontend currently calls the backend at `http://localhost:3000`
+- There is no backend npm script yet
+- Authentication is not implemented yet
