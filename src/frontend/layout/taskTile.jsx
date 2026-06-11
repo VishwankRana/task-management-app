@@ -74,7 +74,7 @@ export default function TaskTile({ task, onDelete, setTaskList }) {
               onClick={() => setDeleteOpen(true)}
               sx={{ color: "#b91c1c", "&:hover": { bgcolor: "#fee2e2" } }}
             >
-              <DeleteRoundedIcon fontSize="small" />
+              <DeleteRoundedIcon fontSize="small" sx ={{color: "#d97757"}}/>
             </IconButton>
           </div>
         </div>
@@ -90,29 +90,34 @@ export default function TaskTile({ task, onDelete, setTaskList }) {
       <Dialog
         open={deleteOpen}
         onClose={() => setDeleteOpen(false)}
-        PaperProps={{ sx: { borderRadius: "16px", p: 1, maxWidth: 400 } }}
+        PaperProps={{ sx: { borderRadius: "20px", p: 2, width: 480, maxWidth: "95vw" } }}
       >
-        <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1.5, pb: 1 }}>
-          <WarningAmberRoundedIcon sx={{ color: "#b91c1c", fontSize: "1.8rem" }} />
-          <span className="text-[#1f2937] font-bold text-lg">Delete Task?</span>
+        <DialogTitle sx={{ textAlign: "center", pt: 3, pb: 1 }}>
+          <WarningAmberRoundedIcon sx={{ color: "#d97757", fontSize: "5rem", display: "block", mx: "auto", mb: 1.5 }} />
+          <span style={{ fontWeight: 900, fontSize: "1.4rem", color: "#1D3557" }}>Delete Task</span>
         </DialogTitle>
 
-        <DialogContent>
-          <DialogContentText sx={{ color: "#4b5563", fontSize: "0.9rem" }}>
+        <DialogContent sx={{ textAlign: "center", pb: 1 }}>
+          <DialogContentText sx={{ color: "#4b5563", fontSize: "1rem" }}>
             Are you sure you want to delete{" "}
-            <span className="font-semibold text-[#1f2937]">"{task?.title}"</span>?
-            <br />
-            <span className="text-red-600 text-xs mt-1 block">This action cannot be undone.</span>
+            <span style={{ fontWeight: 700, color: "#1D3557" }}>"{task?.title}"</span>?
           </DialogContentText>
+          <p style={{ color: "#d97757", fontSize: "0.82rem", marginTop: "8px", fontWeight: 600 }}>
+            This action cannot be undone.
+          </p>
         </DialogContent>
 
-        <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
+        <DialogActions sx={{ justifyContent: "center", px: 3, pb: 3, pt: 2, gap: 2 }}>
           <Button
             onClick={() => setDeleteOpen(false)}
             variant="outlined"
             sx={{
               textTransform: "none",
+              fontWeight: 700,
+              fontSize: "0.95rem",
               borderRadius: "999px",
+              px: 3,
+              py: 1,
               borderColor: "#d1d5db",
               color: "#4b5563",
               "&:hover": { borderColor: "#9ca3af", bgcolor: "#f9fafb" },
@@ -125,10 +130,14 @@ export default function TaskTile({ task, onDelete, setTaskList }) {
             variant="contained"
             sx={{
               textTransform: "none",
+              fontWeight: 700,
+              fontSize: "0.95rem",
               borderRadius: "999px",
-              bgcolor: "#b91c1c",
-              boxShadow: "0 4px 10px rgba(185,28,28,0.25)",
-              "&:hover": { bgcolor: "#991b1b" },
+              px: 3,
+              py: 1,
+              bgcolor: "#d97757",
+              boxShadow: "0 4px 10px rgba(217,119,87,0.25)",
+              "&:hover": { bgcolor: "#c76546", boxShadow: "0 6px 14px rgba(217,119,87,0.35)" },
             }}
           >
             Delete
