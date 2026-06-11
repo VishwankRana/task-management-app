@@ -8,6 +8,10 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), tsconfigPaths()],
   root: './src/frontend',
   publicDir: '../../public',
+  cacheDir: 'C:/Users/Vishw/.vite-cache/task-manager',
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router', 'react-router-dom', '@mui/material', '@mui/icons-material', 'cookie'],
+  },
 })
 
 // require('@tailwindcss/line-clamp'),

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const ProjectContext = createContext();
 
@@ -7,6 +7,13 @@ export function ProjectProvider({ children }) {
     // All shared state goes here
     const [openNewPrjModal, setOpenNewPrjModal] = useState(false);
     const [projects, setProjects] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:3000/api/taskmanager/projects")
+            .then(res => res.json())
+            .then(data => setProjects(data))
+            .catch(err => console.error("Error fetching projects:", err));
+    }, []);
 
     // Any functions you want to share
     const addProject = (newProject) => {

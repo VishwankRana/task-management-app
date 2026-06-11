@@ -1,17 +1,20 @@
 import { Outlet } from "react-router-dom";
-import Dashboard from "./Dashboard";
 import NewProjectModal from "./NewProjectModal";
-import { useProject } from "../context/ProjectContext";  
+import { useProject } from "../context/ProjectContext";
 
-export default function MainLayout() {
+export default function MainLayout({ collapsed }) {
   const { openNewPrjModal, setOpenNewPrjModal } = useProject();
 
   return (
-    <>
-    <div className="pl-64 min-h-screen w-full">
+    <div
+      className="min-h-screen w-full transition-all duration-300 ease-in-out"
+      style={{ paddingLeft: collapsed ? "68px" : "256px" }}
+    >
       <Outlet />
-      <NewProjectModal openNewPrjModal={openNewPrjModal} setOpenNewPrjModal={setOpenNewPrjModal}/>
+      <NewProjectModal
+        openNewPrjModal={openNewPrjModal}
+        setOpenNewPrjModal={setOpenNewPrjModal}
+      />
     </div>
-    </>
   );
 }

@@ -1,19 +1,21 @@
-import mongoose from 'mongoose';
+import 'dotenv/config';
+import pkg from '@prisma/client';
+import { createRequire } from 'module';
 
-const connectDB = async () => {
+const { PrismaClient } = pkg;
+const require = createRequire(import.meta.url);
+const { PrismaMariaDb } = require('@prisma/adapter-mariadb');
 
-    try {
-        await mongoose.connect('mongodb://localhost:27017/TaskManagerDB');
-        console.log("MongoDB Succesfully Connected");
-    }
+const dbUrl = new URL(process.env.DATABASE_URL);
 
-    catch (err) {
-        if (err instanceof Error) {
-            console.error("MongoDB connection error:", err.message)
-        } else {
-            console.error('Unknown MongoDB connection error');
-        }
-    }
-}
+const adapter = new PrismaMariaDb({
+    host: dbUrl.hostname,
+    port: Number(dbUrl.port) || 3306,
+    user: dbUrl.username,
+    password: dbUrl.password,
+    database: dbUrl.pathname.slice(1)
+});
 
-export default connectDB    
+const prisma = new PrismaClient({ adapter });
+
+export default prisma;

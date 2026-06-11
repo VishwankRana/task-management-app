@@ -48,8 +48,9 @@ export default function ProjectStatusMenu({ projectStatus, setProjectStatus }) {
       >
         <MenuItem onClick={() => handleClose("Planning")}>Planning</MenuItem>
         <MenuItem onClick={() => handleClose("Active")}>Active</MenuItem>
+        <MenuItem onClick={() => handleClose("In Progress")}>In Progress</MenuItem>
         <MenuItem onClick={() => handleClose("Completed")}>Completed</MenuItem>
-        <MenuItem onClick={() => handleClose("On hold")}>On Hold</MenuItem>
+        <MenuItem onClick={() => handleClose("On Hold")}>On Hold</MenuItem>
         <MenuItem onClick={() => handleClose("Cancelled")}>Cancelled</MenuItem>
       </Menu>
     </div>

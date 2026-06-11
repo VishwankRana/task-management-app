@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from 'axios';
 import TaskTile from '../layout/TaskTile';
 
-export default function TaskList() {
+export default function TaskList({ statusFilter = "all" }) {
 
   const { projectId } = useParams();
   const [taskList, setTaskList] = useState([]);
@@ -43,7 +43,7 @@ export default function TaskList() {
                       bg-white shadow-sm">
 
         {/* Header Bar */}
-        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr]
+        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto]
                         gap-4 px-4 py-2 rounded-t-2xl
                         bg-[#fff1e3] border-b border-[#c9b5a3]">
 
@@ -52,26 +52,33 @@ export default function TaskList() {
           <h3 className="font-semibold text-center text-[#3a2b20]">Status</h3>
           <h3 className="font-semibold text-center text-[#3a2b20]">Due Date</h3>
           <h3 className="font-semibold text-center text-[#3a2b20]">Type</h3>
+          <h3 className="font-semibold text-center text-[#3a2b20]">Actions</h3>
 
         </div>
 
         {/* Task Rows */}
         <div className="p-3 space-y-3">
 
-          {taskList.length === 0 ? (
-            <div className="text-sm text-gray-600 text-center py-4">
-              No tasks added yet
-            </div>
-          ) : (
-            taskList.map(task => (
+          {(() => {
+            const filtered = statusFilter === "all"
+              ? taskList
+              : taskList.filter(t => t.status === statusFilter);
+
+            if (filtered.length === 0) return (
+              <div className="text-sm text-gray-600 text-center py-4">
+                {taskList.length === 0 ? "No tasks added yet" : `No ${statusFilter} tasks`}
+              </div>
+            );
+
+            return filtered.map(task => (
               <TaskTile
                 key={task._id || task.id}
                 task={task}
                 onDelete={handleDelete}
                 setTaskList={setTaskList}
               />
-            ))
-          )}
+            ));
+          })()}
 
         </div>
 

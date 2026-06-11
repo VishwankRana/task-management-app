@@ -1,80 +1,84 @@
 import express from 'express';
-import Tasks from '../backend/taskDB.js';
+import prisma from './taskDB.js';
 
 const router = express.Router();
 
-router.get('/api/taskmanager/tasks', async(req,res) => {
-    try{
-        const allProjects = await Tasks.find();
-        res.status(200).json(allProjects); 
+const withId = (obj) => obj ? { ...obj, _id: obj.id } : null;
+
+router.get('/api/taskmanager/tasks', async (req, res) => {
+    try {
+        const allTasks = await prisma.task.findMany();
+        res.status(200).json(allTasks.map(withId));
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching all Tasks", error: err });
     }
-    catch (err) {
-        res.status(500).json({ message: "Error fetching all Tasks", error: err })
-    }
-})
+});
 
 router.get('/api/taskmanager/projects/:projectId/tasks', async (req, res) => {
     try {
-        // const allTasks = await Tasks.find();
         const { projectId } = req.params;
-        const findTask = await Tasks.find({ projectId})
-        res.status(200).json(findTask);
-    }
-    catch (err) {
-        res.status(500).json({ message: "Error fetching Tasks", error: err })
+        const findTask = await prisma.task.findMany({
+            where: { projectId: Number(projectId) }
+        });
+        res.status(200).json(findTask.map(withId));
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching Tasks", error: err });
     }
 });
 
 router.post('/api/taskmanager/projects/:projectId/tasks', async (req, res) => {
     try {
-        // const newTask = new Tasks(req.body);
         const { projectId } = req.params;
-        const newTask = new Tasks({
-            ...req.body,
-            projectId
-        })
-        
-        const saveTask = await newTask.save();
-
-        res.status(201).json(saveTask)
-    }
-    catch (error) {
+        const { dueDate, ...rest } = req.body;
+        const saveTask = await prisma.task.create({
+            data: {
+                ...rest,
+                dueDate: new Date(dueDate).toISOString(),
+                projectId: Number(projectId)
+            }
+        });
+        res.status(201).json(withId(saveTask));
+    } catch (error) {
         console.error('Full error:', error);
-        console.error('Error name:', error.name);
         res.status(500).json({
-            message: "Error Updating the Task", error: error.message,
-            details: error.errors
-        })
+            message: "Error Updating the Task",
+            error: error.message,
+            details: error.meta
+        });
     }
-})
+});
 
 router.delete('/api/taskmanager/tasks/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const deleteTasks = await Tasks.findByIdAndDelete(id);
-
-        if (!deleteTasks) {
-            return res.status(404).json({ message: "Tasks not found" })
+        const deleteTasks = await prisma.task.delete({
+            where: { id: Number(id) }
+        });
+        res.status(200).json({ message: "Task Deleted", deleteTasks: withId(deleteTasks) });
+    } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json({ message: "Tasks not found" });
         }
-        res.status(200).json({ message: "Task Deleted", deleteTasks })
+        res.status(500).json({ message: "Failed to delete task", error });
     }
-    catch (error) {
-        res.status(500).json({ message: "Failed to delete task", error })
-    }
-})
+});
 
 router.put('/api/taskmanager/tasks/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const updatedTasks = await Tasks.findByIdAndUpdate(id, req.body, { new: true, runValidators: true })
-        if (!updatedTasks)
-            return res.status(404).json({ message: "Task not found" })
-        res.status(200).json(updatedTasks);
+        const { dueDate, ...rest } = req.body;
+        const data = dueDate ? { ...rest, dueDate: new Date(dueDate).toISOString() } : rest;
+        const updatedTasks = await prisma.task.update({
+            where: { id: Number(id) },
+            data
+        });
+        res.status(200).json(withId(updatedTasks));
+    } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json({ message: "Task not found" });
+        }
+        res.status(500).json({ message: "Failed to update task", error });
     }
+});
 
-    catch (error) {
-        res.status(500).json({ message: "Failed to update task", error })
-    }
-})
-
-export default router
+export default router;

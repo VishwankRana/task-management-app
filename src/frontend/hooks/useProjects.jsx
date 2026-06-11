@@ -21,5 +21,9 @@ export default function useProjects() {
     p => p.projectStatus?.toLowerCase() === "completed"
   );
 
-  return { projects, loading, completedProjects };
+  const inProgressProjects = projects.filter(
+    p => p.projectStatus?.toLowerCase() === "in progress"
+  );
+
+  return { projects, loading, completedProjects, inProgressProjects };
 }

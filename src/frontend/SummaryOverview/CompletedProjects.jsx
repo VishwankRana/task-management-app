@@ -6,10 +6,10 @@ export default function CompletedProjects() {
   const { projects, loading, completedProjects } = useProjects();
 
   return (
-    <div className="w-60 p-5 rounded-2xl border border-[#2a7a35] bg-[#e9f7ec] shadow-md hover:shadow-lg transition-all duration-200">
+    <div className="w-70 p-5 rounded-2xl border border-[#2a7a35] bg-[#e9f7ec] shadow-md hover:shadow-lg transition-all duration-200">
 
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-[#245d2c]">
+        <p className="text-l font-semibold text-[#245d2c]">
           Completed Projects
         </p>
 

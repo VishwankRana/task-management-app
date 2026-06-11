@@ -135,11 +135,12 @@ export default function NewProjectModal() {
 
           <div>
           <label htmlFor="StartDate" className="block font-medium text-gray-700">
-            Start Date
+            Start Date <span className="text-red-500">*</span>
           </label>
           <input
             type="date"
             id="StartDate"
+            required
             className="w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={projectStartDate}
             onChange={(e) => setProjectStartDate(e.target.value)}
@@ -148,11 +149,12 @@ export default function NewProjectModal() {
           
           <div>
           <label htmlFor="EndDate" className="block font-medium text-gray-700">
-            End Date
+            End Date <span className="text-red-500">*</span>
           </label>
           <input
             type="date"
             id="EndDate"
+            required
             className="w-full p-2 border rounded-lg mt-1 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={projectEndDate}
             onChange={(e) => setProjectEndDate(e.target.value)}
@@ -162,8 +164,8 @@ export default function NewProjectModal() {
 
           <div className="flex justify-end w-full">
             <Button
+      type="submit"
       variant="contained"
-      onClick={() => setOpenNewPrjModal(true)}
       sx={{
         px: 3,
         py: 1,
