@@ -7,7 +7,7 @@ export default function MainLayout({ collapsed }) {
 
   return (
     <div
-      className="min-h-screen w-full transition-all duration-300 ease-in-out"
+      className="min-h-screen w-full transition-all duration-300 ease-in-out bg-[#f9fafb] dark:bg-[#0f172a]"
       style={{ paddingLeft: collapsed ? "68px" : "256px" }}
     >
       <Outlet />

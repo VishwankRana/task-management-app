@@ -1,10 +1,11 @@
 import { useState, useMemo } from "react";
 import useTasks from "../hooks/useTasks";
+import { useTheme } from "../context/ThemeContext";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 
 function getWeekDays() {
   const today = new Date();
-  const dayOfWeek = today.getDay(); // 0 = Sun
+  const dayOfWeek = today.getDay();
   const monday = new Date(today);
   monday.setDate(today.getDate() - ((dayOfWeek + 6) % 7));
 
@@ -36,6 +37,7 @@ const priorityDot = (priority) => {
 
 export default function WeekAtAGlance() {
   const { tasks, loading } = useTasks();
+  const { isDark } = useTheme();
   const [hoveredDay, setHoveredDay] = useState(null);
 
   const weekDays = useMemo(() => getWeekDays(), []);
@@ -49,14 +51,16 @@ export default function WeekAtAGlance() {
 
   const maxCount = Math.max(...tasksByDay.map((d) => d.length), 1);
 
+  const tealColor = isDark ? "#5eead4" : "#1f4d63";
+
   return (
-    <div className="w-full min-h-[30em] flex flex-col rounded-2xl border border-[#1f4d63] bg-[#e8f4ff] shadow-md hover:shadow-lg transition-all duration-200">
+    <div className="w-full min-h-[30em] flex flex-col rounded-2xl border border-[#1f4d63] dark:border-teal-700/50 bg-[#e8f4ff] dark:bg-[#1e293b] shadow-md hover:shadow-lg transition-all duration-200">
 
       {/* Header */}
-      <div className="border-b border-[#1f4d63] px-4 py-3 flex items-center gap-2">
-        <CalendarMonthRoundedIcon sx={{ color: "#1f4d63", fontSize: "1.2rem" }} />
-        <h1 className="text-sm font-semibold text-[#1f4d63]">Week at a Glance</h1>
-        <span className="ml-auto text-xs text-[#1f4d63] font-medium opacity-70">
+      <div className="border-b border-[#1f4d63] dark:border-teal-700/50 px-4 py-3 flex items-center gap-2">
+        <CalendarMonthRoundedIcon sx={{ color: tealColor, fontSize: "1.2rem" }} />
+        <h1 className="text-sm font-semibold text-[#1f4d63] dark:text-teal-300">Week at a Glance</h1>
+        <span className="ml-auto text-xs text-[#1f4d63] dark:text-teal-400 font-medium opacity-70">
           {weekDays[0].toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
           {" – "}
           {weekDays[6].toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
@@ -66,7 +70,7 @@ export default function WeekAtAGlance() {
       {/* Calendar grid */}
       <div className="flex-1 p-4 flex flex-col justify-between">
         {loading ? (
-          <p className="text-sm text-gray-500">Loading…</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Loading…</p>
         ) : (
           <>
             {/* Columns */}
@@ -88,7 +92,7 @@ export default function WeekAtAGlance() {
                     {/* Hover tooltip */}
                     {isHovered && count > 0 && (
                       <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 z-20
-                                      bg-[#1f4d63] text-white text-xs rounded-xl shadow-lg
+                                      bg-[#1f4d63] dark:bg-teal-800 text-white text-xs rounded-xl shadow-lg
                                       p-2 w-36 pointer-events-none">
                         <p className="font-semibold mb-1 border-b border-white/20 pb-1">
                           {day.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short" })}
@@ -105,7 +109,11 @@ export default function WeekAtAGlance() {
                     )}
 
                     {/* Task count badge */}
-                    <span className={`text-xs font-bold ${count === 0 ? "text-gray-300" : "text-[#1f4d63]"}`}>
+                    <span className={`text-xs font-bold ${
+                      count === 0
+                        ? "text-gray-300 dark:text-slate-600"
+                        : "text-[#1f4d63] dark:text-teal-300"
+                    }`}>
                       {count > 0 ? count : ""}
                     </span>
 
@@ -114,10 +122,10 @@ export default function WeekAtAGlance() {
                       <div
                         className={`w-full rounded-t-lg transition-all duration-300
                           ${count === 0
-                            ? "bg-gray-200"
+                            ? "bg-gray-200 dark:bg-slate-700"
                             : isToday
                             ? "bg-[#d97757]"
-                            : "bg-[#1f4d63]/70 hover:bg-[#1f4d63]"
+                            : "bg-[#1f4d63]/70 dark:bg-teal-600/80 hover:bg-[#1f4d63] dark:hover:bg-teal-500"
                           }`}
                         style={{ height: `${barHeight}px` }}
                       />
@@ -125,14 +133,14 @@ export default function WeekAtAGlance() {
 
                     {/* Day label */}
                     <div className="flex flex-col items-center">
-                      <span
-                        className={`text-xs font-semibold ${
-                          isToday ? "text-[#d97757]" : "text-[#1f4d63]"
-                        }`}
-                      >
+                      <span className={`text-xs font-semibold ${
+                        isToday ? "text-[#d97757]" : "text-[#1f4d63] dark:text-teal-300"
+                      }`}>
                         {DAY_LABELS[i]}
                       </span>
-                      <span className={`text-[10px] ${isToday ? "text-[#d97757] font-bold" : "text-gray-400"}`}>
+                      <span className={`text-[10px] ${
+                        isToday ? "text-[#d97757] font-bold" : "text-gray-400 dark:text-slate-500"
+                      }`}>
                         {day.getDate()}
                       </span>
                     </div>
@@ -142,15 +150,15 @@ export default function WeekAtAGlance() {
             </div>
 
             {/* Legend */}
-            <div className="mt-3 pt-3 border-t border-[#1f4d63]/20 flex items-center gap-4 text-xs text-gray-500 flex-wrap">
+            <div className="mt-3 pt-3 border-t border-[#1f4d63]/20 dark:border-teal-900/50 flex items-center gap-4 text-xs text-gray-500 dark:text-slate-400 flex-wrap">
               <span className="flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded bg-[#d97757] inline-block" /> Today
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded bg-[#1f4d63]/70 inline-block" /> Tasks due
+                <span className="w-3 h-3 rounded bg-[#1f4d63]/70 dark:bg-teal-600/80 inline-block" /> Tasks due
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded bg-gray-200 inline-block" /> No tasks
+                <span className="w-3 h-3 rounded bg-gray-200 dark:bg-slate-700 inline-block" /> No tasks
               </span>
             </div>
           </>

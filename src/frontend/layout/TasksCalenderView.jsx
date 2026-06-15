@@ -51,22 +51,22 @@ export default function TasksCalenderView({ taskList = [] }) {
     switch (status) {
 
       case "In-progress":
-        return "bg-[#fff1e3] text-[#b4530d] border-[#e4c4a8]"; // orange
+        return "bg-[#fff1e3] text-[#b4530d] border-[#e4c4a8] dark:bg-orange-500/25 dark:text-orange-200 dark:border-orange-400/50";
 
       case "Pending":
-        return "bg-[#fff7d1] text-[#7a6308] border-[#e8ce69]"; // yellow
+        return "bg-[#fff7d1] text-[#7a6308] border-[#e8ce69] dark:bg-yellow-500/25 dark:text-yellow-200 dark:border-yellow-400/50";
 
       case "Completed":
-        return "bg-[#e9f7ec] text-[#2a7a35] border-[#9cdfb0]"; // green
+        return "bg-[#e9f7ec] text-[#2a7a35] border-[#9cdfb0] dark:bg-green-500/25 dark:text-green-200 dark:border-green-400/50";
 
       case "Overdue":
-        return "bg-[#ffe4e4] text-[#9b1c1c] border-[#f5a3a3]"; // red
+        return "bg-[#ffe4e4] text-[#9b1c1c] border-[#f5a3a3] dark:bg-red-500/25 dark:text-red-200 dark:border-red-400/50";
 
       case "Cancelled":
-        return "bg-[#f1f1f1] text-[#6b7280] border-[#d1d5db]"; // gray
+        return "bg-[#f1f1f1] text-[#6b7280] border-[#d1d5db] dark:bg-slate-500/25 dark:text-slate-300 dark:border-slate-400/50";
 
       default:
-        return "bg-[#ececec] text-[#555] border-[#d6d6d6]";
+        return "bg-[#ececec] text-[#555] border-[#d6d6d6] dark:bg-slate-500/25 dark:text-slate-300 dark:border-slate-400/50";
     }
   };
 
@@ -76,28 +76,28 @@ export default function TasksCalenderView({ taskList = [] }) {
       {/* =========================
           CALENDAR PANEL
       ==========================*/}
-      <div className="rounded-2xl border border-[#d6d3cd] bg-white shadow-sm p-6 h-107 w-180 my-5 overflow-hidden">
+      <div className="rounded-2xl border border-[#d6d3cd] dark:border-slate-700 bg-white dark:bg-[#1e293b] shadow-sm p-6 h-107 w-180 my-5 overflow-hidden">
 
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-[#b4530d]">
+          <h2 className="text-lg font-semibold text-[#b4530d] dark:text-orange-400">
             Task Calendar
           </h2>
 
           <div className="flex items-center gap-4">
             <button
               onClick={() => changeMonth(-1)}
-              className="text-[#b4530d] font-bold opacity-70 hover:opacity-100"
+              className="text-[#b4530d] dark:text-orange-400 font-bold opacity-70 hover:opacity-100"
             >
               ‹
             </button>
 
-            <span className="font-medium text-[#1f2937]">
+            <span className="font-medium text-[#1f2937] dark:text-slate-200">
               {currentDate.toLocaleString("default", { month: "long", year: "numeric" })}
             </span>
 
             <button
               onClick={() => changeMonth(1)}
-              className="text-[#b4530d] font-bold opacity-70 hover:opacity-100"
+              className="text-[#b4530d] dark:text-orange-400 font-bold opacity-70 hover:opacity-100"
             >
               ›
             </button>
@@ -105,7 +105,7 @@ export default function TasksCalenderView({ taskList = [] }) {
         </div>
 
         {/* Week Row */}
-        <div className="grid grid-cols-7 gap-3 mb-2 text-sm text-[#6b4e0b] font-medium">
+        <div className="grid grid-cols-7 gap-3 mb-2 text-sm text-[#6b4e0b] dark:text-slate-300 font-medium">
           {week_days.map(day => (
             <div key={day} className="text-center">{day}</div>
           ))}
@@ -141,15 +141,15 @@ export default function TasksCalenderView({ taskList = [] }) {
                     isToday
                       ? "bg-[#d97757] text-white border-[#b86242]"
                       : isActive
-                      ? "bg-white border-[#d97757] text-[#b4530d]"
-                      : "bg-[#E7E6DF] border-[#c9c7b8] hover:bg-[#f5eee6]"
+                      ? "bg-white dark:bg-[#1e3a5f] border-[#d97757] dark:border-blue-400 text-[#b4530d] dark:text-blue-200"
+                      : "bg-[#E7E6DF] dark:bg-slate-700/80 border-[#c9c7b8] dark:border-slate-600 hover:bg-[#f5eee6] dark:hover:bg-slate-600 dark:text-slate-100"
                   }
                 `}
               >
                 <span className="text-sm font-semibold">{day}</span>
 
                 {taskCount > 0 && (
-                  <span className="text-xs font-medium text-[#6b4e0b]">
+                  <span className={`text-xs font-medium ${isToday ? "text-white/90" : "text-[#6b4e0b] dark:text-orange-400"}`}>
                     {taskCount} task{taskCount > 1 ? "s" : ""}
                   </span>
                 )}
@@ -163,17 +163,17 @@ export default function TasksCalenderView({ taskList = [] }) {
       {/* =========================
           UPCOMING TASKS PANEL
       ==========================*/}
-      <div className="rounded-2xl border border-[#d6d3cd] bg-white shadow-sm p-6 w-90 h-107 flex flex-col my-5">
+      <div className="rounded-2xl border border-[#d6d3cd] dark:border-slate-700 bg-white dark:bg-[#1e293b] shadow-sm p-6 w-90 h-107 flex flex-col my-5">
 
         <div className="flex justify-between items-center mb-3">
-          <p className="text-lg font-semibold text-[#1f2937]">
+          <p className="text-lg font-semibold text-[#1f2937] dark:text-slate-200">
             Upcoming Tasks
           </p>
 
           {selectedDate && (
             <button
               onClick={() => setActiveDay(null)}
-              className="text-sm text-[#b4530d] hover:underline"
+              className="text-sm text-[#b4530d] dark:text-orange-400 hover:underline"
             >
               Clear filter
             </button>
@@ -183,7 +183,7 @@ export default function TasksCalenderView({ taskList = [] }) {
         <div className="space-y-3 flex-1 overflow-y-auto">
 
           {upcomingTasks.length === 0 && (
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-slate-400">
               No tasks for this day
             </p>
           )}
@@ -191,10 +191,10 @@ export default function TasksCalenderView({ taskList = [] }) {
           {upcomingTasks.map(task => (
             <div
               key={task._id}
-              className="bg-white border border-[#e2d9cc] rounded-xl p-3 shadow-sm"
+              className="bg-white dark:bg-slate-800 border border-[#e2d9cc] dark:border-slate-700 rounded-xl p-3 shadow-sm"
             >
               <div className="flex justify-between">
-                <p className="font-semibold text-[#1f2937]">
+                <p className="font-semibold text-[#1f2937] dark:text-slate-200">
                   {task.title}
                 </p>
 
@@ -206,7 +206,7 @@ export default function TasksCalenderView({ taskList = [] }) {
                 </span>
               </div>
 
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
                 Due: {new Date(task.dueDate).toDateString()}
               </p>
             </div>

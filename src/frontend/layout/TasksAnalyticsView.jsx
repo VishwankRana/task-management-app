@@ -7,7 +7,7 @@ export default function TasksAnalyticsView({ taskList = [] }) {
     <div className="w-full space-y-4 py-5">
 
       {/* Page Title */}
-      <h1 className="text-3xl font-extrabold text-[#1D3557]">
+      <h1 className="text-3xl font-extrabold text-[#1D3557] dark:text-slate-100">
         Analytics
       </h1>
 
@@ -15,9 +15,9 @@ export default function TasksAnalyticsView({ taskList = [] }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
 
         {/* Status Chart */}
-        <div className="rounded-2xl border border-[#d6d3cd] bg-white shadow-sm p-4">
+        <div className="rounded-2xl border border-[#d6d3cd] dark:border-slate-700 bg-white dark:bg-[#1e293b] shadow-sm p-4">
 
-          <h2 className="text-lg font-semibold text-[#b4530d] mb-2">
+          <h2 className="text-lg font-semibold text-[#b4530d] dark:text-orange-400 mb-2">
             Tasks by Status
           </h2>
 
@@ -27,9 +27,9 @@ export default function TasksAnalyticsView({ taskList = [] }) {
         </div>
 
         {/* Priority Chart */}
-        <div className="rounded-2xl border border-[#d6d3cd] bg-white shadow-sm p-4">
+        <div className="rounded-2xl border border-[#d6d3cd] dark:border-slate-700 bg-white dark:bg-[#1e293b] shadow-sm p-4">
 
-          <h2 className="text-lg font-semibold text-[#b4530d] mb-2">
+          <h2 className="text-lg font-semibold text-[#b4530d] dark:text-orange-400 mb-2">
             Tasks by Priority
           </h2>
 

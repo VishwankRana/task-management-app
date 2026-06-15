@@ -1,7 +1,6 @@
 import ViewListRoundedIcon from "@mui/icons-material/ViewListRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import QueryStatsRoundedIcon from "@mui/icons-material/QueryStatsRounded";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 
 export default function ProjectNavigationTabs({ activeTab, setActiveTab }) {
 
@@ -9,7 +8,6 @@ export default function ProjectNavigationTabs({ activeTab, setActiveTab }) {
     { id: "tasks", label: "Tasks", icon: <ViewListRoundedIcon fontSize="small" /> },
     { id: "calendar", label: "Calendar", icon: <CalendarMonthRoundedIcon fontSize="small" /> },
     { id: "analytics", label: "Analytics", icon: <QueryStatsRoundedIcon fontSize="small" /> },
-    { id: "settings", label: "Settings", icon: <SettingsRoundedIcon fontSize="small" /> }
   ];
 
   const activeIndex = tabs.findIndex(t => t.id === activeTab);
@@ -20,7 +18,7 @@ export default function ProjectNavigationTabs({ activeTab, setActiveTab }) {
 
       {/* Sliding active indicator */}
       <div
-        className="absolute top-1 bottom-1 w-1/4 rounded-xl 
+        className="absolute top-1 bottom-1 w-1/3 rounded-xl
                    bg-white shadow-md transition-all duration-300 ease-out"
         style={{ transform: `translateX(${activeIndex * 100}%)` }}
       />

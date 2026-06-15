@@ -5,7 +5,10 @@ import ProjectPriorityMenu from "../components/ProjectPriority"
 import ProjectStatusMenu from "../components/ProjectStatus";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 import dayjs from "dayjs";
+import toast from "react-hot-toast";
 
 export default function NewProjectModal() {
   const { openNewPrjModal, setOpenNewPrjModal, setProjects } = useProject();
@@ -61,17 +64,35 @@ export default function NewProjectModal() {
         throw new Error(body?.message || body || res.statusText);
       }
 
-      console.log("Project saved!!", body);
-
       if (typeof setProjects === "function") {
         setProjects((prev) => [...prev, body]);
       } else {
         console.warn("setProjects is not a function — skipping local update", setProjects);
       }
 
+      toast("New project added", {
+        icon: <AddCircleIcon sx={{ color: "#1d3652", fontSize: "1.1rem" }} />,
+        style: {
+          background: "#e8eef5",
+          color: "#1d3652",
+          border: "1px solid #a8bdd4",
+          borderRadius: "12px",
+          fontWeight: 600,
+        },
+      });
       resetFormAndClose();
     } catch (err) {
       console.error("❌ Error submitting form:", err?.message ?? err);
+      toast("Failed to create project", {
+        icon: <ErrorIcon sx={{ color: "#b91c1c", fontSize: "1.1rem" }} />,
+        style: {
+          background: "#fee2e2",
+          color: "#7f1d1d",
+          border: "1px solid #fca5a5",
+          borderRadius: "12px",
+          fontWeight: 600,
+        },
+      });
     }
   };
 

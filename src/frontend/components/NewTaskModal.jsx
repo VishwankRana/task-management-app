@@ -4,10 +4,13 @@ import { IconButton } from "@mui/material";
 import { useParams } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
+import toast from "react-hot-toast";
 import NewTaskButton from "./NewTaskBtn";
 import PrioritySelect from "./PrioritySelect";
 import TaskStatusMenu from "./StatusSelect";
 import TaskTypeMenu from "./TypeSelect";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 
 export default function NewTaskModal({ setTaskList }) {
   const [open, setOpen] = useState(false);
@@ -72,14 +75,31 @@ export default function NewTaskModal({ setTaskList }) {
         `http://localhost:3000/api/taskmanager/projects/${projectId}/tasks`,
         TaskData
       );
-      console.log("Task Data Submitted Successfully", response.data);
       setTaskList((prev) => [...prev, response.data]);
-      alert("Task created successfully!");
+      toast("Task added", {
+        icon: <AddCircleIcon sx={{ color: "#1d3652", fontSize: "1.1rem" }} />,
+        style: {
+          background: "#e8eef5",
+          color: "#1d3652",
+          border: "1px solid #a8bdd4",
+          borderRadius: "12px",
+          fontWeight: 600,
+        },
+      });
       handleClose();
     } catch (err) {
       console.error("Error creating task:", err.message);
       const errorMessage = err.response?.data?.message || err.message;
-      alert(`Failed to create task. Please try again: ${errorMessage}`);
+      toast(`Failed to add task: ${errorMessage}`, {
+        icon: <ErrorIcon sx={{ color: "#b91c1c", fontSize: "1.1rem" }} />,
+        style: {
+          background: "#fee2e2",
+          color: "#7f1d1d",
+          border: "1px solid #fca5a5",
+          borderRadius: "12px",
+          fontWeight: 600,
+        },
+      });
     }
   };
 

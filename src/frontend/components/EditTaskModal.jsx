@@ -2,9 +2,12 @@ import { useState, useEffect } from "react";
 import { Button, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
+import toast from "react-hot-toast";
 import PrioritySelect from "./PrioritySelect";
 import TaskStatusMenu from "./StatusSelect";
 import TaskTypeMenu from "./TypeSelect";
+import EditIcon from '@mui/icons-material/Edit';
+import ErrorIcon from '@mui/icons-material/Error';
 import dayjs from "dayjs";
 
 export default function EditTaskModal({ task, open, onClose, onUpdated }) {
@@ -42,10 +45,29 @@ export default function EditTaskModal({ task, open, onClose, onUpdated }) {
         { title: title.trim(), description, priority, status, type: taskType, dueDate }
       );
       onUpdated(response.data);
+      toast("Task updated", {
+        icon: <EditIcon sx={{ color: "#1d3652", fontSize: "1.1rem" }} />,
+        style: {
+          background: "#e8eef5",
+          color: "#1d3652",
+          border: "1px solid #a8bdd4",
+          borderRadius: "12px",
+          fontWeight: 600,
+        },
+      });
       onClose();
     } catch (err) {
       console.error("Error updating task:", err.message);
-      alert(`Failed to update task: ${err.response?.data?.message || err.message}`);
+      toast(`Failed to update task: ${err.response?.data?.message || err.message}`, {
+        icon: <ErrorIcon sx={{ color: "#b91c1c", fontSize: "1.1rem" }} />,
+        style: {
+          background: "#fee2e2",
+          color: "#7f1d1d",
+          border: "1px solid #fca5a5",
+          borderRadius: "12px",
+          fontWeight: 600,
+        },
+      });
     }
   };
 

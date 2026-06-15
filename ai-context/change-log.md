@@ -212,3 +212,125 @@ Added a task update feature. An edit icon button on each task row opens a pre-fi
 
 ### Risk Level
 **Low** — Additive feature using the pre-existing `PUT` backend endpoint. No schema, API contract, or existing component logic changed.
+
+---
+
+## 2026-06-15T10:09:00+05:30
+
+### Summary
+Added a global dark mode feature with persistent user preference. A sun/moon toggle button is placed in the sticky header of every page (Dashboard, Projects, Tasks) and also at the bottom of the sidebar. Theme preference is persisted in `localStorage` and survives page reloads.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `src/frontend/context/ThemeContext.jsx` | Created | New context providing `isDark` state and `toggleTheme()`; applies/removes `dark` class on `<html>` on change; reads initial value from `localStorage` |
+| `src/frontend/components/DarkModeToggle.jsx` | Created | Reusable toggle button with Sun/Moon icons (from `lucide-react`); reads from `ThemeContext` |
+| `src/frontend/main.jsx` | Modified | Wrapped app with `ThemeProvider` |
+| `src/frontend/index.css` | Modified | Added dark mode overrides for MUI components (Paper, Input, Menu, DatePicker) and dark-mode scrollbar styles |
+| `src/frontend/layout/sidebar.jsx` | Modified | Added `dark:` Tailwind classes to sidebar bg, borders, text, and hover states; added inline dark mode toggle button at the bottom of the sidebar |
+| `src/frontend/layout/mainlayout.jsx` | Modified | Added `dark:bg-[#0f172a]` to root content wrapper |
+| `src/frontend/layout/Dashboard.jsx` | Modified | Added `dark:` classes to sticky header bg, text, shadow; imported and rendered `DarkModeToggle` in header right |
+| `src/frontend/layout/Projects.jsx` | Modified | Same header dark mode updates as Dashboard; `DarkModeToggle` placed beside `NewProjectBtn` |
+| `src/frontend/layout/Tasks.jsx` | Modified | Same header dark mode updates; `DarkModeToggle` placed beside `NewTaskModal`; all four stat filter cards updated with dark variants |
+
+### Impacted Modules
+- App shell and theme layer (`ThemeContext`, `main.jsx`)
+- Navigation sidebar (`sidebar.jsx`)
+- All three page layouts (Dashboard, Projects, Tasks)
+- Main content wrapper (`mainlayout.jsx`)
+- Global CSS overrides for MUI components (`index.css`)
+
+### Risk Level
+**Low** — Purely additive theming change. Dark mode is applied via CSS class toggling and Tailwind `dark:` variants. No API calls, backend logic, routing, or data structures were modified. The `dark` class on `<html>` is non-destructive and reversible.
+
+---
+
+## 2026-06-15T10:19:00+05:30
+
+### Summary
+Extended dark mode coverage to all major content components: project cards, task list table, individual task rows, calendar view, analytics view, and both Chart.js charts. All hardcoded light colors now have `dark:` Tailwind counterparts; charts use `useTheme()` to dynamically update axis/legend colors.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `src/frontend/components/ProjectTiles.jsx` | Modified | Added `dark:bg-[#1e293b]`, `dark:border-slate-700`, `dark:text-slate-100/400` to project cards; added dark variants to `STATUS_STYLES` and `PRIORITY_STYLES` badge maps; dark empty state |
+| `src/frontend/components/TaskList.jsx` | Modified | Added `dark:bg-[#1e293b]` to outer container; `dark:bg-[#2a1a0a]` to warm header bar; `dark:text-slate-200` to column headers; dark empty state text |
+| `src/frontend/layout/taskTile.jsx` | Modified | Added `dark:bg-[#263446]` to each task row; `dark:text-slate-100/300/400` to title, status, date, type columns; added dark variants to all four `priorityClass()` badge return values |
+| `src/frontend/layout/TasksCalenderView.jsx` | Modified | Added `dark:bg-[#1e293b]` and `dark:border-slate-700` to both panels; dark calendar cell states (default/active/today); dark weekday labels; dark status badge map; dark upcoming task cards |
+| `src/frontend/layout/TasksAnalyticsView.jsx` | Modified | Added `dark:bg-[#1e293b]` and `dark:border-slate-700` to chart cards; `dark:text-slate-100` to Analytics heading; `dark:text-orange-400` to chart section titles |
+| `src/frontend/components/StatusTaskChart.jsx` | Modified | Imported `useTheme`; dynamically sets `scales.y/x.ticks.color`, `scales.y/x.grid.color`, and `plugins.legend.labels.color` based on `isDark` |
+| `src/frontend/components/PriorityPieChart.jsx` | Modified | Imported `useTheme`; dynamically sets legend label color; `dark:bg-[#263446]` on chart wrapper; dark border color between pie slices |
+
+### Impacted Modules
+- Project listing page (`ProjectTiles`)
+- Task list table (`TaskList`, `taskTile`)
+- Calendar view (`TasksCalenderView`)
+- Analytics view (`TasksAnalyticsView`, `StatusTaskChart`, `PriorityPieChart`)
+
+### Risk Level
+**Low** — All changes are purely visual. No API calls, data structures, or business logic modified. Chart.js options are recomputed on each render when theme changes.
+
+---
+
+## 2026-06-15T10:35:00+05:30
+
+### Summary
+Improved dark mode visual quality: replaced muted/washed-out colors with vivid, high-contrast alternatives and made all navy-colored icons white/light in dark mode using `useTheme()` conditional `sx` props.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `src/frontend/components/ProjectTiles.jsx` | Modified | Added `useTheme()` to `ProjectCard`; all `sx={{ color: "#1d3557" }}` icons (hamburger menu, menu items) use `navyIcon` variable that resolves to `#e2e8f0` in dark mode; `FolderOpenRoundedIcon` in empty state becomes blue in dark mode; all STATUS_STYLES and PRIORITY_STYLES badge dark variants upgraded from `900/40` to `500/25` for vivid glow effect with matching border |
+| `src/frontend/layout/taskTile.jsx` | Modified | Added `useTheme()`; `EditRoundedIcon` becomes `#e2e8f0` in dark mode; delete icon hover bg uses warm dark; priority badge dark variants upgraded to vivid `500/25` glow; delete dialog `PaperProps` dynamically uses dark bg/text colors |
+| `src/frontend/layout/Tasks.jsx` | Modified | All four filter stat cards redesigned for dark mode: Total Tasks → blue tint (`blue-500/15`, `blue-600` icon); Completed → green (`green-500/15`, `green-600`); Pending → yellow (`yellow-500/15`, `yellow-600`); In Progress → violet (`violet-500/15`, `violet-600`); number text uses `dark:text-white` for maximum contrast; subtitles use matching colored text |
+| `src/frontend/layout/TasksCalenderView.jsx` | Modified | Status badges upgraded to `500/25` vivid glow style; calendar cell default day uses `dark:text-slate-100`; selected day uses deep blue highlight (`dark:bg-[#1e3a5f]`); weekday labels upgraded from `slate-400` to `slate-300` |
+| `src/frontend/components/TaskList.jsx` | Modified | Header bar background changed from nearly-black `[#2a1a0a]` to warm brown `[#3d2510]`; column header text upgraded to `dark:text-orange-100` for visible warmth |
+| `src/frontend/layout/sidebar.jsx` | Modified | Chevron collapse button upgraded from `dark:text-slate-400` to `dark:text-slate-200`; inactive nav item text upgraded from `dark:text-slate-300` to `dark:text-slate-100` |
+| `src/frontend/layout/Dashboard.jsx` | Modified | Header subtitle upgraded from `dark:text-slate-500` to `dark:text-slate-400` |
+| `src/frontend/layout/Projects.jsx` | Modified | Header subtitle upgraded from `dark:text-slate-500` to `dark:text-slate-400` |
+| `src/frontend/layout/Tasks.jsx` | Modified | Header subtitle upgraded from `dark:text-slate-500` to `dark:text-slate-400` |
+
+### Impacted Modules
+- Project cards and empty state (`ProjectTiles`)
+- Task rows and delete dialog (`taskTile`)
+- Task stat filter cards (`Tasks`)
+- Calendar view badges and cells (`TasksCalenderView`)
+- Task list header (`TaskList`)
+- Sidebar navigation (`sidebar`)
+- All three page headers
+
+### Risk Level
+**Low** — Purely visual changes. No API calls, data structures, or component logic modified. All icon color changes use the existing `ThemeContext`.
+
+---
+
+## 2026-06-15T10:53:00+05:30
+
+### Summary
+Applied full dark mode to all Dashboard page components: the four summary stat tiles, Project Overview and Recent Activity panels, Today's Focus widget, and Week at a Glance widget. Each component uses the same vivid `500/25` glow-badge system and teal accent color (`#5eead4`) in dark mode.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `src/frontend/SummaryOverview/TotalProjectTile.jsx` | Modified | `dark:bg-blue-500/15` card, `dark:bg-blue-600` icon bg, `dark:text-blue-200/300` text, `dark:text-white` number |
+| `src/frontend/SummaryOverview/CompletedProjects.jsx` | Modified | `dark:bg-green-500/15` card, `dark:bg-green-600` icon, `dark:text-green-200/300` text |
+| `src/frontend/SummaryOverview/InProgressProjectsTile.jsx` | Modified | `dark:bg-orange-500/15` card, `dark:bg-orange-500` icon, `dark:text-orange-200/300` text |
+| `src/frontend/SummaryOverview/MyTasks.jsx` | Modified | `dark:bg-indigo-500/15` card; added `useTheme()` to conditionally set SpeedDial FAB `bgcolor` to indigo-600 in dark mode |
+| `src/frontend/ProjectOverview/ProjectOverview.jsx` | Modified | Card bg `dark:bg-[#1e293b]`, border `dark:border-teal-700/50`, header text `dark:text-teal-300` |
+| `src/frontend/ProjectOverview/ProjectOverviewTile.jsx` | Modified | Individual project cards go `dark:bg-[#263446]`; title `dark:text-slate-100`; description `dark:text-slate-400`; deadline `dark:text-slate-300`; status badges use vivid `500/25` dark system |
+| `src/frontend/ProjectOverview/RecentActivity.jsx` | Modified | Same container dark styles as `ProjectOverview` |
+| `src/frontend/ProjectOverview/RecentActivityTile.jsx` | Modified | Same tile dark styles as `ProjectOverviewTile`; status badges use vivid dark system |
+| `src/frontend/DashboardWidgets/TodaysFocus.jsx` | Modified | Added `useTheme()`; `TodayRoundedIcon` switches to `#5eead4` (teal-300) in dark; card `dark:bg-[#1e293b]`; progress bar track `dark:bg-slate-700`, fill `dark:bg-teal-500`; task items `dark:bg-[#263446]`; priority badges use vivid dark system; empty/completed states use appropriate dark text |
+| `src/frontend/DashboardWidgets/WeekAtAGlance.jsx` | Modified | Added `useTheme()`; `CalendarMonthRoundedIcon` uses teal-300 in dark; bars use `dark:bg-teal-600/80`; day labels `dark:text-teal-300`; empty bars `dark:bg-slate-700`; legend updated; tooltip `dark:bg-teal-800` |
+
+### Impacted Modules
+- Dashboard summary row (all four stat tiles)
+- Dashboard left column (ProjectOverview, RecentActivity and their tile sub-components)
+- Dashboard right column (TodaysFocus, WeekAtAGlance)
+
+### Risk Level
+**Low** — Purely visual theming. No API calls, data structures, hooks, or business logic modified.

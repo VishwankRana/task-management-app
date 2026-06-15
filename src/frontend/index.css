@@ -127,11 +127,74 @@ body {
 @layer base {
   * {
     @apply border-border outline-ring/50;
-
-   }
+  }
   body {
     @apply bg-background text-foreground;
+  }
+}
 
-   }
+/* Dark mode overrides for MUI components */
+.dark .MuiPaper-root,
+.dark .MuiPopover-paper,
+.dark .MuiMenu-paper,
+.dark .MuiDialog-paper {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
 
+.dark .MuiInputBase-root,
+.dark .MuiOutlinedInput-root {
+  background-color: #263446 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .MuiOutlinedInput-notchedOutline {
+  border-color: #334155 !important;
+}
+
+.dark .MuiInputLabel-root {
+  color: #94a3b8 !important;
+}
+
+.dark .MuiMenuItem-root:hover {
+  background-color: #334155 !important;
+}
+
+.dark .MuiMenuItem-root {
+  color: #f1f5f9 !important;
+}
+
+.dark .MuiTypography-root {
+  color: #f1f5f9 !important;
+}
+
+.dark .MuiSelect-icon {
+  color: #94a3b8 !important;
+}
+
+.dark .MuiPickersLayout-root,
+.dark .MuiDateCalendar-root {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .MuiDayCalendar-weekDayLabel,
+.dark .MuiPickersDay-root {
+  color: #f1f5f9 !important;
+}
+
+.dark .MuiPickersDay-root:hover {
+  background-color: #334155 !important;
+}
+
+/* Scrollbar styling for dark mode */
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }
