@@ -2,15 +2,14 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { useTheme } from '../context/ThemeContext';
 
 export default function ProjectStatusMenu({ projectStatus, setProjectStatus }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const { isDark } = useTheme();
   const open = Boolean(anchorEl);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = (value) => {
     if (value) setProjectStatus(value);
     setAnchorEl(null);
@@ -26,13 +25,13 @@ export default function ProjectStatusMenu({ projectStatus, setProjectStatus }) {
         onClick={handleClick}
         variant="outlined"
         sx={{
-            color: "#374151",       
-            borderColor: "#374151",
-            "&:hover": {
-            borderColor: "#374151",
-            backgroundColor: "#F3F4F6",
-        },
-  }}
+          color: isDark ? "#cbd5e1" : "#374151",
+          borderColor: isDark ? "#475569" : "#374151",
+          "&:hover": {
+            borderColor: isDark ? "#64748b" : "#374151",
+            backgroundColor: isDark ? "#263446" : "#F3F4F6",
+          },
+        }}
       >
         {projectStatus || "Select Status"}
       </Button>
@@ -42,16 +41,24 @@ export default function ProjectStatusMenu({ projectStatus, setProjectStatus }) {
         anchorEl={anchorEl}
         open={open}
         onClose={() => handleClose(null)}
-        MenuListProps={{
-          "aria-labelledby": "status-button",
+        MenuListProps={{ "aria-labelledby": "status-button" }}
+        PaperProps={{
+          sx: {
+            bgcolor: isDark ? "#1e293b" : "#fff",
+            color: isDark ? "#e2e8f0" : "#111827",
+            border: isDark ? "1px solid #334155" : undefined,
+          },
         }}
       >
-        <MenuItem onClick={() => handleClose("Planning")}>Planning</MenuItem>
-        <MenuItem onClick={() => handleClose("Active")}>Active</MenuItem>
-        <MenuItem onClick={() => handleClose("In Progress")}>In Progress</MenuItem>
-        <MenuItem onClick={() => handleClose("Completed")}>Completed</MenuItem>
-        <MenuItem onClick={() => handleClose("On Hold")}>On Hold</MenuItem>
-        <MenuItem onClick={() => handleClose("Cancelled")}>Cancelled</MenuItem>
+        {["Planning", "Active", "In Progress", "Completed", "On Hold", "Cancelled"].map((s) => (
+          <MenuItem
+            key={s}
+            onClick={() => handleClose(s)}
+            sx={{ "&:hover": { bgcolor: isDark ? "#263446" : "#f3f4f6" } }}
+          >
+            {s}
+          </MenuItem>
+        ))}
       </Menu>
     </div>
   );

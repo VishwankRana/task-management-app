@@ -9,8 +9,10 @@ import TaskTypeMenu from "./TypeSelect";
 import EditIcon from '@mui/icons-material/Edit';
 import ErrorIcon from '@mui/icons-material/Error';
 import dayjs from "dayjs";
+import { useTheme } from "../context/ThemeContext";
 
 export default function EditTaskModal({ task, open, onClose, onUpdated }) {
+  const { isDark } = useTheme();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
@@ -73,12 +75,15 @@ export default function EditTaskModal({ task, open, onClose, onUpdated }) {
 
   if (!open) return null;
 
+  const inputCls = `w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white dark:bg-[#263446] text-gray-800 dark:text-white border-gray-300 dark:border-slate-600 placeholder-black dark:placeholder-black`;
+  const labelCls = `font-medium text-gray-700 dark:text-slate-300`;
+
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40">
-      <div className="w-[450px] bg-white shadow-xl rounded-xl p-6 border border-gray-200 mx-auto">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50">
+      <div className="w-[450px] bg-white dark:bg-[#1e293b] shadow-xl rounded-xl p-6 border border-gray-200 dark:border-slate-700 mx-auto">
         <div className="w-full flex items-center justify-between">
-          <h1 className="text-2xl font-semibold mb-4 text-gray-800">Update Task</h1>
-          <IconButton onClick={onClose}>
+          <h1 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-slate-100">Update Task</h1>
+          <IconButton onClick={onClose} sx={{ color: isDark ? "#94a3b8" : undefined }}>
             <CloseIcon />
           </IconButton>
         </div>
@@ -86,13 +91,11 @@ export default function EditTaskModal({ task, open, onClose, onUpdated }) {
         <form onSubmit={handleSubmit}>
           <div>
             <div>
-              <label htmlFor="taskName" className="block font-medium text-gray-700">
-                Task Name
-              </label>
+              <label htmlFor="taskName" className={`block ${labelCls}`}>Task Name</label>
               <input
                 type="text"
                 id="taskName"
-                className="w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className={inputCls}
                 placeholder="Enter task name"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -100,13 +103,11 @@ export default function EditTaskModal({ task, open, onClose, onUpdated }) {
             </div>
 
             <div>
-              <label htmlFor="description" className="block font-medium text-gray-700">
-                Description
-              </label>
+              <label htmlFor="description" className={`block ${labelCls}`}>Description</label>
               <input
                 type="text"
                 id="description"
-                className="w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className={inputCls}
                 placeholder="Describe your task"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -115,26 +116,26 @@ export default function EditTaskModal({ task, open, onClose, onUpdated }) {
 
             <div className="grid grid-cols-2 gap-4 mb-3">
               <div>
-                <label className="font-medium text-gray-700">Status</label>
+                <label className={labelCls}>Status</label>
                 <TaskStatusMenu status={status} setStatus={setStatus} />
               </div>
 
               <div>
-                <label className="font-medium text-gray-700">Priority</label>
+                <label className={labelCls}>Priority</label>
                 <PrioritySelect priority={priority} setPriority={setPriority} />
               </div>
 
               <div>
-                <label className="font-medium text-gray-700">Type</label>
+                <label className={labelCls}>Type</label>
                 <TaskTypeMenu taskType={taskType} setTaskType={setTaskType} />
               </div>
 
               <div>
-                <label className="font-medium text-gray-700">Due Date</label>
+                <label className={labelCls}>Due Date</label>
                 <input
                   type="date"
                   id="DueDate"
-                  className="w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className={inputCls}
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
                 />

@@ -1,0 +1,209 @@
+# Task Manager — Cursor Rules
+
+## Project Overview
+A full-stack project and task management application. Users create projects, manage tasks
+within projects, track progress via a calendar and analytics view, and monitor work on a
+real-time dashboard. Dark mode is fully supported throughout.
+
+---
+
+## Tech Stack
+
+### Frontend
+- **React 19** — functional components + hooks only, no class components
+- **Vite 7** — build tool and dev server (serves from `src/frontend/`)
+- **Tailwind CSS v4** via `@tailwindcss/vite` — no `tailwind.config.js`, config lives in `index.css`
+- **MUI v7** (`@mui/material`, `@mui/icons-material`) — icons, Dialog, Menu, SpeedDial, DatePicker
+- **Joy UI v5** (`@mui/joy`) — Snackbar notification banners on Dashboard
+- **lucide-react** — lightweight icons (Search, Moon, Sun, X, SlidersHorizontal, ChevronDown, Check, etc.)
+- **React Router v7** — `/`, `/projects`, `/projects/:projectId/tasks`
+- **axios** — all HTTP calls, base URL `http://localhost:3000`
+- **react-hot-toast** — notifications
+- **chart.js + react-chartjs-2** — analytics charts (Bar, Pie)
+- **dayjs / date-fns** — date utilities
+
+### Backend
+- **Node.js + Express v5** — REST API
+- **Prisma v7** with `@prisma/adapter-mariadb` — ORM for MySQL/MariaDB
+- **CORS** enabled globally
+- All routes prefixed with `/api/taskmanager`
+
+---
+
+## Project Structure
+
+```
+src/
+  frontend/
+    app.jsx                     # Root: Routes + Sidebar + MainLayout
+    main.jsx                    # Entry: ThemeProvider > ProjectProvider > App
+    index.css                   # Tailwind v4 base, CSS vars, MUI dark overrides
+    context/
+      ProjectContext.jsx        # Global project list (fetched on mount)
+      ThemeContext.jsx          # isDark state, toggles .dark on <html>, persists to localStorage
+    hooks/
+      useProjects.jsx           # Projects + derived counts (completed, inProgress)
+      useTasks.jsx              # All tasks across all projects
+    layout/
+      Sidebar.jsx               # Collapsible sidebar nav + dark mode toggle (bottom)
+      MainLayout.jsx            # Content shell: paddingLeft synced with sidebar width
+      Dashboard.jsx             # Dashboard page header + layout
+      Projects.jsx              # Projects page header + layout
+      Tasks.jsx                 # Tasks page: header, stat filter cards, tab views
+      taskTile.jsx              # Individual task row (edit + delete)
+      TasksCalenderView.jsx     # Calendar grid + upcoming tasks panel
+      TasksAnalyticsView.jsx    # Status bar chart + priority pie chart
+    components/
+      ProjectTiles.jsx          # Card grid + search input + FilterDropdown (status + priority)
+                                #   └─ FilterDropdown  local component (custom dropdown panel)
+                                #   └─ ProjectCard     local component (individual card)
+      TaskList.jsx              # Task table container (header + rows)
+      NewTaskModal.jsx
+      EditTaskModal.jsx
+      NewProjectBtn.jsx
+      ProjectSettingsModal.jsx
+      DarkModeToggle.jsx        # Sun/Moon toggle button (used in page headers)
+      ArrowBackButton.jsx       # Back arrow — dark-mode aware via useTheme()
+      ArrowForwardButton.jsx    # Forward arrow — dark-mode aware via useTheme()
+      StatusTaskChart.jsx       # Bar chart (chart.js) — axes/legend color from useTheme()
+      PriorityPieChart.jsx      # Pie chart (chart.js) — legend color from useTheme()
+    SummaryOverview/            # Dashboard stat tiles (Total, Completed, InProgress, MyTasks)
+    ProjectOverview/            # Dashboard panels (ProjectOverview, RecentActivity + their tiles)
+    DashboardWidgets/           # TodaysFocus, WeekAtAGlance
+    TasksSummary/               # MyTasksSummary floating popup
+  backend/
+    server.js                   # Express app, mounts routers
+    config.js                   # PrismaClient singleton export
+    projectsDB.js               # Re-exports prisma client for projects
+    taskDB.js                   # Re-exports prisma client for tasks
+    projectsController.js       # Projects CRUD routes
+    taskController.js           # Tasks CRUD routes
+prisma/
+  schema.prisma                 # Project + Task models (MySQL)
+ai-context/
+  change-log.md                 # Full history of AI-assisted changes
+  memory.md                     # Current feature status + known issues
+docs/
+  project-context.md            # Technical reference document
+```
+
+---
+
+## Coding Standards
+
+### General
+- **Functional components only** — never class components
+- **async/await** with try/catch — never `.then/.catch` promise chains
+- **axios** for all API calls — import from `axios`
+- Check existing components before creating new ones — **no duplicates**
+- No TypeScript — plain `.jsx` files only
+- No CSS Modules — styling via Tailwind utilities only
+
+### Tailwind & Styling
+- Every hardcoded light color must have a `dark:` variant counterpart
+- Light card backgrounds: `bg-white` → add `dark:bg-[#1e293b]`
+- Light page background: `dark:bg-[#0f172a]`
+- Elevated card inside dark panel: `dark:bg-[#263446]`
+- Primary text: `dark:text-slate-100`, secondary: `dark:text-slate-400`
+- Colored stat/badge pattern (vivid glow): `dark:bg-[color]-500/25 dark:text-[color]-200 dark:border dark:border-[color]-500/50`
+- Borders: `dark:border-slate-700`
+- Do **not** add a `tailwind.config.js` — Tailwind v4 config is in `index.css` under `@theme`
+
+### Custom Dropdown Pattern (`FilterDropdown`)
+- **Never use native `<select>`** for custom-styled dropdowns — create a controlled React component instead
+- `FilterDropdown` is the established pattern:
+  - Trigger button shows current value + `ChevronDown` icon; rotates icon on open
+  - Trigger turns orange-tinted (`bg-orange-50 border-orange-300`) when a non-default option is selected
+  - Panel: `absolute`, `mt-2` gap from trigger, `rounded-2xl`, `shadow-lg`, `z-50`, `min-w-[160px]`
+  - Selected option: orange background + bold text + `Check` icon on the right
+  - Close on outside click via `useRef` + `useEffect` (`mousedown` event on `document`)
+  - Active filter count badge shown on the SlidersHorizontal trigger button
+
+### MUI Icons & Components
+- Import icons from `@mui/icons-material`, not `@mui/material`
+- Brand orange `#d97757` icons are fine in both light and dark modes
+- Navy `#1d3557` icon colors must use `useTheme()` to conditionally become `#e2e8f0` in dark mode:
+  ```jsx
+  const { isDark } = useTheme();
+  <Icon sx={{ color: isDark ? "#e2e8f0" : "#1d3557" }} />
+  ```
+- MUI Paper/Dialog/Menu backgrounds must be set via `sx` using `isDark` for dark mode
+
+### Dark Mode
+- `ThemeContext` at `src/frontend/context/ThemeContext.jsx` owns dark mode state
+- `useTheme()` hook exposes `{ isDark, toggleTheme }`
+- The `dark` class is toggled on `document.documentElement` (`<html>`)
+- Custom Tailwind variant: `@custom-variant dark (&:is(.dark *))` in `index.css`
+- Chart.js colors (axes, legend) must be computed dynamically using `isDark` from `useTheme()`
+
+---
+
+## Brand Colors
+| Token | Hex | Usage |
+|-------|-----|-------|
+| Primary navy | `#1D3557` | Headings, body text, nav icons |
+| Brand orange | `#d97757` | Active states, CTAs, accents — safe in dark mode |
+| Light blue | `#e8f0ff` | Hover backgrounds |
+| Sidebar bg | `#f8faff` | Sidebar background (light) |
+| Teal accent | `#1f4d63` | Dashboard widgets (light) → `#5eead4` teal-300 in dark |
+
+---
+
+## API Routes
+
+### Projects
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/api/taskmanager/projects` | List all projects |
+| GET | `/api/taskmanager/projects/:id` | Get single project |
+| POST | `/api/taskmanager/projects` | Create project |
+| PUT | `/api/taskmanager/projects/:id` | Update project |
+| DELETE | `/api/taskmanager/projects/:id` | Delete project + cascade-delete its tasks |
+
+### Tasks
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/api/taskmanager/tasks` | List all tasks (all projects) |
+| GET | `/api/taskmanager/projects/:projectId/tasks` | List tasks for a project |
+| POST | `/api/taskmanager/projects/:projectId/tasks` | Create task under a project |
+| PUT | `/api/taskmanager/tasks/:id` | Update task |
+| DELETE | `/api/taskmanager/tasks/:id` | Delete task |
+
+---
+
+## Database Schema (Prisma / MySQL)
+
+```
+Project
+  id               Int      @id @default(autoincrement())
+  projectName      String   (max 100)
+  projectDescription String? (max 500)
+  projectStatus    String?  (Planning | Active | In Progress | Completed | On Hold | Cancelled)
+  projectPriority  String?  (High | Medium | Low)
+  projectStartDate DateTime
+  projectEndDate   DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  tasks            Task[]
+
+Task
+  id          Int      @id @default(autoincrement())
+  title       String   (max 100)
+  description String?  (max 500)
+  dueDate     DateTime
+  priority    String   default("Medium")  (Low | Medium | High | Urgent)
+  type        String   default("Task")
+  status      String   default("Pending") (Pending | In-progress | Completed | Cancelled)
+  projectId   Int      (FK → Project.id)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+```
+
+---
+
+## Before Making Any Change
+1. Read the relevant existing file(s) — never assume structure
+2. Check `ai-context/change-log.md` for recent changes that may affect your work
+3. Check `ai-context/memory.md` for pending features and known issues
+4. Preserve existing UI design, spacing, and dark mode coverage
+5. After substantive edits, update `ai-context/change-log.md` with timestamp, files changed, summary, and risk level

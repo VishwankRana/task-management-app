@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProject } from "../context/ProjectContext";
 import { useTheme } from "../context/ThemeContext";
@@ -10,6 +10,87 @@ import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import QueryStatsRoundedIcon from "@mui/icons-material/QueryStatsRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import ProjectSettingsModal from "./ProjectSettingsModal";
+import { Search, SlidersHorizontal, X, ChevronDown, Check } from "lucide-react";
+
+const STATUS_OPTIONS = ["All", "Planning", "Active", "In Progress", "Completed", "On Hold", "Cancelled"];
+const PRIORITY_OPTIONS = ["All", "High", "Medium", "Low"];
+
+// ── Custom dropdown component ──────────────────────────────────────────────
+function FilterDropdown({ icon: Icon, value, options, onChange, formatLabel }) {
+  const { isDark } = useTheme();
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const isActive = value !== "All";
+
+  return (
+    <div ref={ref} className="relative">
+      {/* Trigger button */}
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className={`
+          flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-medium
+          transition-all duration-150 select-none cursor-pointer
+          ${isActive
+            ? "bg-[#d97757]/10 dark:bg-[#d97757]/20 border-[#d97757]/40 text-[#d97757]"
+            : "bg-white dark:bg-[#1e293b] border-gray-200 dark:border-slate-700 text-[#1D3557] dark:text-slate-200"
+          }
+          hover:border-[#d97757]/50 dark:hover:border-[#d97757]/40
+        `}
+      >
+        {Icon && <Icon size={14} className="shrink-0 opacity-70" />}
+        <span>{formatLabel(value)}</span>
+        <ChevronDown
+          size={13}
+          className={`shrink-0 opacity-60 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {/* Dropdown panel */}
+      {open && (
+        <div
+          className={`
+            absolute left-0 top-full mt-2 z-50
+            min-w-[140px] rounded-2xl border shadow-xl
+            overflow-hidden
+            bg-white dark:bg-[#1e293b]
+            border-gray-100 dark:border-slate-700
+            shadow-[0_8px_24px_rgba(0,0,0,0.10)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.45)]
+          `}
+        >
+          {options.map((opt) => {
+            const selected = opt === value;
+            return (
+              <button
+                key={opt}
+                onClick={() => { onChange(opt); setOpen(false); }}
+                className={`
+                  w-full flex items-center justify-between gap-3
+                  px-4 py-2.5 text-sm text-left transition-colors duration-100
+                  ${selected
+                    ? "bg-[#d97757]/10 dark:bg-[#d97757]/20 text-[#d97757] font-semibold"
+                    : "text-[#1D3557] dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700/60"
+                  }
+                `}
+              >
+                <span>{formatLabel(opt)}</span>
+                {selected && <Check size={13} className="text-[#d97757] shrink-0" />}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const STATUS_STYLES = {
   "Planning":    "bg-blue-100 text-blue-700 dark:bg-blue-500/25 dark:text-blue-200 dark:border dark:border-blue-500/50",
@@ -194,6 +275,34 @@ export default function ProjectTiles() {
   const { projects } = useProject();
   const { isDark } = useTheme();
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [priorityFilter, setPriorityFilter] = useState("All");
+
+  const activeFilterCount = (statusFilter !== "All" ? 1 : 0) + (priorityFilter !== "All" ? 1 : 0);
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setStatusFilter("All");
+    setPriorityFilter("All");
+  };
+
+  const filteredProjects = (projects || []).filter((p) => {
+    const matchesSearch =
+      !searchQuery || p.projectName.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "All" || p.projectStatus === statusFilter;
+    const matchesPriority = priorityFilter === "All" || p.projectPriority === priorityFilter;
+    return matchesSearch && matchesStatus && matchesPriority;
+  });
+
+  const inputBase = `
+    flex items-center gap-2 px-3 py-2 rounded-xl border text-sm   
+    transition-all duration-150 bg-white dark:bg-[#1e293b]
+    border-gray-200 dark:border-slate-700
+    text-[#1D3557] dark:text-slate-100
+    focus-within:ring-2 focus-within:ring-[#d97757]/40 dark:focus-within:ring-[#d97757]/30
+  `;
+
   if (!projects || projects.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -209,10 +318,98 @@ export default function ProjectTiles() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-      {projects.map((project) => (
-        <ProjectCard key={project._id || project.id} project={project} />
-      ))}
+    <div className="w-full space-y-5">
+
+      {/* ── Search + Filter toolbar ── */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+
+        {/* Search */}
+        <div className={`${inputBase} flex-1`}>
+          <Search size={15} className="text-gray-400 dark:text-slate-500 shrink-0" />
+          <input
+            type="text"
+            placeholder="Search projects by name…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 bg-transparent outline-none placeholder:text-gray-400 dark:placeholder:text-slate-500 text-sm text-[#1D3557] dark:text-slate-100"
+          />
+          {searchQuery && (
+            <button onClick={() => setSearchQuery("")} className="text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300">
+              <X size={13} />
+            </button>
+          )}
+        </div>
+
+        {/* Filter controls */}
+        <div className="flex items-center gap-2">
+
+          {/* Status filter */}
+          <FilterDropdown
+            icon={SlidersHorizontal}
+            value={statusFilter}
+            options={STATUS_OPTIONS}
+            onChange={setStatusFilter}
+            formatLabel={(v) => v === "All" ? "All Statuses" : v}
+          />
+
+          {/* Priority filter */}
+          <FilterDropdown
+            value={priorityFilter}
+            options={PRIORITY_OPTIONS}
+            onChange={setPriorityFilter}
+            formatLabel={(v) => v === "All" ? "All Priorities" : `${v} Priority`}
+          />
+
+          {/* Clear button */}
+          {(activeFilterCount > 0 || searchQuery) && (
+            <button
+              onClick={clearFilters}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold
+                         bg-[#d97757]/10 dark:bg-[#d97757]/20 text-[#d97757] border border-[#d97757]/30
+                         hover:bg-[#d97757]/20 dark:hover:bg-[#d97757]/30 transition-all duration-150"
+            >
+              <X size={12} />
+              Clear
+              {activeFilterCount > 0 && (
+                <span className="bg-[#d97757] text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Result count */}
+      {(searchQuery || activeFilterCount > 0) && (
+        <p className="text-xs text-gray-500 dark:text-slate-400 -mt-2">
+          Showing <span className="font-semibold text-[#1D3557] dark:text-slate-200">{filteredProjects.length}</span> of {projects.length} projects
+        </p>
+      )}
+
+      {/* ── Project grid ── */}
+      {filteredProjects.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="bg-[#e8f0ff] dark:bg-slate-700/50 rounded-full p-5 mb-3">
+            <Search size={28} className="text-[#1D3557]/40 dark:text-slate-400" />
+          </div>
+          <h3 className="text-base font-bold text-[#1D3557] dark:text-slate-200 mb-1">No projects match your filters</h3>
+          <p className="text-sm text-gray-400 dark:text-slate-500 mb-3">Try adjusting the search or filter criteria.</p>
+          <button
+            onClick={clearFilters}
+            className="text-sm font-semibold text-[#d97757] hover:underline"
+          >
+            Clear all filters
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProjects.map((project) => (
+            <ProjectCard key={project._id || project.id} project={project} />
+          ))}
+        </div>
+      )}
+
     </div>
   );
 }

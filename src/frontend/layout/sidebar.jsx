@@ -3,9 +3,11 @@ import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
 import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 
 const NAV_ITEMS = [
   { label: "Dashboard", icon: <DashboardRoundedIcon fontSize="small" />, path: "/" },
@@ -16,6 +18,12 @@ export default function Sidebar({ collapsed, setCollapsed }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { isDark, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
 
   const isActive = (path) =>
     path === "/" ? pathname === "/" : pathname.startsWith(path);
@@ -83,28 +91,40 @@ export default function Sidebar({ collapsed, setCollapsed }) {
         })}
       </nav>
 
-      {/* Dark mode toggle at bottom of sidebar */}
-      <div className={`p-3 border-t border-gray-200 dark:border-slate-700 ${collapsed ? "flex justify-center" : ""}`}>
+      {/* Bottom: user info + logout */}
+      <div className={`p-3 border-t border-gray-200 dark:border-slate-700 flex flex-col gap-2`}>
+        {/* User info */}
+        {!collapsed && user && (
+          <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-[#f0f4ff] dark:bg-slate-800">
+            <div className="w-7 h-7 rounded-full bg-[#d97757] flex items-center justify-center shrink-0">
+              <span className="text-white text-xs font-bold">
+                {user.name?.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <p className="text-xs font-semibold text-[#1D3557] dark:text-slate-100 truncate leading-tight">
+                {user.name}
+              </p>
+              <p className="text-[10px] text-slate-400 dark:text-slate-500 truncate leading-tight">
+                {user.email}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Logout button */}
         <button
-          onClick={toggleTheme}
-          title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          onClick={handleLogout}
+          title="Logout"
           className={`
-            flex items-center gap-2 rounded-xl border text-sm font-semibold
-            transition-all duration-200 cursor-pointer select-none
-            ${collapsed ? "p-2 justify-center" : "px-3 py-2 w-full"}
-            ${isDark
-              ? "bg-slate-700 border-slate-600 text-slate-100 hover:bg-slate-600"
-              : "bg-[#f0f4ff] border-[#d0d9f0] text-[#1D3557] hover:bg-[#e8f0ff]"
-            }
+            flex items-center gap-2 rounded-xl text-sm font-semibold
+            transition-all duration-150 cursor-pointer
+            text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10
+            ${collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2 w-full"}
           `}
         >
-          {isDark
-            ? <Sun size={16} className="text-yellow-400 shrink-0" />
-            : <Moon size={16} className="text-[#1D3557] shrink-0" />
-          }
-          {!collapsed && (
-            <span>{isDark ? "Light mode" : "Dark mode"}</span>
-          )}
+          <LogoutRoundedIcon sx={{ fontSize: "1.1rem" }} />
+          {!collapsed && <span>Logout</span>}
         </button>
       </div>
     </aside>

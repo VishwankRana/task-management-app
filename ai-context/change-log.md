@@ -2,6 +2,47 @@
 
 ---
 
+## 2026-06-15T16:15:00+05:30
+
+### Summary
+Added due-date proximity notification banners to the Dashboard using Joy UI `Snackbar`. Banners appear below the sticky header and alert the user to overdue tasks, overdue projects, tasks due within 3 days, and projects ending within 3 days. Each banner is dismissible for the session. Dark mode colors applied manually via `isDark` from `useTheme()`.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `package.json` / `package-lock.json` | Modified | Added `@mui/joy` dependency |
+| `src/frontend/layout/Dashboard.jsx` | Modified | Added due-date banner logic using Joy UI `Snackbar`; imported `useTasks`, `useTheme`, `dayjs`, Joy UI components, and MUI alert icons |
+
+### Impacted Modules
+- Dashboard page — new top-of-viewport floating banners
+
+### Risk Level
+**Low** — additive UI feature; does not modify any data layer or existing components
+
+---
+
+## 2026-06-15T16:05:00+05:30
+
+### Summary
+Updated all three documentation files (`.cursorrules`, `ai-context/memory.md`, `docs/project-context.md`) to reflect the full feature set added in the previous session: dark mode across all components, vivid badge colors, white MUI icons in dark mode, Chart.js dynamic theming, Arrow button dark mode, Project page live search, and the custom `FilterDropdown` component (status + priority filters).
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `.cursorrules` | Modified | Added `FilterDropdown` pattern section; updated component annotations for `ArrowBackButton`, `ArrowForwardButton`, `StatusTaskChart`, `PriorityPieChart`; added `ChevronDown`, `Check` to lucide-react icons list |
+| `ai-context/memory.md` | Modified | Expanded Projects Page section with `FilterDropdown` details; expanded Dark Mode section with vivid glow pattern, arrow buttons, Chart.js theming |
+| `docs/project-context.md` | Modified | Updated lucide-react icons; updated component tree annotations; expanded Projects Page and Dark Mode feature descriptions |
+
+### Impacted Modules
+- Documentation only — no runtime code changed
+
+### Risk Level
+**Low** — documentation updates only
+
+---
+
 ## 2026-06-04T15:49:00+05:30
 
 ### Summary
@@ -334,3 +375,22 @@ Applied full dark mode to all Dashboard page components: the four summary stat t
 
 ### Risk Level
 **Low** — Purely visual theming. No API calls, data structures, hooks, or business logic modified.
+
+---
+
+## 2026-06-15T11:08:00+05:30
+
+### Summary
+Added live project search and dual-filter (Status + Priority) toolbar to the Projects page. All filtering is client-side, self-contained in `ProjectTiles`, and fully dark-mode aware.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `src/frontend/components/ProjectTiles.jsx` | Modified | Added `searchQuery`, `statusFilter`, `priorityFilter` state; computed `filteredProjects`; new toolbar with search input (lucide `Search` icon, clear `X`), Status `<select>` dropdown, Priority `<select>` dropdown, active-filter count badge, and "Clear" button; result count line when filters are active; dedicated empty-state for "no results" vs "no projects"; all controls fully dark-mode styled |
+
+### Impacted Modules
+- Projects page (`ProjectTiles` component)
+
+### Risk Level
+**Low** — All filtering is pure client-side state. No API calls, backend, or data structures modified. Existing project card and empty-state logic is unchanged.

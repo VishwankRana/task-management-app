@@ -9,9 +9,11 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import dayjs from "dayjs";
 import toast from "react-hot-toast";
+import { useTheme } from "../context/ThemeContext";
 
 export default function NewProjectModal() {
   const { openNewPrjModal, setOpenNewPrjModal, setProjects } = useProject();
+  const { isDark } = useTheme();
 
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
@@ -98,114 +100,106 @@ export default function NewProjectModal() {
 
   if (!openNewPrjModal) return null;
 
+  const inputCls = `w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white dark:bg-[#263446] text-gray-800 dark:text-white border-gray-300 dark:border-slate-600 placeholder-black dark:placeholder-black`;
+  const labelCls = `block font-medium text-gray-700 dark:text-slate-300`;
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/40">
-      <div className="w-[450px] bg-white shadow-xl rounded-xl p-6 border border-gray-200 mx-auto">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+      <div className="w-[450px] bg-white dark:bg-[#1e293b] shadow-xl rounded-xl p-6 border border-gray-200 dark:border-slate-700 mx-auto">
         <div className="w-full flex items-center justify-between">
-          <h1 className="text-2xl font-semibold mb-4 text-gray-800">Create a New Project</h1>
-          <IconButton onClick={resetFormAndClose}>
+          <h1 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-slate-100">Create a New Project</h1>
+          <IconButton onClick={resetFormAndClose} sx={{ color: isDark ? "#94a3b8" : undefined }}>
             <CloseIcon />
           </IconButton>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div>
-          <div>
-          <label htmlFor="projectName" className="block font-medium text-gray-700">
-            Project Name
-          </label>
-          <input
-            type="text"
-            id="projectName"
-            className="w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Enter project name"
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
-          />
-          </div>
+            <div>
+              <label htmlFor="projectName" className={labelCls}>Project Name</label>
+              <input
+                type="text"
+                id="projectName"
+                className={inputCls}
+                placeholder="Enter project name"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+              />
+            </div>
 
             <div>
-            <label htmlFor="description" className="block font-medium text-gray-700">
-              Description
-            </label>
-            <input
-              type="text"
-              id="description"
-              className="w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="Describe your project"
-              value={projectDescription}
-              onChange={(e) => setProjectDescription(e.target.value)}
-            />
+              <label htmlFor="description" className={labelCls}>Description</label>
+              <input
+                type="text"
+                id="description"
+                className={inputCls}
+                placeholder="Describe your project"
+                value={projectDescription}
+                onChange={(e) => setProjectDescription(e.target.value)}
+              />
             </div>
-          
-          <div className="flex justify-between mb-2">
-          <div>
-          <label htmlFor="status" className="font-medium text-gray-700">
-            Status
-          </label>
-          <ProjectStatusMenu projectStatus={projectStatus} setProjectStatus={setProjectStatus}/>
-          </div>
 
-          <div>
-          <label htmlFor="priority" className="font-medium text-gray-700">
-            Priority
-          </label>
-          <ProjectPriorityMenu projectPriority={projectPriority} setProjectPriority={setProjectPriority}/>
-          </div>
-          </div>
+            <div className="flex justify-between mb-2">
+              <div>
+                <label htmlFor="status" className={labelCls}>Status</label>
+                <ProjectStatusMenu projectStatus={projectStatus} setProjectStatus={setProjectStatus} />
+              </div>
+              <div>
+                <label htmlFor="priority" className={labelCls}>Priority</label>
+                <ProjectPriorityMenu projectPriority={projectPriority} setProjectPriority={setProjectPriority} />
+              </div>
+            </div>
 
-          <div>
-          <label htmlFor="StartDate" className="block font-medium text-gray-700">
-            Start Date <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="date"
-            id="StartDate"
-            required
-            className="w-full p-2 border rounded-lg mt-1 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={projectStartDate}
-            onChange={(e) => setProjectStartDate(e.target.value)}
-          />
-          </div>
-          
-          <div>
-          <label htmlFor="EndDate" className="block font-medium text-gray-700">
-            End Date <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="date"
-            id="EndDate"
-            required
-            className="w-full p-2 border rounded-lg mt-1 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={projectEndDate}
-            onChange={(e) => setProjectEndDate(e.target.value)}
-          />
-          </div>
+            <div>
+              <label htmlFor="StartDate" className={labelCls}>
+                Start Date <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                id="StartDate"
+                required
+                className={inputCls}
+                value={projectStartDate}
+                onChange={(e) => setProjectStartDate(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="EndDate" className={labelCls}>
+                End Date <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                id="EndDate"
+                required
+                className={`${inputCls} mb-4`}
+                value={projectEndDate}
+                onChange={(e) => setProjectEndDate(e.target.value)}
+              />
+            </div>
           </div>
 
           <div className="flex justify-end w-full">
             <Button
-      type="submit"
-      variant="contained"
-      sx={{
-        px: 3,
-        py: 1,
-        textTransform: "none",
-        fontWeight: 700,
-        borderRadius: "999px",
-        backgroundColor: "#d97757",
-        boxShadow: "0 4px 10px rgba(217,119,87,0.25)",
-        "& .MuiSvgIcon-root": {
-          fontSize: "1.2rem",
-        },
-        "&:hover": {
-          backgroundColor: "#c76546",
-          boxShadow: "0 6px 14px rgba(217,119,87,0.35)",
-        },
-      }}
-    >
-      Create Project
-    </Button>
+              type="submit"
+              variant="contained"
+              sx={{
+                px: 3,
+                py: 1,
+                textTransform: "none",
+                fontWeight: 700,
+                borderRadius: "999px",
+                backgroundColor: "#d97757",
+                boxShadow: "0 4px 10px rgba(217,119,87,0.25)",
+                "& .MuiSvgIcon-root": { fontSize: "1.2rem" },
+                "&:hover": {
+                  backgroundColor: "#c76546",
+                  boxShadow: "0 6px 14px rgba(217,119,87,0.35)",
+                },
+              }}
+            >
+              Create Project
+            </Button>
           </div>
         </form>
       </div>
