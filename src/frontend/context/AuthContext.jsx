@@ -29,8 +29,8 @@ export function AuthProvider({ children }) {
     restoreSession();
   }, []);
 
-  async function register(name, email, password) {
-    const res = await api.post("/api/auth/register", { name, email, password });
+  async function register(name, email, password, role = "User") {
+    const res = await api.post("/api/auth/register", { name, email, password, role });
     setUser(res.data.user);
     setIsAuthenticated(true);
     return res.data.user;
@@ -49,8 +49,10 @@ export function AuthProvider({ children }) {
     setIsAuthenticated(false);
   }
 
+  const isAdmin = user?.role === "Admin";
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, loading, login, logout, register }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, isAdmin, loading, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

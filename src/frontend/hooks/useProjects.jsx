@@ -5,7 +5,7 @@ export default function useProjects() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/taskmanager/projects")
+    fetch("http://localhost:3000/api/taskmanager/projects", { credentials: "include" })
       .then(res => res.json())
       .then(data => {
         setProjects(data);

@@ -9,7 +9,7 @@ export function ProjectProvider({ children }) {
     const [projects, setProjects] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/taskmanager/projects")
+        fetch("http://localhost:3000/api/taskmanager/projects", { credentials: "include" })
             .then(res => res.json())
             .then(data => setProjects(data))
             .catch(err => console.error("Error fetching projects:", err));

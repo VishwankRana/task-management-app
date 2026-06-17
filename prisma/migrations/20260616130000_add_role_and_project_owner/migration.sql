@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `User` ADD COLUMN `role` VARCHAR(191) NOT NULL DEFAULT 'User';
+
+-- AlterTable
+ALTER TABLE `Project` ADD COLUMN `ownerId` INTEGER NULL;

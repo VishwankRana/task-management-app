@@ -6,7 +6,7 @@ export default function useTasks() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/taskmanager/tasks")
+    fetch("http://localhost:3000/api/taskmanager/tasks", { credentials: "include" })
       .then(res => res.json())
       .then(data => {
         setTasks(data);

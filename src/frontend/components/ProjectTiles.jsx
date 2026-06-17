@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProject } from "../context/ProjectContext";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText, Divider } from "@mui/material";
 import FolderOpenRoundedIcon from "@mui/icons-material/FolderOpenRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
@@ -116,6 +117,7 @@ const PRIORITY_ACCENT = {
 function ProjectCard({ project }) {
   const navigate = useNavigate();
   const { isDark } = useTheme();
+  const { isAdmin, user } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const menuOpen = Boolean(anchorEl);
@@ -127,6 +129,7 @@ function ProjectCard({ project }) {
   const statusClass = STATUS_STYLES[status] || "bg-gray-100 text-gray-500";
   const priorityClass = PRIORITY_STYLES[priority] || "bg-gray-100 text-gray-500";
   const projectId = project._id || project.id;
+  const canManageProject = isAdmin && project.ownerId === user?.id;
 
   const handleMenuOpen = (e) => {
     e.stopPropagation();
@@ -190,6 +193,11 @@ function ProjectCard({ project }) {
           <p className="text-xs text-gray-500 dark:text-slate-400 mt-1 line-clamp-2">
             {project.projectDescription || "No description"}
           </p>
+          {project.projectAdmin && (
+            <p className="text-xs font-semibold text-[#d97757] mt-2">
+              Project Admin: {project.projectAdmin}
+            </p>
+          )}
         </div>
 
         {/* Footer badges */}
@@ -251,22 +259,26 @@ function ProjectCard({ project }) {
           />
         </MenuItem>
         <Divider sx={{ borderColor: isDark ? "#334155" : undefined }} />
-        <MenuItem onClick={handleSettingsClick} sx={{ py: 1.2, px: 2, gap: 1, "&:hover": { bgcolor: isDark ? "#334155" : undefined } }}>
-          <ListItemIcon sx={{ minWidth: "auto" }}>
-            <SettingsRoundedIcon fontSize="small" sx={{ color: navyIcon }} />
-          </ListItemIcon>
-          <ListItemText
-            primary="Settings"
-            primaryTypographyProps={{ fontSize: "0.9rem", fontWeight: 600, color: navyIcon }}
-          />
-        </MenuItem>
+        {canManageProject && (
+          <MenuItem onClick={handleSettingsClick} sx={{ py: 1.2, px: 2, gap: 1, "&:hover": { bgcolor: isDark ? "#334155" : undefined } }}>
+            <ListItemIcon sx={{ minWidth: "auto" }}>
+              <SettingsRoundedIcon fontSize="small" sx={{ color: navyIcon }} />
+            </ListItemIcon>
+            <ListItemText
+              primary="Settings"
+              primaryTypographyProps={{ fontSize: "0.9rem", fontWeight: 600, color: navyIcon }}
+            />
+          </MenuItem>
+        )}
       </Menu>
 
-      <ProjectSettingsModal
-        open={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-        projectId={projectId}
-      />
+      {canManageProject && (
+        <ProjectSettingsModal
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          projectId={projectId}
+        />
+      )}
     </>
   );
 }

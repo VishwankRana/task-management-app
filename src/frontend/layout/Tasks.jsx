@@ -12,12 +12,14 @@ import TaskList from "../components/TaskList";
 import TasksCalenderView from "./TasksCalenderView";
 import TasksAnalyticsView from "./TasksAnalyticsView";
 import DarkModeToggle from "../components/DarkModeToggle";
+import AddProjectMember from "../components/AddProjectMember";
 
 export default function TasksLayout() {
   const { projectId } = useParams();
   const [searchParams] = useSearchParams();
   const [taskList, setTaskList] = useState([]);
   const [projectTitle, setProjectTitle] = useState(null);
+  const [projectMembers, setProjectMembers] = useState([]);
   const [activeTab] = useState(searchParams.get("view") || "tasks");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -31,7 +33,10 @@ export default function TasksLayout() {
 
     axios
       .get(`http://localhost:3000/api/taskmanager/projects/${projectId}`)
-      .then(res => setProjectTitle(res.data))
+      .then(res => {
+        setProjectTitle(res.data);
+        setProjectMembers(res.data.members ?? []);
+      })
       .catch(err => console.error(err));
 
     axios
@@ -72,9 +77,24 @@ export default function TasksLayout() {
       
       <div className="flex items-center px-5">
       <div className="mr-4"><ArrowBackButton /></div>
-      <h1 className="text-[30px] font-bold text-[#1D3557] dark:text-slate-100"> {projectTitle ? projectTitle.projectName : "Loading..."}</h1>
+      <div>
+        <h1 className="text-[30px] font-bold text-[#1D3557] dark:text-slate-100">
+          {projectTitle ? projectTitle.projectName : "Loading..."}
+        </h1>
+        {projectTitle?.projectAdmin && (
+          <p className="text-sm font-semibold text-[#d97757] mt-1">
+            Project Admin: {projectTitle.projectAdmin}
+          </p>
+        )}
+      </div>
       </div>
 
+      <AddProjectMember
+        projectId={projectId}
+        ownerId={projectTitle?.ownerId}
+        initialMembers={projectMembers}
+        onMembersChange={setProjectMembers}
+      />
 
        <div className="w-full grid grid-cols-4 gap-4 px-5">
 

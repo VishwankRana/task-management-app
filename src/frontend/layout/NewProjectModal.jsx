@@ -47,6 +47,7 @@ export default function NewProjectModal() {
     try {
       const res = await fetch("http://localhost:3000/api/taskmanager/projects", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },

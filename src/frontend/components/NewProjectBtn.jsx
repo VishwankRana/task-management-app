@@ -1,10 +1,13 @@
 import Button from "@mui/material/Button";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import { useProject } from "../context/ProjectContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function NewProjectBtn() {
-
   const { setOpenNewPrjModal } = useProject();
+  const { isAdmin } = useAuth();
+
+  if (!isAdmin) return null;
 
   return (
     <Button
