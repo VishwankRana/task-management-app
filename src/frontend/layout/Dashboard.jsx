@@ -16,6 +16,7 @@ import ProjectOverview from "../ProjectOverview/ProjectOverview.jsx";
 import RecentActivity from "../ProjectOverview/RecentActivity.jsx";
 import TodaysFocus from "../DashboardWidgets/TodaysFocus.jsx";
 import WeekAtAGlance from "../DashboardWidgets/WeekAtAGlance.jsx";
+import NotificationPanel from "../components/NotificationPanel.jsx";
 import { useProject } from "../context/ProjectContext";
 import DarkModeToggle from "../components/DarkModeToggle.jsx";
 import { useTheme } from "../context/ThemeContext.jsx";
@@ -207,6 +208,7 @@ export default function Dashboard() {
             <RecentActivity />
           </div>
           <div className="flex flex-col flex-1 gap-8 min-w-0">
+            <NotificationPanel />
             <TodaysFocus />
             <WeekAtAGlance />
           </div>

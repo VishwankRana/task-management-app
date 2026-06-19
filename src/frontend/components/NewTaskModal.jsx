@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { useParams } from "react-router-dom";
@@ -9,12 +9,15 @@ import NewTaskButton from "./NewTaskBtn";
 import PrioritySelect from "./PrioritySelect";
 import TaskStatusMenu from "./StatusSelect";
 import TaskTypeMenu from "./TypeSelect";
+import AssigneeSelect from "./AssigneeSelect";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function NewTaskModal({ setTaskList }) {
   const { isDark } = useTheme();
+  const { isAdmin } = useAuth();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -22,8 +25,19 @@ export default function NewTaskModal({ setTaskList }) {
   const [status, setStatus] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [taskType, setTaskType] = useState("");
+  const [assigneeId, setAssigneeId] = useState(null);
+  const [members, setMembers] = useState([]);
 
   const { projectId } = useParams();
+
+  useEffect(() => {
+    if (!open || !isAdmin || !projectId) return;
+
+    axios
+      .get(`http://localhost:3000/api/taskmanager/projects/${projectId}`)
+      .then((res) => setMembers(res.data.members ?? []))
+      .catch((err) => console.error(err));
+  }, [open, isAdmin, projectId]);
 
   const handleOpen = () => setOpen(true);
 
@@ -35,6 +49,7 @@ export default function NewTaskModal({ setTaskList }) {
     setStatus("");
     setDueDate("");
     setTaskType("");
+    setAssigneeId(null);
   };
 
   const handleSubmit = async (e) => {
@@ -70,6 +85,7 @@ export default function NewTaskModal({ setTaskList }) {
       status,
       type: taskType,
       dueDate,
+      ...(isAdmin && assigneeId ? { assigneeId } : {}),
     };
 
     try {
@@ -175,6 +191,17 @@ export default function NewTaskModal({ setTaskList }) {
                       onChange={(e) => setDueDate(e.target.value)}
                     />
                   </div>
+
+                  {isAdmin && (
+                    <div className="col-span-2">
+                      <label className={labelCls}>Assign To</label>
+                      <AssigneeSelect
+                        assigneeId={assigneeId}
+                        setAssigneeId={setAssigneeId}
+                        members={members}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 

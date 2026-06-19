@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import router from './taskController.js';
 import ProjectsRouter from './projectsController.js';
 import AuthRouter from './authController.js';
+import NotificationsRouter from './notificationsController.js';
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(AuthRouter);
+app.use(NotificationsRouter);
 app.use(router);
 app.use(ProjectsRouter);
 

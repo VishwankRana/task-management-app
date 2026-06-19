@@ -6,19 +6,24 @@ import toast from "react-hot-toast";
 import PrioritySelect from "./PrioritySelect";
 import TaskStatusMenu from "./StatusSelect";
 import TaskTypeMenu from "./TypeSelect";
+import AssigneeSelect from "./AssigneeSelect";
 import EditIcon from '@mui/icons-material/Edit';
 import ErrorIcon from '@mui/icons-material/Error';
 import dayjs from "dayjs";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function EditTaskModal({ task, open, onClose, onUpdated }) {
   const { isDark } = useTheme();
+  const { isAdmin } = useAuth();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [taskType, setTaskType] = useState("");
+  const [assigneeId, setAssigneeId] = useState(null);
+  const [members, setMembers] = useState([]);
 
   useEffect(() => {
     if (task && open) {
@@ -28,8 +33,18 @@ export default function EditTaskModal({ task, open, onClose, onUpdated }) {
       setStatus(task.status || "");
       setTaskType(task.type || "");
       setDueDate(task.dueDate ? dayjs(task.dueDate).format("YYYY-MM-DD") : "");
+      setAssigneeId(task.assigneeId ?? null);
     }
   }, [task, open]);
+
+  useEffect(() => {
+    if (!open || !isAdmin || !task?.projectId) return;
+
+    axios
+      .get(`http://localhost:3000/api/taskmanager/projects/${task.projectId}`)
+      .then((res) => setMembers(res.data.members ?? []))
+      .catch((err) => console.error(err));
+  }, [open, isAdmin, task?.projectId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,9 +57,22 @@ export default function EditTaskModal({ task, open, onClose, onUpdated }) {
 
     try {
       const id = task._id || task.id;
+      const payload = {
+        title: title.trim(),
+        description,
+        priority,
+        status,
+        type: taskType,
+        dueDate,
+      };
+
+      if (isAdmin) {
+        payload.assigneeId = assigneeId;
+      }
+
       const response = await axios.put(
         `http://localhost:3000/api/taskmanager/tasks/${id}`,
-        { title: title.trim(), description, priority, status, type: taskType, dueDate }
+        payload
       );
       onUpdated(response.data);
       toast("Task updated", {
@@ -140,6 +168,17 @@ export default function EditTaskModal({ task, open, onClose, onUpdated }) {
                   onChange={(e) => setDueDate(e.target.value)}
                 />
               </div>
+
+              {isAdmin && (
+                <div className="col-span-2">
+                  <label className={labelCls}>Assign To</label>
+                  <AssigneeSelect
+                    assigneeId={assigneeId}
+                    setAssigneeId={setAssigneeId}
+                    members={members}
+                  />
+                </div>
+              )}
             </div>
           </div>
 

@@ -36,7 +36,7 @@ export default function TaskTile({ task, onDelete, setTaskList }) {
   return (
     <div className="w-full">
       <div className="rounded-2xl border border-[#d1d5db] dark:border-slate-700 bg-white dark:bg-[#263446] shadow-sm hover:shadow-md transition mb-5">
-        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] gap-4 p-3 items-center">
+        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr_auto] gap-4 p-3 items-center">
 
           {/* Title + Description */}
           <div>
@@ -61,6 +61,13 @@ export default function TaskTile({ task, onDelete, setTaskList }) {
 
           {/* Type */}
           <div className="text-center font-medium text-gray-700 dark:text-slate-300">{task?.type}</div>
+
+          {/* Assigned To */}
+          <div className="text-center text-sm font-medium text-gray-700 dark:text-slate-300">
+            {task?.assigneeName || (
+              <span className="text-gray-400 dark:text-slate-500">Unassigned</span>
+            )}
+          </div>
 
           {/* Actions */}
           <div className="flex items-center gap-1">

@@ -66,7 +66,7 @@ export default function TaskList({ statusFilter = "all" }) {
                       bg-white dark:bg-[#1e293b] shadow-sm">
 
         {/* Header Bar */}
-        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto]
+        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr_auto]
                         gap-4 px-4 py-2 rounded-t-2xl
                         bg-[#fff1e3] dark:bg-[#3d2510] border-b border-[#c9b5a3] dark:border-orange-900/50">
 
@@ -75,6 +75,7 @@ export default function TaskList({ statusFilter = "all" }) {
           <h3 className="font-semibold text-center text-[#3a2b20] dark:text-orange-100">Status</h3>
           <h3 className="font-semibold text-center text-[#3a2b20] dark:text-orange-100">Due Date</h3>
           <h3 className="font-semibold text-center text-[#3a2b20] dark:text-orange-100">Type</h3>
+          <h3 className="font-semibold text-center text-[#3a2b20] dark:text-orange-100">Assigned To</h3>
           <h3 className="font-semibold text-center text-[#3a2b20] dark:text-orange-100">Actions</h3>
 
         </div>
