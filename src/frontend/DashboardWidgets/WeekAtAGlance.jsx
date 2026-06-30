@@ -54,12 +54,12 @@ export default function WeekAtAGlance() {
   const tealColor = isDark ? "#5eead4" : "#1f4d63";
 
   return (
-    <div className="w-full min-h-[30em] flex flex-col rounded-2xl border border-[#1f4d63] dark:border-teal-700/50 bg-[#e8f4ff] dark:bg-[#1e293b] shadow-md hover:shadow-lg transition-all duration-200">
+    <div className="w-full h-[23em] flex flex-col rounded-2xl border border-[#1f4d63] dark:border-teal-700/50 bg-[#e8f4ff] dark:bg-[#1e293b] shadow-md hover:shadow-lg transition-all duration-200">
 
       {/* Header */}
-      <div className="border-b border-[#1f4d63] dark:border-teal-700/50 px-4 py-3 flex items-center gap-2">
+      <div className="shrink-0 h-14 px-4 border-b border-[#1f4d63] dark:border-teal-700/50 flex items-center gap-2">
         <CalendarMonthRoundedIcon sx={{ color: tealColor, fontSize: "1.2rem" }} />
-        <h1 className="text-sm font-semibold text-[#1f4d63] dark:text-teal-300">Week at a Glance</h1>
+        <h1 className="text-base font-semibold text-[#1f4d63] dark:text-teal-300">Week at a Glance</h1>
         <span className="ml-auto text-xs text-[#1f4d63] dark:text-teal-400 font-medium opacity-70">
           {weekDays[0].toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
           {" – "}
@@ -68,7 +68,7 @@ export default function WeekAtAGlance() {
       </div>
 
       {/* Calendar grid */}
-      <div className="flex-1 p-4 flex flex-col justify-between">
+      <div className="flex-1 min-h-0 p-4 flex flex-col justify-between">
         {loading ? (
           <p className="text-sm text-gray-500 dark:text-slate-400">Loading…</p>
         ) : (

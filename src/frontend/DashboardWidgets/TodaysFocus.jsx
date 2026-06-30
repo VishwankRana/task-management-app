@@ -43,9 +43,9 @@ export default function TodaysFocus() {
   return (
     <div className="w-full h-[23em] flex flex-col rounded-2xl border border-[#1f4d63] dark:border-teal-700/50 bg-[#e8f4ff] dark:bg-[#1e293b] shadow-md hover:shadow-lg transition-all duration-200">
       {/* Header */}
-      <div className="border-b border-[#1f4d63] dark:border-teal-700/50 px-4 py-3 flex items-center gap-2">
+      <div className="shrink-0 h-14 px-4 border-b border-[#1f4d63] dark:border-teal-700/50 flex items-center gap-2">
         <TodayRoundedIcon sx={{ color: tealColor, fontSize: "1.2rem" }} />
-        <h1 className="text-sm font-semibold text-[#1f4d63] dark:text-teal-300">
+        <h1 className="text-base font-semibold text-[#1f4d63] dark:text-teal-300">
           Today's Focus
         </h1>
         <span className="ml-auto bg-[#1f4d63] dark:bg-teal-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
@@ -70,7 +70,7 @@ export default function TodaysFocus() {
       )}
 
       {/* Task list */}
-      <div className="p-3 space-y-2 flex-1 overflow-y-auto">
+      <div className="p-3 space-y-2 flex-1 min-h-0 overflow-y-auto">
         {loading && (
           <p className="text-sm text-gray-500 dark:text-slate-400 px-1">Loading…</p>
         )}

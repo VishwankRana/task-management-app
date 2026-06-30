@@ -6,6 +6,7 @@ import DashboardLayout from "./layout/Dashboard.jsx";
 import ProjectLayout from "./layout/Projects.jsx";
 import MainLayout from "./layout/MainLayout.jsx";
 import TasksLayout from "./layout/Tasks.jsx";
+import ProjectBoard from "./layout/ProjectBoard.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="/" element={<DashboardLayout />} />
           <Route path="/projects" element={<ProjectLayout />} />
           <Route path="/projects/:projectId/tasks" element={<TasksLayout />} />
+          <Route path="/projects/:projectId/board" element={<ProjectBoard />} />
         </Route>
       </Routes>
     </div>

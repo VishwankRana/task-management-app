@@ -1,4 +1,7 @@
 import useProjects from '../hooks/useProjects';
+import { useAuth } from '../context/AuthContext';
+import FolderOpenRoundedIcon from '@mui/icons-material/FolderOpenRounded';
+import { useTheme } from '../context/ThemeContext';
 
 const statusBadgeClass = (status) => {
   switch (status) {
@@ -19,21 +22,44 @@ const statusBadgeClass = (status) => {
 
 export default function ProjectOverviewTile() {
   const { projects, loading } = useProjects();
-  const topProjects = projects.slice(0, 2);
+  const { isAdmin } = useAuth();
+  const { isDark } = useTheme();
 
   const formatDate = (dateString) => {
     if (!dateString) return "No date";
     return new Date(dateString).toLocaleDateString("en-GB");
   };
 
+  if (loading) {
+    return <p className="text-sm text-gray-500 dark:text-slate-400 px-1">Loading…</p>;
+  }
+
+  if (projects.length === 0 && !isAdmin) {
+    return (
+      <div className="flex flex-col items-center justify-center text-center py-6">
+        <FolderOpenRoundedIcon sx={{ fontSize: "2.5rem", color: isDark ? "#5eead4" : "#1f4d63", mb: 1 }} />
+        <p className="text-sm font-semibold text-[#1f4d63] dark:text-teal-300">
+          No projects Assigned to you
+        </p>
+      </div>
+    );
+  }
+
+  if (projects.length === 0) {
+    return (
+      <p className="text-sm text-gray-500 dark:text-slate-400 px-1 text-center py-6">
+        No projects yet
+      </p>
+    );
+  }
+
   return (
     <>
-      {!loading &&
-        topProjects.map((p) => (
+      {projects.map((p) => (
           <div
-            key={p._id}
+            key={p._id || p.id}
             className="bg-[#f4f6fb] dark:bg-[#263446] border border-[#d4d9e6] dark:border-slate-700
-                       rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow duration-200 mb-3"
+                       rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow duration-200 mb-3 last:mb-0"
           >
             <div className="flex items-start justify-between">
               <div>

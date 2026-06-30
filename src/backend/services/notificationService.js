@@ -1,4 +1,11 @@
 import prisma from '../config.js';
+import {
+    emailTaskAssigned,
+    emailTaskUpdated,
+    emailTaskCompleted,
+    emailProjectAdded,
+    getProjectName,
+} from './notification.service.js';
 
 export async function createNotification({ userId, taskId, projectId, type, message }) {
     if (!userId) return null;
@@ -71,9 +78,25 @@ export async function notifyTaskAssigned({ assigneeId, actorName, task, projectI
         type: 'TASK_ASSIGNED',
         message: `You were assigned "${task.title}" by ${actorName}`,
     });
+
+    const project = await getProjectName(projectId);
+    emailTaskAssigned({
+        assigneeId,
+        actorName,
+        task,
+        projectId,
+        projectName: project?.projectName ?? 'Project',
+    }).catch((err) => console.error('Assignment email failed:', err.message));
 }
 
-export async function notifyTaskStatusChanged({ assigneeId, taskTitle, taskId, projectId, newStatus, actorName }) {
+export async function notifyTaskStatusChanged({
+    assigneeId,
+    taskTitle,
+    taskId,
+    projectId,
+    newStatus,
+    actorName,
+}) {
     if (!assigneeId) return;
 
     await createNotification({
@@ -95,4 +118,32 @@ export async function notifyTaskPriorityChanged({ assigneeId, taskTitle, taskId,
         type: 'PRIORITY_CHANGED',
         message: `Priority of "${taskTitle}" was changed to ${newPriority} by ${actorName}`,
     });
+}
+
+export async function notifyTaskFieldsUpdated({
+    assigneeId,
+    actorName,
+    taskTitle,
+    taskId,
+    projectId,
+    changes,
+}) {
+    if (!assigneeId || !changes?.length) return;
+
+    const project = await getProjectName(projectId);
+    emailTaskUpdated({
+        assigneeId,
+        actorName,
+        taskTitle,
+        taskId,
+        projectId,
+        projectName: project?.projectName ?? 'Project',
+        changes,
+    }).catch((err) => console.error('Task updated email failed:', err.message));
+}
+
+export async function notifyProjectMemberAdded({ userId, projectId, projectName, adminName }) {
+    emailProjectAdded({ userId, projectId, projectName, adminName }).catch(
+        (err) => console.error('Project added email failed:', err.message)
+    );
 }

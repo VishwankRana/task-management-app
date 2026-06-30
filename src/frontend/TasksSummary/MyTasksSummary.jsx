@@ -23,8 +23,8 @@ export default function MyTasksSummary() {
         {loading && <p className="text-sm text-gray-600">Loading…</p>}
 
         {!loading && topTasks.length === 0 && (
-          <p className="text-sm text-gray-600">
-            No tasks assigned
+          <p className="text-sm text-gray-600 dark:text-slate-400">
+            No tasks Assigned to you
           </p>
         )}
 

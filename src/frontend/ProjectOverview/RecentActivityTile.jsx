@@ -19,22 +19,36 @@ const statusBadgeClass = (status) => {
 
 export default function RecentActivityTile() {
   const { tasks, loading } = useTasks();
-  const topTasks = tasks.slice(0, 3);
+
+  const recentTasks = [...tasks]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 8);
 
   const formatDate = (dateString) => {
     if (!dateString) return "No date";
     return new Date(dateString).toLocaleDateString("en-GB");
   };
 
+  if (loading) {
+    return <p className="text-sm text-gray-500 dark:text-slate-400 px-1">Loading…</p>;
+  }
+
+  if (recentTasks.length === 0) {
+    return (
+      <p className="text-sm text-gray-500 dark:text-slate-400 px-1 text-center py-6">
+        No recent activity yet
+      </p>
+    );
+  }
+
   return (
     <>
-      {!loading &&
-        topTasks.map((t) => (
+      {recentTasks.map((t) => (
           <div
-            key={t._id}
+            key={t._id || t.id}
             className="bg-[#f4f6fb] dark:bg-[#263446] border border-[#d4d9e6] dark:border-slate-700
                        rounded-2xl p-4 shadow-sm hover:shadow-md
-                       transition-shadow duration-200 mb-3"
+                       transition-shadow duration-200 mb-3 last:mb-0"
           >
             <div className="flex items-start justify-between">
               <div>

@@ -3,6 +3,7 @@ import prisma from './projectsDB.js';
 import { authenticate } from './middleware/authenticate.js';
 import { authorize } from './middleware/authorize.js';
 import { getProjectAccess, requireProjectAccess, requireProjectOwner } from './middleware/projectAccess.js';
+import { notifyProjectMemberAdded } from './services/notificationService.js';
 
 const ProjectsRouter = express.Router();
 
@@ -201,6 +202,18 @@ ProjectsRouter.post('/api/taskmanager/projects/:id/members', authorize('Admin'),
             include: {
                 user: { select: { id: true, name: true, email: true, role: true } },
             },
+        });
+
+        const projectDetails = await prisma.project.findUnique({
+            where: { id: projectId },
+            select: { projectName: true },
+        });
+
+        notifyProjectMemberAdded({
+            userId: Number(userId),
+            projectId,
+            projectName: projectDetails?.projectName ?? 'Project',
+            adminName: req.user.name,
         });
 
         res.status(201).json(formatMember(member));

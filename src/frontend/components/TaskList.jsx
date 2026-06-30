@@ -5,10 +5,15 @@ import toast from 'react-hot-toast';
 import TaskTile from '../layout/TaskTile';
 import ErrorIcon from '@mui/icons-material/Error';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
+import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 export default function TaskList({ statusFilter = "all" }) {
 
   const { projectId } = useParams();
+  const { isAdmin } = useAuth();
+  const { isDark } = useTheme();
   const [taskList, setTaskList] = useState([]);
 
   useEffect(() => {
@@ -88,11 +93,31 @@ export default function TaskList({ statusFilter = "all" }) {
               ? taskList
               : taskList.filter(t => t.status === statusFilter);
 
-            if (filtered.length === 0) return (
-              <div className="text-sm text-gray-600 dark:text-slate-400 text-center py-4">
-                {taskList.length === 0 ? "No tasks added yet" : `No ${statusFilter} tasks`}
-              </div>
-            );
+            if (filtered.length === 0) {
+              if (taskList.length === 0) {
+                return (
+                  <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <div className="bg-[#e8f0ff] dark:bg-[#1e3a5f] rounded-full p-5 mb-3">
+                      <AssignmentRoundedIcon sx={{ fontSize: "2.5rem", color: isDark ? "#93c5fd" : "#1D3557" }} />
+                    </div>
+                    <h3 className="text-base font-bold text-[#1D3557] dark:text-slate-100 mb-1">
+                      {!isAdmin ? "No tasks Assigned to you" : "No tasks added yet"}
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-slate-400 max-w-sm">
+                      {!isAdmin
+                        ? "Tasks assigned to you by the project admin will appear here."
+                        : "Click \"New Task\" above to create the first task for this project."}
+                    </p>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="text-sm text-gray-600 dark:text-slate-400 text-center py-4">
+                  {`No ${statusFilter} tasks`}
+                </div>
+              );
+            }
 
             return filtered.map(task => (
               <TaskTile

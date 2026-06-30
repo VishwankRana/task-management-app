@@ -5,7 +5,7 @@ export default function InProgressProjectsTile() {
   const { projects, loading, inProgressProjects } = useProjects();
 
   return (
-    <div className="w-70 p-5 rounded-2xl border border-[#d97757] dark:border-orange-500/60 bg-[#fff5ee] dark:bg-orange-500/15 shadow-md hover:shadow-lg transition-all duration-200">
+    <div className="w-full min-w-0 p-5 rounded-2xl border border-[#d97757] dark:border-orange-500/60 bg-[#fff5ee] dark:bg-orange-500/15 shadow-md hover:shadow-lg transition-all duration-200">
 
       <div className="flex items-center justify-between">
         <p className="text-l font-semibold text-[#9a3412] dark:text-orange-200">

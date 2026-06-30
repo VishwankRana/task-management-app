@@ -11,7 +11,7 @@ import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import QueryStatsRoundedIcon from "@mui/icons-material/QueryStatsRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import ProjectSettingsModal from "./ProjectSettingsModal";
-import { Search, SlidersHorizontal, X, ChevronDown, Check } from "lucide-react";
+import { Search, SlidersHorizontal, X, ChevronDown, Check, Plus } from "lucide-react";
 
 const STATUS_OPTIONS = ["All", "Planning", "Active", "In Progress", "Completed", "On Hold", "Cancelled"];
 const PRIORITY_OPTIONS = ["All", "High", "Medium", "Low"];
@@ -113,6 +113,27 @@ const PRIORITY_ACCENT = {
   "Medium": "border-t-yellow-400",
   "Low":    "border-t-green-400",
 };
+
+function NewProjectCard({ onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="
+        min-h-40 w-full rounded-2xl border-2 border-dashed border-[#d97757]/40 dark:border-[#d97757]/50
+        bg-[#d97757]/5 dark:bg-[#d97757]/10 p-4 shadow-sm
+        hover:shadow-lg hover:-translate-y-1 hover:border-[#d97757]/70 hover:bg-[#d97757]/10 dark:hover:bg-[#d97757]/15
+        transition-all duration-200 flex flex-col items-center justify-center gap-2 cursor-pointer
+      "
+      aria-label="Create new project"
+    >
+      <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#d97757]/15 dark:bg-[#d97757]/25">
+        <Plus size={28} className="text-[#d97757]" strokeWidth={2.5} />
+      </div>
+      <span className="text-sm font-semibold text-[#d97757]">New Project</span>
+    </button>
+  );
+}
 
 function ProjectCard({ project }) {
   const navigate = useNavigate();
@@ -284,8 +305,9 @@ function ProjectCard({ project }) {
 }
 
 export default function ProjectTiles() {
-  const { projects } = useProject();
+  const { projects, setOpenNewPrjModal } = useProject();
   const { isDark } = useTheme();
+  const { isAdmin } = useAuth();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -316,14 +338,26 @@ export default function ProjectTiles() {
   `;
 
   if (!projects || projects.length === 0) {
+    if (isAdmin) {
+      return (
+        <div className="w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <NewProjectCard onClick={() => setOpenNewPrjModal(true)} />
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <div className="bg-[#e8f0ff] dark:bg-[#1e3a5f] rounded-full p-6 mb-4">
           <FolderOpenRoundedIcon sx={{ fontSize: "3rem", color: isDark ? "#93c5fd" : "#1D3557" }} />
         </div>
-        <h2 className="text-xl font-bold text-[#1D3557] dark:text-slate-100 mb-1">No projects yet</h2>
-        <p className="text-sm text-gray-500 dark:text-slate-400">
-          Click "New Project" above to create your first project.
+        <h2 className="text-xl font-bold text-[#1D3557] dark:text-slate-100 mb-1">
+          No projects Assigned to you
+        </h2>
+        <p className="text-sm text-gray-500 dark:text-slate-400 max-w-sm">
+          You&apos;ll see projects here once a project admin adds you to a team.
         </p>
       </div>
     );
@@ -400,7 +434,7 @@ export default function ProjectTiles() {
       )}
 
       {/* ── Project grid ── */}
-      {filteredProjects.length === 0 ? (
+      {filteredProjects.length === 0 && !isAdmin ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <div className="bg-[#e8f0ff] dark:bg-slate-700/50 rounded-full p-5 mb-3">
             <Search size={28} className="text-[#1D3557]/40 dark:text-slate-400" />
@@ -415,11 +449,26 @@ export default function ProjectTiles() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project) => (
-            <ProjectCard key={project._id || project.id} project={project} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {isAdmin && <NewProjectCard onClick={() => setOpenNewPrjModal(true)} />}
+            {filteredProjects.map((project) => (
+              <ProjectCard key={project._id || project.id} project={project} />
+            ))}
+          </div>
+          {filteredProjects.length === 0 && isAdmin && (
+            <div className="flex flex-col items-center justify-center py-10 text-center">
+              <h3 className="text-base font-bold text-[#1D3557] dark:text-slate-200 mb-1">No projects match your filters</h3>
+              <p className="text-sm text-gray-400 dark:text-slate-500 mb-3">Try adjusting the search or filter criteria.</p>
+              <button
+                onClick={clearFilters}
+                className="text-sm font-semibold text-[#d97757] hover:underline"
+              >
+                Clear all filters
+              </button>
+            </div>
+          )}
+        </>
       )}
 
     </div>

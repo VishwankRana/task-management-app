@@ -6,7 +6,7 @@ export default function TotalProjectTile_Colorful() {
   const { projects, loading } = useProjects();
 
   return (
-    <div className="w-70 p-5 rounded-2xl border border-[#1d3557] dark:border-blue-500/60 bg-[#e8f0ff] dark:bg-blue-500/15 shadow-md hover:shadow-lg transition-all duration-200">
+    <div className="w-full min-w-0 p-5 rounded-2xl border border-[#1d3557] dark:border-blue-500/60 bg-[#e8f0ff] dark:bg-blue-500/15 shadow-md hover:shadow-lg transition-all duration-200">
 
       <div className="flex items-center justify-between">
         <p className="text-l font-semibold text-[#1D3557] dark:text-blue-200">

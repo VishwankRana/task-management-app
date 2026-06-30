@@ -2,6 +2,216 @@
 
 ---
 
+# AI Change Log
+
+---
+
+# AI Change Log
+
+---
+
+# AI Change Log
+
+---
+
+# AI Change Log
+
+---
+
+# AI Change Log
+
+---
+
+## 2026-06-18T10:00:00+05:30
+
+### Summary
+Integrated Resend email notifications with HTML templates, `EmailLog` deduplication, event-driven emails (project member added, task assigned/updated/completed), and daily/weekly cron jobs for due-soon, overdue, and weekly pending-task summaries.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `package.json` / `package-lock.json` | Modified | Added `resend`, `node-cron` |
+| `prisma/schema.prisma` | Modified | Added `EmailLog` model |
+| `prisma/migrations/20260618000000_add_email_log/migration.sql` | Added | Email log table |
+| `.env.example` | Added | Resend and email env vars |
+| `src/backend/services/email.service.js` | Added | Resend client wrapper |
+| `src/backend/services/notification.service.js` | Added | Email notification orchestration |
+| `src/backend/services/notificationService.js` | Modified | Hooks in-app + email notifications |
+| `src/backend/templates/*.js` | Added | HTML email templates |
+| `src/backend/cron/*.js` | Added | Reminder, overdue, weekly jobs |
+| `src/backend/server.js` | Modified | Starts cron jobs on boot |
+| `src/backend/projectsController.js` | Modified | Email on member add |
+| `src/backend/taskController.js` | Modified | Email on assign/update/complete |
+
+### Impacted Modules
+- Email delivery — Resend API
+- Notifications — in-app + email
+- Scheduled reminders — cron
+
+### Risk Level
+**Medium** — new external dependency; emails skipped gracefully if env not set
+
+---
+
+## 2026-06-17T18:15:00+05:30
+
+### Summary
+Made Project Overview scrollable like Recent Activity (`overflow-y-auto` on the body) and list all projects so extra cards scroll within the fixed panel height.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `src/frontend/ProjectOverview/ProjectOverview.jsx` | Modified | Scrollable body container |
+| `src/frontend/ProjectOverview/projectOverviewTile.jsx` | Modified | Show all projects; loading/empty states |
+
+### Impacted Modules
+- Dashboard Project Overview panel
+
+### Risk Level
+**Low** — UI-only
+
+---
+
+## 2026-06-17T18:00:00+05:30
+
+### Summary
+Fixed dashboard horizontal overflow by replacing fixed `55em` column widths with a responsive two-column grid, making stat tiles and panel cards `w-full min-w-0`, and adding `overflow-x-hidden` on the dashboard and main layout.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `src/frontend/layout/Dashboard.jsx` | Modified | Responsive grids; overflow containment |
+| `src/frontend/layout/MainLayout.jsx` | Modified | `overflow-x-hidden` on content shell |
+| `src/frontend/ProjectOverview/ProjectOverview.jsx` | Modified | `w-full min-w-0` instead of `w-[55em]` |
+| `src/frontend/ProjectOverview/RecentActivity.jsx` | Modified | Same width fix |
+| `src/frontend/components/ProjectStatusChart.jsx` | Modified | Same width fix |
+| `src/frontend/SummaryOverview/*.jsx` | Modified | Stat tiles fill grid cells |
+
+### Impacted Modules
+- Dashboard layout — no horizontal scroll
+
+### Risk Level
+**Low** — responsive layout only
+
+---
+
+## 2026-06-17T17:30:00+05:30
+
+### Summary
+Added a Jira-like Kanban Board per project at `/projects/:projectId/board` with drag-and-drop (`@hello-pangea/dnd`), four status columns (Pending, In Progress, Completed, Cancelled), rich task cards, optimistic status updates via existing PUT API, loading/error states, and dark mode. Added a **Board** button beside **Comments** on the project tasks page.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `package.json` / `package-lock.json` | Modified | Added `@hello-pangea/dnd` |
+| `src/frontend/app.jsx` | Modified | Board route |
+| `src/frontend/layout/Tasks.jsx` | Modified | Board navigation button |
+| `src/frontend/layout/ProjectBoard.jsx` | Added | Board page layout |
+| `src/frontend/components/KanbanBoard.jsx` | Added | DnD columns + API sync |
+| `src/frontend/components/KanbanTaskCard.jsx` | Added | Task card UI |
+
+### Impacted Modules
+- Project tasks page — Board button
+- New board page — Kanban workflow
+- Task status updates — drag-drop uses PUT `/api/taskmanager/tasks/:id`
+
+### Risk Level
+**Medium** — new page and drag-drop; uses existing task update API
+
+---
+
+## 2026-06-17T16:45:00+05:30
+
+### Summary
+Added role-aware empty states for users: **No projects Assigned to you** on the Projects page and **No tasks Assigned to you** on the project task list and dashboard task summary. Admins now see a dashed **New Project** card with a plus icon as the first card in the projects grid (including when they have no projects yet).
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `src/frontend/components/ProjectTiles.jsx` | Modified | User empty placeholder; admin `NewProjectCard` as first grid item |
+| `src/frontend/components/TaskList.jsx` | Modified | User/admin empty task placeholders with icons |
+| `src/frontend/ProjectOverview/projectOverviewTile.jsx` | Modified | Dashboard project overview empty state for users |
+
+### Impacted Modules
+- Projects page — empty states and admin create card
+- Project tasks page — empty task state
+- Dashboard My Tasks summary — message text
+
+### Risk Level
+**Low** — UI-only changes
+
+---
+
+## 2026-06-17T16:20:00+05:30
+
+### Summary
+Moved the comment input form to the bottom of the comments side panel (below the scrollable list). Comments now display oldest-first with new posts appearing just above the input.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `src/frontend/components/ProjectComments.jsx` | Modified | Reordered panel layout; input pinned to bottom |
+
+### Impacted Modules
+- Project comments panel UI
+
+### Risk Level
+**Low** — layout-only change
+
+---
+
+## 2026-06-17T16:10:00+05:30
+
+### Summary
+Moved project comments from an inline card to a **Comments** button (with chat icon) aligned top-right on the project name row. Clicking opens a full-height vertical slide-in panel from the right with the comment form and scrollable list.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `src/frontend/components/ProjectComments.jsx` | Modified | Button trigger + right-side drawer panel with backdrop |
+| `src/frontend/layout/Tasks.jsx` | Modified | Comments button placed beside project title; removed inline section |
+
+### Impacted Modules
+- Project tasks page — comments UI layout
+
+### Risk Level
+**Low** — UI-only change; API unchanged
+
+---
+
+## 2026-06-17T15:30:00+05:30
+
+### Summary
+Added a per-project Comments section so project admins and members can post and read project discussion notes. Includes `Comment` Prisma model, authenticated GET/POST API routes gated by `requireProjectAccess`, and a `ProjectComments` UI card on the project tasks page with dark mode support.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `prisma/schema.prisma` | Modified | Added `Comment` model with relations to `Project` and `User` |
+| `prisma/migrations/20260617000000_add_project_comments/migration.sql` | Added | Creates `Comment` table and foreign keys |
+| `src/backend/commentsController.js` | Added | GET/POST `/api/taskmanager/projects/:projectId/comments` |
+| `src/backend/server.js` | Modified | Mounted `CommentsRouter` |
+| `src/frontend/components/ProjectComments.jsx` | Added | Comment list + post form on project page |
+| `src/frontend/layout/Tasks.jsx` | Modified | Renders `ProjectComments` below project members |
+
+### Impacted Modules
+- Database — new `Comment` table
+- Backend — project comments API
+- Project tasks page — new comments section
+
+### Risk Level
+**Low** — additive feature; existing project/task flows unchanged
+
+---
+
 ## 2026-06-15T16:15:00+05:30
 
 ### Summary

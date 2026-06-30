@@ -16,6 +16,8 @@ import ProjectOverview from "../ProjectOverview/ProjectOverview.jsx";
 import RecentActivity from "../ProjectOverview/RecentActivity.jsx";
 import TodaysFocus from "../DashboardWidgets/TodaysFocus.jsx";
 import WeekAtAGlance from "../DashboardWidgets/WeekAtAGlance.jsx";
+import ProjectStatusChart from "../components/ProjectStatusChart.jsx";
+import ProjectPriorityChart from "../components/ProjectPriorityChart.jsx";
 import NotificationPanel from "../components/NotificationPanel.jsx";
 import { useProject } from "../context/ProjectContext";
 import DarkModeToggle from "../components/DarkModeToggle.jsx";
@@ -120,7 +122,7 @@ export default function Dashboard() {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <Stack spacing={3} alignItems="flex-start" className="w-full">
+    <Stack spacing={3} alignItems="flex-start" className="w-full min-w-0 max-w-full overflow-x-hidden">
       {/* ── Sticky page header ────────────────────────────────────────── */}
       <div className="w-full px-6 py-4 bg-white dark:bg-[#1e293b] sticky top-0 z-10 shadow-[0_1px_0_0_#f0f0f0,0_2px_8px_0_rgba(29,53,87,0.06)] dark:shadow-[0_1px_0_0_#1e293b,0_2px_8px_0_rgba(0,0,0,0.3)] border-b-2 border-[#d97757]/20">
         <div className="flex items-center justify-between w-full">
@@ -137,12 +139,15 @@ export default function Dashboard() {
               </p>
             </div>
           </div>
-          <DarkModeToggle />
+          <div className="flex items-center gap-3">
+            <NotificationPanel />
+            <DarkModeToggle />
+          </div>
         </div>
       </div>
 
       {/* ── Dashboard body ────────────────────────────────────────────── */}
-      <div className="w-full px-5 pb-5">
+      <div className="w-full min-w-0 max-w-full px-5 pb-5 overflow-x-hidden">
 
         {/* ── Due-date banners (inline, above stat tiles) ───────────── */}
         {visibleBanners.length > 0 && (
@@ -194,7 +199,7 @@ export default function Dashboard() {
         )}
 
         {/* ── Stat tiles row ────────────────────────────────────────── */}
-        <div className="flex justify-between w-full mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 w-full min-w-0 mb-8">
           <TotalProjectTile />
           <CompletedProjects />
           <InProgressProjectsTile />
@@ -202,16 +207,13 @@ export default function Dashboard() {
         </div>
 
         {/* ── Lower panels ──────────────────────────────────────────── */}
-        <div className="w-full flex justify-between gap-6">
-          <div>
-            <ProjectOverview />
-            <RecentActivity />
-          </div>
-          <div className="flex flex-col flex-1 gap-8 min-w-0">
-            <NotificationPanel />
-            <TodaysFocus />
-            <WeekAtAGlance />
-          </div>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-6 gap-y-8 w-full min-w-0">
+          <ProjectOverview />
+          <TodaysFocus />
+          <RecentActivity />
+          <WeekAtAGlance />
+          <ProjectStatusChart />
+          <ProjectPriorityChart />
         </div>
       </div>
     </Stack>

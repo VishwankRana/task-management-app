@@ -7,7 +7,9 @@ import {
     notifyTaskAssigned,
     notifyTaskStatusChanged,
     notifyTaskPriorityChanged,
+    notifyTaskFieldsUpdated,
 } from './services/notificationService.js';
+import { formatDueDate, emailTaskCompleted, getProjectName } from './services/notification.service.js';
 
 const router = express.Router();
 
@@ -150,7 +152,13 @@ router.put('/api/taskmanager/tasks/:id', async (req, res) => {
                 assigneeId: true,
                 status: true,
                 priority: true,
+                dueDate: true,
             },
+        });
+
+        const project = await prisma.project.findUnique({
+            where: { id: existingTask.projectId },
+            select: { ownerId: true },
         });
 
         const { dueDate, assigneeId, ...rest } = req.body;
@@ -174,6 +182,15 @@ router.put('/api/taskmanager/tasks/:id', async (req, res) => {
 
         if (req.user.role === 'Admin') {
             const newAssigneeId = updatedTask.assigneeId;
+            const emailChanges = [];
+
+            if (dueDate && existingTask.dueDate) {
+                const prevDue = new Date(existingTask.dueDate).getTime();
+                const nextDue = new Date(dueDate).getTime();
+                if (prevDue !== nextDue) {
+                    emailChanges.push(`Due date changed to ${formatDueDate(dueDate)}`);
+                }
+            }
 
             if (assigneeId !== undefined && newAssigneeId && newAssigneeId !== existingTask.assigneeId) {
                 await notifyTaskAssigned({
@@ -204,7 +221,31 @@ router.put('/api/taskmanager/tasks/:id', async (req, res) => {
                     newPriority: rest.priority,
                     actorName: req.user.name,
                 });
+                emailChanges.push(`Priority changed to ${rest.priority}`);
             }
+
+            if (emailChanges.length && newAssigneeId) {
+                await notifyTaskFieldsUpdated({
+                    assigneeId: newAssigneeId,
+                    actorName: req.user.name,
+                    taskTitle: existingTask.title,
+                    taskId: existingTask.id,
+                    projectId: existingTask.projectId,
+                    changes: emailChanges,
+                });
+            }
+        }
+
+        if (rest.status === 'Completed' && existingTask.status !== 'Completed' && project?.ownerId) {
+            const projectMeta = await getProjectName(existingTask.projectId);
+            emailTaskCompleted({
+                ownerId: project.ownerId,
+                taskTitle: existingTask.title,
+                taskId: existingTask.id,
+                projectId: existingTask.projectId,
+                projectName: projectMeta?.projectName ?? 'Project',
+                completedBy: req.user.name,
+            }).catch((err) => console.error('Task completed email failed:', err.message));
         }
 
         res.status(200).json(formatTask(updatedTask));

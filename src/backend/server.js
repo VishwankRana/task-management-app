@@ -1,10 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import 'dotenv/config';
 import router from './taskController.js';
 import ProjectsRouter from './projectsController.js';
 import AuthRouter from './authController.js';
 import NotificationsRouter from './notificationsController.js';
+import CommentsRouter from './commentsController.js';
+import { startCronJobs } from './cron/index.js';
 
 const app = express();
 
@@ -15,6 +18,7 @@ app.use(cookieParser());
 
 app.use(AuthRouter);
 app.use(NotificationsRouter);
+app.use(CommentsRouter);
 app.use(router);
 app.use(ProjectsRouter);
 
@@ -33,4 +37,5 @@ app.use((err, req, res, next) => {
 
 app.listen(3000, () => {
     console.log("Listening on Port 3000");
+    startCronJobs();
 });

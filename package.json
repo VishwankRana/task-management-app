@@ -12,6 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@hello-pangea/dnd": "^18.0.1",
     "@mui/icons-material": "^7.3.4",
     "@mui/joy": "^5.0.0-beta.52",
     "@mui/material": "^7.3.4",
@@ -34,12 +35,14 @@
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.562.0",
     "mysql2": "^3.22.4",
+    "node-cron": "^4.5.0",
     "react": "^19.1.1",
     "react-chartjs-2": "^5.3.1",
     "react-day-picker": "^9.13.0",
     "react-dom": "^19.1.1",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.10.0",
+    "resend": "^6.16.0",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {

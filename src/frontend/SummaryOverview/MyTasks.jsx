@@ -14,7 +14,7 @@ export default function MyTasksTile() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="w-70 p-5 rounded-2xl border border-[#343a8d] dark:border-indigo-500/60 bg-[#e9ecff] dark:bg-indigo-500/15 shadow-md hover:shadow-lg transition-all duration-200">
+    <div className="w-full min-w-0 p-5 rounded-2xl border border-[#343a8d] dark:border-indigo-500/60 bg-[#e9ecff] dark:bg-indigo-500/15 shadow-md hover:shadow-lg transition-all duration-200">
 
       <div className="flex items-center justify-between">
         <p className="text-l font-semibold text-[#2a2f75] dark:text-indigo-200">

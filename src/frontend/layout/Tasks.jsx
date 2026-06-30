@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import BallotRoundedIcon from "@mui/icons-material/BallotRounded";
@@ -13,9 +13,12 @@ import TasksCalenderView from "./TasksCalenderView";
 import TasksAnalyticsView from "./TasksAnalyticsView";
 import DarkModeToggle from "../components/DarkModeToggle";
 import AddProjectMember from "../components/AddProjectMember";
+import ProjectComments from "../components/ProjectComments";
+import ViewKanbanRoundedIcon from "@mui/icons-material/ViewKanbanRounded";
 
 export default function TasksLayout() {
   const { projectId } = useParams();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [taskList, setTaskList] = useState([]);
   const [projectTitle, setProjectTitle] = useState(null);
@@ -75,18 +78,35 @@ export default function TasksLayout() {
         </div>
       </div>
       
-      <div className="flex items-center px-5">
-      <div className="mr-4"><ArrowBackButton /></div>
-      <div>
-        <h1 className="text-[30px] font-bold text-[#1D3557] dark:text-slate-100">
-          {projectTitle ? projectTitle.projectName : "Loading..."}
-        </h1>
-        {projectTitle?.projectAdmin && (
-          <p className="text-sm font-semibold text-[#d97757] mt-1">
-            Project Admin: {projectTitle.projectAdmin}
-          </p>
-        )}
-      </div>
+      <div className="flex items-center justify-between w-full px-5">
+        <div className="flex items-center">
+          <div className="mr-4"><ArrowBackButton /></div>
+          <div>
+            <h1 className="text-[30px] font-bold text-[#1D3557] dark:text-slate-100">
+              {projectTitle ? projectTitle.projectName : "Loading..."}
+            </h1>
+            {projectTitle?.projectAdmin && (
+              <p className="text-sm font-semibold text-[#d97757] mt-1">
+                Project Admin: {projectTitle.projectAdmin}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/projects/${projectId}/board`)}
+            className="relative flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#263446] text-[#1D3557] dark:text-slate-100 text-sm font-semibold shadow-sm hover:shadow-md hover:border-[#d97757]/50 dark:hover:border-[#d97757]/50 transition-all"
+            aria-label="Open project board"
+          >
+            <ViewKanbanRoundedIcon sx={{ color: "#d97757", fontSize: "1.25rem" }} />
+            <span>Board</span>
+          </button>
+          <ProjectComments
+            projectId={projectId}
+            projectName={projectTitle?.projectName}
+          />
+        </div>
       </div>
 
       <AddProjectMember
