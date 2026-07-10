@@ -1,24 +1,32 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import 'dotenv/config';
 import router from './taskController.js';
 import ProjectsRouter from './projectsController.js';
 import AuthRouter from './authController.js';
+import UsersRouter from './usersController.js';
 import NotificationsRouter from './notificationsController.js';
 import CommentsRouter from './commentsController.js';
+import TaskCommentsRouter from './taskCommentsController.js';
 import { startCronJobs } from './cron/index.js';
 
 const app = express();
 
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(AuthRouter);
+app.use(UsersRouter);
 app.use(NotificationsRouter);
 app.use(CommentsRouter);
+app.use(TaskCommentsRouter);
 app.use(router);
 app.use(ProjectsRouter);
 
@@ -31,7 +39,7 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error('Unhandled error:', err?.message || err);
     res.status(500).json({ error: 'Something went wrong!' });
 });
 

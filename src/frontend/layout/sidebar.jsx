@@ -4,10 +4,12 @@ import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Moon, Sun } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
+import { redactEmail } from "../utils/redact.js";
 
 const NAV_ITEMS = [
   { label: "Dashboard", icon: <DashboardRoundedIcon fontSize="small" />, path: "/" },
@@ -18,7 +20,15 @@ export default function Sidebar({ collapsed, setCollapsed }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { isDark, toggleTheme } = useTheme();
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
+
+  const navItems = [
+    ...NAV_ITEMS,
+    { label: "Account", icon: <SettingsRoundedIcon fontSize="small" />, path: "/settings" },
+    ...(isAdmin
+      ? [{ label: "Users", icon: <PeopleRoundedIcon fontSize="small" />, path: "/users" }]
+      : []),
+  ];
 
   const handleLogout = async () => {
     await logout();
@@ -64,7 +74,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
 
       {/* Navigation */}
       <nav className="flex-1 p-2 flex flex-col gap-1 mt-2">
-        {NAV_ITEMS.map(({ label, icon, path }) => {
+        {navItems.map(({ label, icon, path }) => {
           const active = isActive(path);
           return (
             <button
@@ -95,7 +105,11 @@ export default function Sidebar({ collapsed, setCollapsed }) {
       <div className={`p-3 border-t border-gray-200 dark:border-slate-700 flex flex-col gap-2`}>
         {/* User info */}
         {!collapsed && user && (
-          <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-[#f0f4ff] dark:bg-slate-800">
+          <button
+            type="button"
+            onClick={() => navigate("/settings")}
+            className="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-[#f0f4ff] dark:bg-slate-800 w-full text-left hover:bg-[#e8f0ff] dark:hover:bg-slate-700 transition-colors"
+          >
             <div className="w-7 h-7 rounded-full bg-[#d97757] flex items-center justify-center shrink-0">
               <span className="text-white text-xs font-bold">
                 {user.name?.charAt(0).toUpperCase()}
@@ -106,10 +120,10 @@ export default function Sidebar({ collapsed, setCollapsed }) {
                 {user.name}
               </p>
               <p className="text-[10px] text-slate-400 dark:text-slate-500 truncate leading-tight">
-                {user.email}
+                {redactEmail(user.email)}
               </p>
             </div>
-          </div>
+          </button>
         )}
 
         {/* Logout button */}

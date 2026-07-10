@@ -26,8 +26,10 @@ import useTasks from "../hooks/useTasks.jsx";
 import dayjs from "dayjs";
 
 export default function Dashboard() {
-  const { projects } = useProject();
-  const { tasks } = useTasks();
+  const { projects: rawProjects } = useProject();
+  const { tasks: rawTasks } = useTasks();
+  const projects = Array.isArray(rawProjects) ? rawProjects : [];
+  const tasks = Array.isArray(rawTasks) ? rawTasks : [];
   const { isDark } = useTheme();
 
   const [dismissed, setDismissed] = useState(new Set());

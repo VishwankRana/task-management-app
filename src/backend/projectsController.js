@@ -4,6 +4,9 @@ import { authenticate } from './middleware/authenticate.js';
 import { authorize } from './middleware/authorize.js';
 import { getProjectAccess, requireProjectAccess, requireProjectOwner } from './middleware/projectAccess.js';
 import { notifyProjectMemberAdded } from './services/notificationService.js';
+import { searchUser } from './utils/userDto.js';
+import { pickProjectData } from './utils/pickFields.js';
+import { safeErrorMessage } from './utils/redact.js';
 
 const ProjectsRouter = express.Router();
 
@@ -11,7 +14,7 @@ const projectInclude = {
     owner: { select: { id: true, name: true } },
     members: {
         include: {
-            user: { select: { id: true, name: true, email: true, role: true } },
+            user: { select: { id: true, name: true, role: true } },
         },
     },
 };
@@ -20,7 +23,6 @@ const formatMember = (member) => ({
     id: member.id,
     userId: member.userId,
     name: member.user.name,
-    email: member.user.email,
     role: member.user.role,
     addedAt: member.createdAt,
 });
@@ -75,14 +77,14 @@ ProjectsRouter.get('/api/taskmanager/users/search', authorize('Admin'), async (r
             orderBy: { name: 'asc' },
         });
 
-        res.status(200).json(users);
+        res.status(200).json(users.map(searchUser));
     } catch (err) {
-        console.error('User search error:', err);
+        console.error('User search error:', safeErrorMessage(err));
         res.status(500).json({ message: 'Failed to search users', error: err.message });
     }
 });
 
-ProjectsRouter.get('/api/taskmanager/projects/', async (req, res) => {
+ProjectsRouter.get('/api/taskmanager/projects', async (req, res) => {
     try {
         const where =
             req.user.role === 'Admin'
@@ -140,7 +142,7 @@ ProjectsRouter.get('/api/taskmanager/projects/:id/members', async (req, res) => 
         const members = await prisma.projectMember.findMany({
             where: { projectId },
             include: {
-                user: { select: { id: true, name: true, email: true, role: true } },
+                user: { select: { id: true, name: true, role: true } },
             },
             orderBy: { createdAt: 'asc' },
         });
@@ -200,7 +202,7 @@ ProjectsRouter.post('/api/taskmanager/projects/:id/members', authorize('Admin'),
         const member = await prisma.projectMember.create({
             data: { projectId, userId: Number(userId) },
             include: {
-                user: { select: { id: true, name: true, email: true, role: true } },
+                user: { select: { id: true, name: true, role: true } },
             },
         });
 
@@ -225,9 +227,10 @@ ProjectsRouter.post('/api/taskmanager/projects/:id/members', authorize('Admin'),
 
 ProjectsRouter.post('/api/taskmanager/projects', authorize('Admin'), async (req, res) => {
     try {
+        const projectData = pickProjectData(req.body);
         const savedProject = await prisma.project.create({
             data: {
-                ...req.body,
+                ...projectData,
                 ownerId: req.user.id,
             },
             include: projectInclude,
@@ -282,9 +285,10 @@ ProjectsRouter.put('/api/taskmanager/projects/:id', authorize('Admin'), async (r
             return res.status(403).json({ message: "Only the project admin can update this project" });
         }
 
+        const projectData = pickProjectData(req.body);
         const updatedProject = await prisma.project.update({
             where: { id: numId },
-            data: req.body,
+            data: projectData,
             include: projectInclude,
         });
 

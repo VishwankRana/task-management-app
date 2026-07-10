@@ -3,14 +3,16 @@ import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 
-export default function ArrowBackButton() {
+export default function ArrowBackButton({ onClick }) {
   const navigate = useNavigate();
   const { isDark } = useTheme();
+
+  const handleClick = onClick ?? (() => navigate("/projects"));
 
   return (
     <Button
       variant="text"
-      onClick={() => navigate("/projects")}
+      onClick={handleClick}
       sx={{
         minWidth: 0,
         width: 25,

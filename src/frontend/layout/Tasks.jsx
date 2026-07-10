@@ -2,6 +2,7 @@ import { Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
 import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import BallotRoundedIcon from "@mui/icons-material/BallotRounded";
 import ChecklistRtlRoundedIcon from "@mui/icons-material/ChecklistRtlRounded";
@@ -15,15 +16,17 @@ import DarkModeToggle from "../components/DarkModeToggle";
 import AddProjectMember from "../components/AddProjectMember";
 import ProjectComments from "../components/ProjectComments";
 import ViewKanbanRoundedIcon from "@mui/icons-material/ViewKanbanRounded";
+import { useAuth } from "../context/AuthContext";
 
 export default function TasksLayout() {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { canUseCalendar, canUseAnalytics } = useAuth();
   const [taskList, setTaskList] = useState([]);
   const [projectTitle, setProjectTitle] = useState(null);
   const [projectMembers, setProjectMembers] = useState([]);
-  const [activeTab] = useState(searchParams.get("view") || "tasks");
+  const activeTab = searchParams.get("view") || "tasks";
   const [statusFilter, setStatusFilter] = useState("all");
 
   const handleFilterClick = (filter) => {
@@ -47,6 +50,17 @@ export default function TasksLayout() {
       .then(res => setTaskList(res.data))
       .catch(err => console.error(err));
   }, [projectId]);
+
+  useEffect(() => {
+    if (activeTab === "calendar" && !canUseCalendar) {
+      toast.error("Calendar access is disabled for your account");
+      navigate(`/projects/${projectId}/tasks?view=tasks`, { replace: true });
+    }
+    if (activeTab === "analytics" && !canUseAnalytics) {
+      toast.error("Analytics access is disabled for your account");
+      navigate(`/projects/${projectId}/tasks?view=tasks`, { replace: true });
+    }
+  }, [activeTab, canUseCalendar, canUseAnalytics, projectId, navigate]);
 
   const totalTasks = taskList.length;
   const completedTasks = taskList.filter(t => t.status === "Completed").length;
@@ -186,8 +200,8 @@ export default function TasksLayout() {
 
       <div className="px-5 w-full">
         {activeTab === "tasks" && <TaskList taskList={taskList} setTaskList={setTaskList} statusFilter={statusFilter} /> }
-        {activeTab === "calendar" && <TasksCalenderView taskList={taskList}/> }
-        {activeTab === "analytics" && <TasksAnalyticsView taskList={taskList} /> }
+        {activeTab === "calendar" && canUseCalendar && <TasksCalenderView taskList={taskList}/> }
+        {activeTab === "analytics" && canUseAnalytics && <TasksAnalyticsView taskList={taskList} /> }
       </div>  
     </Stack>
   );

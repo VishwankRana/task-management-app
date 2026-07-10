@@ -2,6 +2,7 @@ import express from 'express';
 import prisma from './config.js';
 import { authenticate } from './middleware/authenticate.js';
 import { requireProjectAccess } from './middleware/projectAccess.js';
+import { safeErrorMessage } from './utils/redact.js';
 
 const router = express.Router();
 
@@ -13,7 +14,6 @@ const formatComment = (comment) => ({
     projectId: comment.projectId,
     userId: comment.userId,
     authorName: comment.user.name,
-    authorEmail: comment.user.email,
     createdAt: comment.createdAt,
     updatedAt: comment.updatedAt,
 });
@@ -29,13 +29,13 @@ router.get('/api/taskmanager/projects/:projectId/comments', async (req, res) => 
 
         const comments = await prisma.comment.findMany({
             where: { projectId },
-            include: { user: { select: { id: true, name: true, email: true } } },
+            include: { user: { select: { id: true, name: true } } },
             orderBy: { createdAt: 'desc' },
         });
 
         res.status(200).json(comments.map(formatComment));
     } catch (err) {
-        console.error('Fetch comments error:', err);
+        console.error('Fetch comments error:', safeErrorMessage(err));
         res.status(500).json({ error: 'Failed to fetch comments' });
     }
 });
@@ -63,12 +63,12 @@ router.post('/api/taskmanager/projects/:projectId/comments', async (req, res) =>
                 projectId,
                 userId: req.user.id,
             },
-            include: { user: { select: { id: true, name: true, email: true } } },
+            include: { user: { select: { id: true, name: true } } },
         });
 
         res.status(201).json(formatComment(comment));
     } catch (err) {
-        console.error('Create comment error:', err);
+        console.error('Create comment error:', safeErrorMessage(err));
         res.status(500).json({ error: 'Failed to create comment' });
     }
 });

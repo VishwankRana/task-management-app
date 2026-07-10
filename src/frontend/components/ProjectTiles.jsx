@@ -138,7 +138,7 @@ function NewProjectCard({ onClick }) {
 function ProjectCard({ project }) {
   const navigate = useNavigate();
   const { isDark } = useTheme();
-  const { isAdmin, user } = useAuth();
+  const { isAdmin, user, canUseCalendar, canUseAnalytics } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const menuOpen = Boolean(anchorEl);
@@ -261,6 +261,7 @@ function ProjectCard({ project }) {
             primaryTypographyProps={{ fontSize: "0.9rem", fontWeight: 600, color: navyIcon }}
           />
         </MenuItem>
+        {canUseCalendar && (
         <MenuItem onClick={handleCalendarClick} sx={{ py: 1.2, px: 2, gap: 1, "&:hover": { bgcolor: isDark ? "#334155" : undefined } }}>
           <ListItemIcon sx={{ minWidth: "auto" }}>
             <CalendarMonthRoundedIcon fontSize="small" sx={{ color: navyIcon }} />
@@ -270,6 +271,8 @@ function ProjectCard({ project }) {
             primaryTypographyProps={{ fontSize: "0.9rem", fontWeight: 600, color: navyIcon }}
           />
         </MenuItem>
+        )}
+        {canUseAnalytics && (
         <MenuItem onClick={handleAnalyticsClick} sx={{ py: 1.2, px: 2, gap: 1, "&:hover": { bgcolor: isDark ? "#334155" : undefined } }}>
           <ListItemIcon sx={{ minWidth: "auto" }}>
             <QueryStatsRoundedIcon fontSize="small" sx={{ color: navyIcon }} />
@@ -279,6 +282,7 @@ function ProjectCard({ project }) {
             primaryTypographyProps={{ fontSize: "0.9rem", fontWeight: 600, color: navyIcon }}
           />
         </MenuItem>
+        )}
         <Divider sx={{ borderColor: isDark ? "#334155" : undefined }} />
         {canManageProject && (
           <MenuItem onClick={handleSettingsClick} sx={{ py: 1.2, px: 2, gap: 1, "&:hover": { bgcolor: isDark ? "#334155" : undefined } }}>
@@ -305,7 +309,7 @@ function ProjectCard({ project }) {
 }
 
 export default function ProjectTiles() {
-  const { projects, setOpenNewPrjModal } = useProject();
+  const { projects, setOpenNewPrjModal, loading } = useProject();
   const { isDark } = useTheme();
   const { isAdmin } = useAuth();
 
@@ -336,6 +340,15 @@ export default function ProjectTiles() {
     text-[#1D3557] dark:text-slate-100
     focus-within:ring-2 focus-within:ring-[#d97757]/40 dark:focus-within:ring-[#d97757]/30
   `;
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20">
+        <div className="w-8 h-8 border-4 border-orange-400 border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm text-gray-500 dark:text-slate-400 mt-3">Loading projects…</p>
+      </div>
+    );
+  }
 
   if (!projects || projects.length === 0) {
     if (isAdmin) {

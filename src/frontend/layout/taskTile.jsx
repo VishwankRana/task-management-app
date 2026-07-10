@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
@@ -8,8 +9,18 @@ import { useTheme } from "../context/ThemeContext";
 
 export default function TaskTile({ task, onDelete, setTaskList }) {
   const { isDark } = useTheme();
+  const navigate = useNavigate();
+  const { projectId } = useParams();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const taskId = task._id || task.id;
+
+  const openTaskDetails = () => {
+    if (projectId && taskId) {
+      navigate(`/projects/${projectId}/tasks/${taskId}`);
+    }
+  };
 
   const formatDate = (dateString) => {
     if (!dateString) return "No date";
@@ -39,12 +50,16 @@ export default function TaskTile({ task, onDelete, setTaskList }) {
         <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr_auto] gap-4 p-3 items-center">
 
           {/* Title + Description */}
-          <div>
+          <button
+            type="button"
+            onClick={openTaskDetails}
+            className="text-left rounded-xl px-1 py-1 hover:bg-[#e8f0ff]/60 dark:hover:bg-slate-700/40 transition"
+          >
             <p className="font-semibold text-[#1f2937] dark:text-slate-100">{task?.title}</p>
             {task?.description && (
               <p className="text-sm text-gray-600 dark:text-slate-400 mt-1 line-clamp-2">{task.description}</p>
             )}
-          </div>
+          </button>
 
           {/* Priority */}
           <div className="flex justify-center">
@@ -73,14 +88,14 @@ export default function TaskTile({ task, onDelete, setTaskList }) {
           <div className="flex items-center gap-1">
             <IconButton
               size="small"
-              onClick={() => setEditOpen(true)}
+              onClick={(e) => { e.stopPropagation(); setEditOpen(true); }}
               sx={{ color: isDark ? "#e2e8f0" : "#1d3557", "&:hover": { bgcolor: isDark ? "#334155" : "#e8f0ff" } }}
             >
               <EditRoundedIcon fontSize="small" />
             </IconButton>
             <IconButton
               size="small"
-              onClick={() => setDeleteOpen(true)}
+              onClick={(e) => { e.stopPropagation(); setDeleteOpen(true); }}
               sx={{ color: "#d97757", "&:hover": { bgcolor: isDark ? "#431407" : "#fee2e2" } }}
             >
               <DeleteRoundedIcon fontSize="small" />

@@ -11,7 +11,6 @@ export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("User");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -20,7 +19,7 @@ export default function Register() {
     setError("");
     setLoading(true);
     try {
-      await register(name, email, password, role);
+      await register(name, email, password);
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.error || "Registration failed. Please try again.");
@@ -64,7 +63,7 @@ export default function Register() {
               Create account
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Get started with Task Manager
+              Register as a team member (User account)
             </p>
           </div>
 
@@ -107,48 +106,12 @@ export default function Register() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
-                minLength={6}
+                minLength={8}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#263446] text-[#1d3557] dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition text-sm"
               />
               <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                Minimum 6 characters
+                At least 8 characters with one letter and one number
               </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-[#1d3557] dark:text-slate-200 mb-2">
-                Account type
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setRole("User")}
-                  className={`rounded-xl border px-4 py-3 text-left transition ${
-                    role === "User"
-                      ? "border-[#d97757] bg-[#d97757]/10 dark:bg-[#d97757]/20"
-                      : "border-slate-200 dark:border-slate-600 bg-white dark:bg-[#263446]"
-                  }`}
-                >
-                  <p className="text-sm font-semibold text-[#1d3557] dark:text-slate-100">User</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    View projects and manage tasks
-                  </p>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRole("Admin")}
-                  className={`rounded-xl border px-4 py-3 text-left transition ${
-                    role === "Admin"
-                      ? "border-[#d97757] bg-[#d97757]/10 dark:bg-[#d97757]/20"
-                      : "border-slate-200 dark:border-slate-600 bg-white dark:bg-[#263446]"
-                  }`}
-                >
-                  <p className="text-sm font-semibold text-[#1d3557] dark:text-slate-100">Admin</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    Create and manage projects
-                  </p>
-                </button>
-              </div>
             </div>
 
             {error && (

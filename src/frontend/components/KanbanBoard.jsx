@@ -199,13 +199,13 @@ export default function KanbanBoard({ projectId }) {
                             <div
                               ref={dragProvided.innerRef}
                               {...dragProvided.draggableProps}
-                              {...dragProvided.dragHandleProps}
                               style={dragProvided.draggableProps.style}
                               className="transition-shadow duration-200"
                             >
                               <KanbanTaskCard
                                 task={task}
                                 isDragging={dragSnapshot.isDragging}
+                                dragHandleProps={dragProvided.dragHandleProps}
                               />
                             </div>
                           )}

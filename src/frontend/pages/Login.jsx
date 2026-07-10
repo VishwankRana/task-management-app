@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import DarkModeToggle from "../components/DarkModeToggle.jsx";
 import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
@@ -7,11 +7,18 @@ import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("reason") === "session") {
+      setError("You were signed out because you signed in on another device or browser.");
+    }
+  }, [searchParams]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -93,6 +100,14 @@ export default function Login() {
                 placeholder="••••••••"
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#263446] text-[#1d3557] dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition text-sm"
               />
+              <div className="flex justify-end mt-1.5">
+                <Link
+                  to="/forgot-password"
+                  className="text-xs font-semibold text-[#d97757] hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
             </div>
 
             {error && (

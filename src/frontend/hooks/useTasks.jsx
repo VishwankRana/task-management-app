@@ -1,26 +1,46 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useAuth } from "../context/AuthContext";
 
 export default function useTasks() {
-
+  const { isAuthenticated, loading: authLoading, user, sessionVersion } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch("http://localhost:3000/api/taskmanager/tasks", { credentials: "include" })
-      .then(res => res.json())
-      .then(data => {
-        setTasks(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Error fetching tasks:", err);
-        setLoading(false);
+  const fetchTasks = useCallback(async () => {
+    if (!isAuthenticated) {
+      setTasks([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:3000/api/taskmanager/tasks", {
+        credentials: "include",
       });
-  }, []);
+
+      if (!res.ok) {
+        throw new Error(`Failed to fetch tasks (${res.status})`);
+      }
+
+      const data = await res.json();
+      setTasks(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Error fetching tasks:", err);
+      setTasks([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [isAuthenticated, user?.id]);
+
+  useEffect(() => {
+    if (authLoading) return;
+    fetchTasks();
+  }, [authLoading, isAuthenticated, user?.id, sessionVersion, fetchTasks]);
 
   const now = new Date();
 
-  const overdueTasks = tasks.filter(task => {
+  const overdueTasks = tasks.filter((task) => {
     if (!task.dueDate) return false;
 
     const due = new Date(task.dueDate);
@@ -34,9 +54,9 @@ export default function useTasks() {
 
   const totalTasks = tasks.length;
 
-  const inProgressTasks = tasks.filter(t => t.status === "In-progress");
+  const inProgressTasks = tasks.filter((t) => t.status === "In-progress");
 
-  const completedTasks = tasks.filter(t => t.status === "Completed");
+  const completedTasks = tasks.filter((t) => t.status === "Completed");
 
   return {
     tasks,
@@ -44,7 +64,7 @@ export default function useTasks() {
     overdueTasks,
     inProgressTasks,
     completedTasks,
-    totalTasks
+    totalTasks,
+    refetchTasks: fetchTasks,
   };
 }
-

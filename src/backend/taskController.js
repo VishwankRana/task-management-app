@@ -10,13 +10,21 @@ import {
     notifyTaskFieldsUpdated,
 } from './services/notificationService.js';
 import { formatDueDate, emailTaskCompleted, getProjectName } from './services/notification.service.js';
+import { pickTaskData } from './utils/pickFields.js';
+import { recordTaskCreated, recordTaskUpdates, formatHistoryEntry } from './services/taskHistory.service.js';
+import { applyTimeTrackingOnStatusChange } from './services/taskTime.service.js';
 
 const router = express.Router();
 
 router.use(authenticate);
 
 const taskInclude = {
-    assignee: { select: { id: true, name: true, email: true } },
+    assignee: { select: { id: true, name: true } },
+};
+
+const taskDetailInclude = {
+    assignee: { select: { id: true, name: true } },
+    project: { select: { id: true, projectName: true } },
 };
 
 const formatTask = (task) => {
@@ -26,7 +34,6 @@ const formatTask = (task) => {
         ...rest,
         _id: rest.id,
         assigneeName: assignee?.name ?? null,
-        assigneeEmail: assignee?.email ?? null,
     };
 };
 
@@ -62,6 +69,53 @@ router.get('/api/taskmanager/projects/:projectId/tasks', async (req, res) => {
     }
 });
 
+router.get('/api/taskmanager/tasks/:id', async (req, res) => {
+    try {
+        const taskId = Number(req.params.id);
+        const taskAccess = await requireTaskAccess(req.user, taskId);
+
+        if (!taskAccess) {
+            return res.status(403).json({ message: "You do not have access to this task" });
+        }
+
+        const task = await prisma.task.findUnique({
+            where: { id: taskId },
+            include: taskDetailInclude,
+        });
+
+        if (!task) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        const formatted = formatTask(task);
+        formatted.projectName = task.project?.projectName ?? null;
+        res.status(200).json(formatted);
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching task", error: err });
+    }
+});
+
+router.get('/api/taskmanager/tasks/:id/history', async (req, res) => {
+    try {
+        const taskId = Number(req.params.id);
+        const taskAccess = await requireTaskAccess(req.user, taskId);
+
+        if (!taskAccess) {
+            return res.status(403).json({ message: "You do not have access to this task" });
+        }
+
+        const history = await prisma.taskHistory.findMany({
+            where: { taskId },
+            include: { user: { select: { id: true, name: true } } },
+            orderBy: { createdAt: 'asc' },
+        });
+
+        res.status(200).json(history.map(formatHistoryEntry));
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching task history", error: err });
+    }
+});
+
 router.post('/api/taskmanager/projects/:projectId/tasks', async (req, res) => {
     try {
         const { projectId } = req.params;
@@ -72,7 +126,8 @@ router.post('/api/taskmanager/projects/:projectId/tasks', async (req, res) => {
             return res.status(403).json({ message: "You do not have access to this project" });
         }
 
-        const { dueDate, assigneeId, ...rest } = req.body;
+        const { dueDate, assigneeId } = req.body;
+        const taskFields = pickTaskData(req.body);
 
         let resolvedAssigneeId = null;
         if (req.user.role === 'Admin' && assigneeId) {
@@ -81,7 +136,7 @@ router.post('/api/taskmanager/projects/:projectId/tasks', async (req, res) => {
 
         const saveTask = await prisma.task.create({
             data: {
-                ...rest,
+                ...taskFields,
                 dueDate: new Date(dueDate).toISOString(),
                 projectId: numProjectId,
                 assigneeId: resolvedAssigneeId,
@@ -97,6 +152,12 @@ router.post('/api/taskmanager/projects/:projectId/tasks', async (req, res) => {
                 projectId: numProjectId,
             });
         }
+
+        await recordTaskCreated({
+            task: saveTask,
+            userId: req.user.id,
+            assigneeName: saveTask.assignee?.name ?? null,
+        });
 
         res.status(201).json(formatTask(saveTask));
     } catch (error) {
@@ -153,6 +214,9 @@ router.put('/api/taskmanager/tasks/:id', async (req, res) => {
                 status: true,
                 priority: true,
                 dueDate: true,
+                startedAt: true,
+                completedAt: true,
+                timeSpent: true,
             },
         });
 
@@ -161,8 +225,9 @@ router.put('/api/taskmanager/tasks/:id', async (req, res) => {
             select: { ownerId: true },
         });
 
-        const { dueDate, assigneeId, ...rest } = req.body;
-        const data = { ...rest };
+        const { dueDate, assigneeId } = req.body;
+        const taskFields = pickTaskData(req.body);
+        const data = { ...taskFields };
 
         if (dueDate) {
             data.dueDate = new Date(dueDate).toISOString();
@@ -174,10 +239,21 @@ router.put('/api/taskmanager/tasks/:id', async (req, res) => {
             }
         }
 
+        if (taskFields.status && taskFields.status !== existingTask.status) {
+            Object.assign(data, applyTimeTrackingOnStatusChange(existingTask, taskFields.status));
+        }
+
         const updatedTask = await prisma.task.update({
             where: { id: Number(id) },
             data,
             include: taskInclude,
+        });
+
+        await recordTaskUpdates({
+            existingTask,
+            updatedTask,
+            userId: req.user.id,
+            assigneeName: updatedTask.assignee?.name ?? null,
         });
 
         if (req.user.role === 'Admin') {
@@ -201,27 +277,27 @@ router.put('/api/taskmanager/tasks/:id', async (req, res) => {
                 });
             }
 
-            if (rest.status && rest.status !== existingTask.status && newAssigneeId) {
+            if (taskFields.status && taskFields.status !== existingTask.status && newAssigneeId) {
                 await notifyTaskStatusChanged({
                     assigneeId: newAssigneeId,
                     taskTitle: existingTask.title,
                     taskId: existingTask.id,
                     projectId: existingTask.projectId,
-                    newStatus: rest.status,
+                    newStatus: taskFields.status,
                     actorName: req.user.name,
                 });
             }
 
-            if (rest.priority && rest.priority !== existingTask.priority && newAssigneeId) {
+            if (taskFields.priority && taskFields.priority !== existingTask.priority && newAssigneeId) {
                 await notifyTaskPriorityChanged({
                     assigneeId: newAssigneeId,
                     taskTitle: existingTask.title,
                     taskId: existingTask.id,
                     projectId: existingTask.projectId,
-                    newPriority: rest.priority,
+                    newPriority: taskFields.priority,
                     actorName: req.user.name,
                 });
-                emailChanges.push(`Priority changed to ${rest.priority}`);
+                emailChanges.push(`Priority changed to ${taskFields.priority}`);
             }
 
             if (emailChanges.length && newAssigneeId) {
@@ -236,7 +312,7 @@ router.put('/api/taskmanager/tasks/:id', async (req, res) => {
             }
         }
 
-        if (rest.status === 'Completed' && existingTask.status !== 'Completed' && project?.ownerId) {
+        if (taskFields.status === 'Completed' && existingTask.status !== 'Completed' && project?.ownerId) {
             const projectMeta = await getProjectName(existingTask.projectId);
             emailTaskCompleted({
                 ownerId: project.ownerId,

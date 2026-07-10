@@ -22,6 +22,227 @@
 
 ---
 
+## 2026-06-17T12:00:00+05:30
+
+### Summary
+Fixed Dashboard crash (`projects.filter is not a function`) by ensuring projects and tasks are always arrays when API responses fail or return error objects.
+
+### Files Changed
+- `src/frontend/context/ProjectContext.jsx`
+- `src/frontend/hooks/useTasks.jsx`
+- `src/frontend/hooks/useProjects.jsx`
+- `src/frontend/layout/Dashboard.jsx`
+
+### Impacted Modules
+- ProjectContext, useTasks, useProjects, Dashboard
+
+### Risk Level
+Low
+
+---
+
+# AI Change Log
+
+---
+
+# AI Change Log
+
+---
+
+# AI Change Log
+
+---
+
+## 2026-07-06T14:45:00+05:30
+
+### Summary
+Added per-user Calendar and Analytics access controls. Admins can toggle features per user from the Users list settings modal; disabled features are hidden from project menus and blocked via URL.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `prisma/schema.prisma` | Modified | `calendarEnabled`, `analyticsEnabled` on User |
+| `prisma/migrations/20260706100000_user_feature_access/` | Added | Migration |
+| `src/backend/usersController.js` | Modified | GET/PATCH feature-access endpoints |
+| `src/backend/utils/userDto.js` | Modified | Include feature flags in user DTOs |
+| `src/backend/authController.js` | Modified | `/me` returns feature flags |
+| `src/frontend/components/UserFeatureSettingsModal.jsx` | Added | Admin settings modal with toggles |
+| `src/frontend/layout/Users.jsx` | Modified | Settings button per user row |
+| `src/frontend/components/ProjectTiles.jsx` | Modified | Hide calendar/analytics menu items |
+| `src/frontend/layout/Tasks.jsx` | Modified | Block disabled views + redirect |
+| `src/frontend/context/AuthContext.jsx` | Modified | `canUseCalendar`, `canUseAnalytics` |
+
+### Impacted Modules
+- Users admin page, project task views, auth session
+
+### Risk Level
+**Low**
+
+---
+
+## 2026-07-06T09:45:00+05:30
+
+### Summary
+OWASP security hardening: block public Admin registration, whitelist API fields, auth rate limiting, helmet headers, stronger passwords, session invalidation on password reset, and audit logging.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `prisma/schema.prisma` | Modified | `sessionVersion` on User, `AuditLog` model |
+| `prisma/migrations/20260706000000_security_hardening/` | Added | DB migration |
+| `src/backend/utils/validatePassword.js` | Added | 8+ chars, letter + number |
+| `src/backend/utils/pickFields.js` | Added | Whitelist project/task fields |
+| `src/backend/utils/jwt.js` | Added | Centralized auth cookie + JWT |
+| `src/backend/middleware/rateLimitAuth.js` | Added | Login/register rate limit |
+| `src/backend/middleware/authenticate.js` | Modified | Session version validation |
+| `src/backend/services/audit.service.js` | Added | Audit log helper |
+| `src/backend/authController.js` | Modified | Security fixes + audit events |
+| `src/backend/projectsController.js` | Modified | Field whitelisting |
+| `src/backend/taskController.js` | Modified | Field whitelisting |
+| `src/backend/usersController.js` | Modified | Audit on user list |
+| `src/backend/server.js` | Modified | helmet, safer errors |
+| `scripts/seed-admin.mjs` | Added | Create/promote admin users |
+| `src/frontend/pages/Register.jsx` | Modified | User-only registration |
+| `package.json` | Modified | Added helmet |
+
+### Impacted Modules
+- Auth, projects, tasks, sessions, security headers
+
+### Risk Level
+**Medium** — existing Admin self-registrations blocked; users must re-login after password reset on other devices
+
+---
+
+## 2026-06-19T17:00:00+05:30
+
+### Summary
+Implemented first PII protection slice: centralized user DTOs, removed email from comments/tasks/member API responses, safe error logging, data export endpoint, account deletion endpoint, and Account settings page.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `src/backend/utils/userDto.js` | Added | `publicUser`, `memberUser`, `adminUser`, `searchUser` DTOs |
+| `src/backend/utils/redact.js` | Added | Email redaction + safe log messages |
+| `src/backend/services/account.service.js` | Added | Export and delete account logic |
+| `src/backend/authController.js` | Modified | Export/delete routes, safe logging |
+| `src/backend/commentsController.js` | Modified | Removed `authorEmail` from responses |
+| `src/backend/projectsController.js` | Modified | Removed email from member payloads |
+| `src/backend/taskController.js` | Modified | Removed `assigneeEmail` from responses |
+| `src/backend/usersController.js` | Modified | Uses `adminUser` DTO |
+| `src/frontend/pages/AccountSettings.jsx` | Added | Export data + delete account UI |
+| `src/frontend/utils/redact.js` | Added | Sidebar email masking |
+| `src/frontend/layout/sidebar.jsx` | Modified | Masked email, Account nav link |
+| `src/frontend/app.jsx` | Modified | `/settings` route |
+
+### Impacted Modules
+- API PII exposure, account privacy, sidebar, settings
+
+### Risk Level
+**Medium** — API response shape changes (email fields removed from non-admin endpoints)
+
+---
+
+## 2026-06-19T16:00:00+05:30
+
+### Summary
+Verified `vishwank15@gmail.com` account data is intact in DB (1 project membership, 6 assigned tasks). Added loading spinner on Projects page so User accounts don't briefly show "No projects Assigned" while data fetches. Session restore now triggers data refetch.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `src/frontend/components/ProjectTiles.jsx` | Modified | Show loading state before empty state |
+| `src/frontend/context/AuthContext.jsx` | Modified | Bump session on restore |
+
+### Impacted Modules
+- Projects page UX for User role accounts
+
+### Risk Level
+**Low**
+
+---
+
+## 2026-06-19T15:00:00+05:30
+
+### Summary
+Fixed account data not appearing after password reset. Reset now issues a fresh session and auto-signs the user in; projects/tasks refetch when `user.id` changes (not only on first login). Email addresses are normalized to lowercase on register, login, and forgot-password for consistent lookups.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `src/backend/authController.js` | Modified | Email normalization; auto-login JWT after reset |
+| `src/backend/services/passwordReset.service.js` | Modified | Lowercase email lookup; return `userId` |
+| `src/frontend/context/AuthContext.jsx` | Modified | `establishSession`, lowercase email on auth |
+| `src/frontend/context/ProjectContext.jsx` | Modified | Refetch when `user.id` changes |
+| `src/frontend/hooks/useTasks.jsx` | Modified | Refetch when `user.id` changes |
+| `src/frontend/pages/ResetPassword.jsx` | Modified | Auto sign-in after reset, redirect to dashboard |
+
+### Impacted Modules
+- Password reset flow, project/task loading after auth changes
+
+### Risk Level
+**Low** — session and fetch timing fixes
+
+---
+
+## 2026-06-19T14:00:00+05:30
+
+### Summary
+Fixed projects and tasks not loading after login by refetching data when authentication becomes available. `ProjectContext` and `useTasks` now wait for auth and re-fetch on login; `useProjects` delegates to `ProjectContext` to avoid duplicate stale fetches.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `src/frontend/context/ProjectContext.jsx` | Modified | Refetch projects when `isAuthenticated` changes |
+| `src/frontend/hooks/useProjects.jsx` | Modified | Uses shared `ProjectContext` |
+| `src/frontend/hooks/useTasks.jsx` | Modified | Refetch tasks when authenticated |
+
+### Impacted Modules
+- Dashboard, Projects page — data loads immediately after sign-in
+
+### Risk Level
+**Low** — fetch timing fix
+
+---
+
+## 2026-06-19T12:00:00+05:30
+
+### Summary
+Added admin-only **Users** management page with search, role filter, and pagination. Implemented secure **Forgot Password / Reset Password** flow with hashed single-use tokens, Resend email, rate limiting, and generic responses.
+
+### Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `prisma/schema.prisma` | Modified | `PasswordResetToken` model |
+| `src/backend/usersController.js` | Added | Admin GET `/api/auth/users` |
+| `src/backend/authController.js` | Modified | Forgot/reset password endpoints |
+| `src/backend/services/passwordReset.service.js` | Added | Token generation, email, reset logic |
+| `src/backend/middleware/rateLimitForgotPassword.js` | Added | Rate limit forgot-password |
+| `src/backend/templates/resetPasswordTemplate.js` | Added | Reset email HTML |
+| `src/frontend/layout/Users.jsx` | Added | Admin users table page |
+| `src/frontend/pages/ForgotPassword.jsx` | Added | Forgot password page |
+| `src/frontend/pages/ResetPassword.jsx` | Added | Reset password page |
+| `src/frontend/components/AdminRoute.jsx` | Added | Admin-only route guard |
+| `src/frontend/app.jsx` | Modified | New routes |
+| `src/frontend/layout/sidebar.jsx` | Modified | Users nav for admins |
+| `src/frontend/pages/Login.jsx` | Modified | Forgot password link |
+
+### Impacted Modules
+- Auth — password reset flow
+- Admin — user listing
+- Email — reset link emails
+
+### Risk Level
+**Medium** — auth extension; existing login/register unchanged
+
+---
+
 ## 2026-06-18T10:00:00+05:30
 
 ### Summary
@@ -604,3 +825,170 @@ Added live project search and dual-filter (Status + Priority) toolbar to the Pro
 
 ### Risk Level
 **Low** — All filtering is pure client-side state. No API calls, backend, or data structures modified. Existing project card and empty-state logic is unchanged.
+
+---
+
+## 2026-07-08T12:30:00+05:30
+
+### Summary
+Implemented automatic time tracking and task activity timeline with a new Task Details page. Tasks now store `startedAt`, `completedAt`, and `timeSpent`; status transitions auto-record time. `TaskHistory` logs create/assign/status/priority/due-date/completed events. Frontend shows live timer (client-side only), vertical timeline, and navigable task detail route.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `prisma/schema.prisma` | Modified | Added `startedAt`, `completedAt`, `timeSpent` on Task; new `TaskHistory` model |
+| `prisma/migrations/20260708120000_task_time_tracking_history/migration.sql` | Added | DB migration for time fields and TaskHistory table |
+| `src/backend/services/taskHistory.service.js` | Added | Record and format task history entries |
+| `src/backend/services/taskTime.service.js` | Added | Apply time tracking rules on status change |
+| `src/backend/taskController.js` | Modified | GET task by id, GET history, auto history + time tracking on create/update |
+| `src/frontend/utils/timeFormat.js` | Added | Duration and date formatting helpers |
+| `src/frontend/hooks/useLiveTimer.js` | Added | 1-second live elapsed timer hook |
+| `src/frontend/components/taskDetails/*` | Added | Header, description, info, live timer, timeline, comments section cards |
+| `src/frontend/layout/TaskDetailsPage.jsx` | Added | Task details page layout and data fetching |
+| `src/frontend/app.jsx` | Modified | Route `/projects/:projectId/tasks/:taskId` |
+| `src/frontend/layout/taskTile.jsx` | Modified | Click task title to open details |
+| `src/frontend/components/KanbanTaskCard.jsx` | Modified | Click card to open details; drag handle isolated |
+| `src/frontend/components/KanbanBoard.jsx` | Modified | Drag handle props passed to card grip only |
+| `src/frontend/components/ArrowBackButton.jsx` | Modified | Optional custom `onClick` handler |
+
+### Impacted Modules
+- Task API (read single task, history, create/update side effects)
+- Task list and Kanban navigation
+- New Task Details page (time tracking UI, timeline, project comments)
+
+### Risk Level
+**Medium** — Schema migration plus new write paths on every task create/update; frontend adds new route and navigation entry points.
+
+---
+
+## 2026-07-08T17:40:00+05:30
+
+### Summary
+Task Details page switched to a single-column vertical layout. Replaced project comments with per-task comments (`TaskComment` model + GET/POST APIs) and an inline comments card on the task page.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `prisma/schema.prisma` | Modified | Added `TaskComment` model linked to Task and User |
+| `prisma/migrations/20260708173000_task_comments/migration.sql` | Added | TaskComment table migration |
+| `src/backend/taskCommentsController.js` | Added | GET/POST `/tasks/:taskId/comments` with task access checks |
+| `src/backend/server.js` | Modified | Mounted task comments router |
+| `src/frontend/layout/TaskDetailsPage.jsx` | Modified | Vertical stacked layout (`max-w-2xl`), task comments props |
+| `src/frontend/components/taskDetails/TaskCommentsSection.jsx` | Modified | Inline task comments list + compose form (no project comments) |
+
+### Impacted Modules
+- Task Details page layout
+- Task comment API and UI
+
+### Risk Level
+**Low** — Additive schema and API; project comments unchanged on Tasks page toolbar.
+
+---
+
+## 2026-07-08T17:45:00+05:30
+
+### Summary
+Restored Task Details page to the original two-column grid layout (description/info and timer/timeline side by side). Task comments section retained at full width below.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `src/frontend/layout/TaskDetailsPage.jsx` | Modified | Reverted from vertical `max-w-2xl` stack to `lg:grid-cols-2` layout |
+
+### Impacted Modules
+- Task Details page layout only
+
+### Risk Level
+**Low** — Layout-only change.
+
+---
+
+## 2026-07-08T17:48:00+05:30
+
+### Summary
+Made the task description card more compact: removed full-height stretch, tighter padding, and capped description text with scroll for overflow.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `src/frontend/components/taskDetails/TaskDescriptionCard.jsx` | Modified | `self-start`, smaller header/padding, `line-clamp-4` + `max-h-24` scroll |
+
+### Impacted Modules
+- Task Details description card
+
+### Risk Level
+**Low** — Visual sizing only.
+
+---
+
+## 2026-07-08T17:55:00+05:30
+
+### Summary
+Polished Task Details page UI to match app design patterns: sticky page header with orange icon badge, Tasks-style title row, softer cards (`border-slate-100`), icon badge section titles, info tiles grid, cleaner timer/timeline/comments cards, and shared chip styles.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `src/frontend/layout/TaskDetailsPage.jsx` | Modified | Stack layout like Tasks page; content padding aligned |
+| `src/frontend/components/taskDetails/TaskDetailsHeader.jsx` | Modified | Sticky header + back/title/chip row; Edit button matching Board/Comments buttons |
+| `src/frontend/components/taskDetails/TaskDescriptionCard.jsx` | Modified | Compact card with icon badge |
+| `src/frontend/components/taskDetails/TaskInfoCard.jsx` | Modified | 2×2 info tiles instead of long rows |
+| `src/frontend/components/taskDetails/LiveTimerCard.jsx` | Modified | Cleaner timer states with inner tiles; no emoji |
+| `src/frontend/components/taskDetails/TaskTimelineCard.jsx` | Modified | Timeline events as inner cards with icon nodes |
+| `src/frontend/components/taskDetails/TaskCommentsSection.jsx` | Modified | Matching empty state, badge header, compose form |
+
+### Impacted Modules
+- Task Details page visual design
+
+### Risk Level
+**Low** — Frontend styling only; APIs and data flow unchanged.
+
+---
+
+## 2026-07-08T17:58:00+05:30
+
+### Summary
+Matched Description card height to Task Info card using equal-height grid stretch (`items-stretch` + `h-full`).
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `src/frontend/layout/TaskDetailsPage.jsx` | Modified | Description/Info row uses `items-stretch` |
+| `src/frontend/components/taskDetails/TaskDescriptionCard.jsx` | Modified | `h-full` flex column so it fills sibling height |
+| `src/frontend/components/taskDetails/TaskInfoCard.jsx` | Modified | Explicit `h-full` for equal stretch |
+
+### Impacted Modules
+- Task Details description + info cards
+
+### Risk Level
+**Low** — Layout sizing only.
+
+---
+
+## 2026-07-09T12:15:00+05:30
+
+### Summary
+Implemented single active session per user. Each login/register rotates `sessionVersion`, invalidating prior JWTs. Superseded sessions return `401` with `SESSION_SUPERSEDED`; frontend interceptors and tab-focus checks auto-logout and redirect to login with a clear message. Logout also rotates the session.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `src/backend/services/session.service.js` | Added | `rotateUserSession` / `invalidateUserSession` helpers |
+| `src/backend/authController.js` | Modified | Rotate session on login, register, logout |
+| `src/backend/middleware/authenticate.js` | Modified | Return `SESSION_SUPERSEDED` code when token version mismatches |
+| `src/frontend/context/AuthContext.jsx` | Modified | Axios interceptors, visibility/focus session check, auto-logout |
+| `src/frontend/pages/Login.jsx` | Modified | Show message when redirected after session superseded |
+
+### Impacted Modules
+- Authentication / session lifecycle
+- All authenticated API calls (old sessions rejected)
+
+### Risk Level
+**Medium** — Changes core auth behavior; users with multiple tabs/devices will only keep the latest login active.

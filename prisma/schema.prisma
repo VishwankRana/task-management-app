@@ -24,19 +24,24 @@ model Project {
 }
 
 model Task {
-  id          Int       @id @default(autoincrement())
-  title       String    @db.VarChar(100)
-  description String?   @db.VarChar(500)
+  id          Int           @id @default(autoincrement())
+  title       String        @db.VarChar(100)
+  description String?       @db.VarChar(500)
   dueDate     DateTime
-  priority    String    @default("Medium")
-  type        String    @default("Task")
-  status      String    @default("Pending")
+  priority    String        @default("Medium")
+  type        String        @default("Task")
+  status      String        @default("Pending")
   projectId   Int
   assigneeId  Int?
-  project     Project   @relation(fields: [projectId], references: [id])
-  assignee    User?     @relation("TaskAssignee", fields: [assigneeId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  startedAt   DateTime?
+  completedAt DateTime?
+  timeSpent   Int           @default(0)
+  project     Project       @relation(fields: [projectId], references: [id])
+  assignee    User?         @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  history     TaskHistory[]
+  comments    TaskComment[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 model User {
@@ -45,6 +50,9 @@ model User {
   email              String          @unique @db.VarChar(255)
   password           String          @db.VarChar(255)
   role               String          @default("User")
+  sessionVersion     Int             @default(0)
+  calendarEnabled    Boolean         @default(true)
+  analyticsEnabled   Boolean         @default(true)
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   ownedProjects      Project[]       @relation("ProjectOwner")
@@ -53,6 +61,10 @@ model User {
   notifications      Notification[]
   comments           Comment[]
   emailLogs          EmailLog[]
+  passwordResetTokens PasswordResetToken[]
+  auditLogs          AuditLog[]
+  taskHistory        TaskHistory[]
+  taskComments       TaskComment[]
 }
 
 model Notification {
@@ -105,4 +117,57 @@ model EmailLog {
 
   @@index([userId, type, sentDate])
   @@index([taskId, type, sentDate])
+}
+
+model PasswordResetToken {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  tokenHash String    @db.VarChar(255)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  actorId   Int?
+  action    String   @db.VarChar(80)
+  targetId  Int?
+  ip        String?  @db.VarChar(45)
+  createdAt DateTime @default(now())
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId, createdAt])
+  @@index([action, createdAt])
+}
+
+model TaskHistory {
+  id          Int      @id @default(autoincrement())
+  taskId      Int
+  projectId   Int
+  userId      Int
+  action      String   @db.VarChar(80)
+  description String   @db.VarChar(500)
+  createdAt   DateTime @default(now())
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, createdAt])
+}
+
+model TaskComment {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.VarChar(1000)
+  taskId    Int
+  userId    Int
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([taskId, createdAt])
 }
