@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -8,6 +7,7 @@ import ChatBubbleOutlineRoundedIcon from "@mui/icons-material/ChatBubbleOutlineR
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import api from "../utils/api.js";
 
 dayjs.extend(relativeTime);
 
@@ -28,9 +28,7 @@ export default function ProjectComments({ projectId, projectName }) {
     const fetchComments = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(
-          `http://localhost:3000/api/taskmanager/projects/${projectId}/comments`
-        );
+        const res = await api.get(`/api/taskmanager/projects/${projectId}/comments`);
         setComments([...res.data].reverse());
         setLoaded(true);
       } catch (err) {
@@ -74,8 +72,8 @@ export default function ProjectComments({ projectId, projectName }) {
 
     setSubmitting(true);
     try {
-      const res = await axios.post(
-        `http://localhost:3000/api/taskmanager/projects/${projectId}/comments`,
+      const res = await api.post(
+        `/api/taskmanager/projects/${projectId}/comments`,
         { content: trimmed }
       );
       setComments((prev) => [...prev, res.data]);

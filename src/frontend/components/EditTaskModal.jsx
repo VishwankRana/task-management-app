@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import axios from "axios";
 import toast from "react-hot-toast";
 import PrioritySelect from "./PrioritySelect";
 import TaskStatusMenu from "./StatusSelect";
@@ -12,6 +11,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import dayjs from "dayjs";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
+import api from "../utils/api.js";
 
 export default function EditTaskModal({ task, open, onClose, onUpdated }) {
   const { isDark } = useTheme();
@@ -40,8 +40,8 @@ export default function EditTaskModal({ task, open, onClose, onUpdated }) {
   useEffect(() => {
     if (!open || !isAdmin || !task?.projectId) return;
 
-    axios
-      .get(`http://localhost:3000/api/taskmanager/projects/${task.projectId}`)
+    api
+      .get(`/api/taskmanager/projects/${task.projectId}`)
       .then((res) => setMembers(res.data.members ?? []))
       .catch((err) => console.error(err));
   }, [open, isAdmin, task?.projectId]);
@@ -70,8 +70,8 @@ export default function EditTaskModal({ task, open, onClose, onUpdated }) {
         payload.assigneeId = assigneeId;
       }
 
-      const response = await axios.put(
-        `http://localhost:3000/api/taskmanager/tasks/${id}`,
+      const response = await api.put(
+        `/api/taskmanager/tasks/${id}`,
         payload
       );
       onUpdated(response.data);

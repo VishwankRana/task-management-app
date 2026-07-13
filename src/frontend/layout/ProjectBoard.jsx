@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import { Stack, Button } from "@mui/material";
 import ViewKanbanRoundedIcon from "@mui/icons-material/ViewKanbanRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import DarkModeToggle from "../components/DarkModeToggle";
 import KanbanBoard from "../components/KanbanBoard";
 import { useTheme } from "../context/ThemeContext";
+import api from "../utils/api.js";
 
 export default function ProjectBoard() {
   const { projectId } = useParams();
@@ -17,8 +17,8 @@ export default function ProjectBoard() {
   useEffect(() => {
     if (!projectId) return;
 
-    axios
-      .get(`http://localhost:3000/api/taskmanager/projects/${projectId}`)
+    api
+      .get(`/api/taskmanager/projects/${projectId}`)
       .then((res) => setProjectTitle(res.data))
       .catch((err) => console.error(err));
   }, [projectId]);

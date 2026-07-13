@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import './config/env.js';
 import pkg from '@prisma/client';
 import { createRequire } from 'module';
 

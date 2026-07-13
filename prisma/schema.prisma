@@ -40,6 +40,7 @@ model Task {
   assignee    User?         @relation("TaskAssignee", fields: [assigneeId], references: [id])
   history     TaskHistory[]
   comments    TaskComment[]
+  checklistItems ChecklistItem[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
@@ -170,4 +171,17 @@ model TaskComment {
   updatedAt DateTime @updatedAt
 
   @@index([taskId, createdAt])
+}
+
+model ChecklistItem {
+  id          Int      @id @default(autoincrement())
+  taskId      Int
+  text        String   @db.VarChar(200)
+  isCompleted Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, order])
 }

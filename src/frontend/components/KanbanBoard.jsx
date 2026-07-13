@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { CircularProgress } from "@mui/material";
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 import KanbanTaskCard from "./KanbanTaskCard";
+import api from "../utils/api.js";
 
 export const BOARD_COLUMNS = [
   {
@@ -63,9 +63,7 @@ export default function KanbanBoard({ projectId }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(
-        `http://localhost:3000/api/taskmanager/projects/${projectId}/tasks`
-      );
+      const res = await api.get(`/api/taskmanager/projects/${projectId}/tasks`);
       setTasks(res.data);
     } catch (err) {
       console.error(err);
@@ -109,7 +107,7 @@ export default function KanbanBoard({ projectId }) {
     );
 
     try {
-      await axios.put(`http://localhost:3000/api/taskmanager/tasks/${draggableId}`, {
+      await api.put(`/api/taskmanager/tasks/${draggableId}`, {
         status: destStatus,
       });
     } catch (err) {

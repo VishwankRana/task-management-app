@@ -41,7 +41,7 @@ export default function Login() {
           <TaskAltRoundedIcon sx={{ fontSize: "1.5rem" }} />
         </div>
         <span className="text-[25px] font-[700] text-[#1D3557] dark:text-slate-100 tracking-tight leading-none">
-          Just do it.
+          TaskFlow
         </span>
       </div>
       <div className="absolute top-4 right-4">

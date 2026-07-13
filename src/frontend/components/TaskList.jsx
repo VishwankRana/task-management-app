@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import TaskTile from '../layout/TaskTile';
 import ErrorIcon from '@mui/icons-material/Error';
@@ -8,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import api from '../utils/api.js';
 
 export default function TaskList({ statusFilter = "all" }) {
 
@@ -21,9 +21,7 @@ export default function TaskList({ statusFilter = "all" }) {
 
     const fetchTaskList = async () => {
       try {
-        const taskRes = await axios.get(
-          `http://localhost:3000/api/taskmanager/projects/${projectId}/tasks`
-        );
+        const taskRes = await api.get(`/api/taskmanager/projects/${projectId}/tasks`);
         setTaskList(taskRes.data);
       } catch (err) {
         console.error("❌ Failed to fetch Task:", err.message);
@@ -35,9 +33,7 @@ export default function TaskList({ statusFilter = "all" }) {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(
-        `http://localhost:3000/api/taskmanager/tasks/${id}`
-      );
+      await api.delete(`/api/taskmanager/tasks/${id}`);
       setTaskList(prev => prev.filter(task => task._id !== id));
       toast("Task removed", {
         icon: <DeleteIcon sx={{ color: "#1d3652", fontSize: "1.1rem" }} />,

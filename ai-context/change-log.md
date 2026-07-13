@@ -22,6 +22,24 @@
 
 ---
 
+## 2026-07-13T14:30:00+05:30
+
+### Summary
+Render + Vercel production deployment: centralized `api.js` with `VITE_API_URL`, backend env validation/health/CORS, cross-site auth cookies (`SameSite=None`) for split hosting, `render.yaml` for API, `vercel.json` for SPA frontend, and Vercel preview CORS support.
+
+### Files Changed
+- `src/backend/config/env.js`, `server.js`, `config.js`, `utils/jwt.js`
+- `src/frontend/utils/api.js` + 23 frontend API callers
+- `render.yaml`, `vercel.json`, `.env.example`, `package.json`, `vite.config.js`
+
+### Impacted Modules
+- Deployment, auth cookies, all HTTP clients, CORS
+
+### Risk Level
+Medium
+
+---
+
 ## 2026-06-17T12:00:00+05:30
 
 ### Summary
@@ -992,3 +1010,111 @@ Implemented single active session per user. Each login/register rotates `session
 
 ### Risk Level
 **Medium** — Changes core auth behavior; users with multiple tabs/devices will only keep the latest login active.
+
+---
+
+## 2026-07-10T15:30:00+05:30
+
+### Summary
+Added lightweight task checklists (subtasks): `ChecklistItem` model, full REST API with reorder support, and a Task Details checklist section with progress bar, optimistic updates, inline edit, and toggle/delete actions.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `prisma/schema.prisma` | Modified | `ChecklistItem` model linked to Task (cascade delete) |
+| `prisma/migrations/20260710120000_checklist_items/migration.sql` | Added | ChecklistItem table migration |
+| `src/backend/services/checklist.service.js` | Added | Validation, ordering, reorder helpers |
+| `src/backend/checklistController.js` | Added | CRUD + toggle + reorder endpoints |
+| `src/backend/server.js` | Modified | Mounted checklist router |
+| `src/frontend/hooks/useChecklist.js` | Added | Checklist state, progress, optimistic mutations |
+| `src/frontend/components/taskDetails/TaskChecklistSection.jsx` | Added | Checklist UI with progress bar and item rows |
+| `src/frontend/layout/TaskDetailsPage.jsx` | Modified | Integrated checklist section |
+
+### Impacted Modules
+- Task Details page
+- Checklist API (`/tasks/:taskId/checklist`)
+
+### Risk Level
+**Low** — Additive feature; uses existing `requireTaskAccess` for permissions.
+
+---
+
+## 2026-07-10T15:35:00+05:30
+
+### Summary
+Reorganized Task Details layout: description full-width on top, checklist + task info side by side below. Checklist items scroll inside the card when the list exceeds the box height.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `src/frontend/layout/TaskDetailsPage.jsx` | Modified | Description above; checklist replaces description column beside task info |
+| `src/frontend/components/taskDetails/TaskChecklistSection.jsx` | Modified | Flex column layout with scrollable items list |
+| `src/frontend/components/taskDetails/TaskDescriptionCard.jsx` | Modified | Compact full-width card with scroll for long text |
+
+### Impacted Modules
+- Task Details page layout
+
+### Risk Level
+**Low** — Layout only.
+
+---
+
+## 2026-07-13T14:30:00+05:30
+
+### Summary
+Migrated all frontend API calls from hardcoded `http://localhost:3000` to the centralized axios client at `src/frontend/utils/api.js`. Replaced local `axios.create` instances, raw `axios` calls, and `fetch` calls with the shared `api` instance using relative paths (`/api/auth/...`, `/api/taskmanager/...`) or `API_TASKMANAGER` where appropriate.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `src/frontend/context/AuthContext.jsx` | Modified | Import shared `api`; remove local axios.create and global axios interceptor |
+| `src/frontend/context/ProjectContext.jsx` | Modified | Use `api.get` for projects fetch |
+| `src/frontend/hooks/useTasks.jsx` | Modified | Use `api.get` for tasks fetch |
+| `src/frontend/hooks/useChecklist.js` | Modified | Use `api` + `API_TASKMANAGER` for checklist endpoints |
+| `src/frontend/pages/ForgotPassword.jsx` | Modified | Import shared `api` |
+| `src/frontend/pages/ResetPassword.jsx` | Modified | Import shared `api` |
+| `src/frontend/pages/AccountSettings.jsx` | Modified | Import shared `api` |
+| `src/frontend/components/UserFeatureSettingsModal.jsx` | Modified | Import shared `api` |
+| `src/frontend/components/NotificationPanel.jsx` | Modified | Use `api` for notification endpoints |
+| `src/frontend/components/KanbanBoard.jsx` | Modified | Use `api` for task fetch/update |
+| `src/frontend/components/TaskList.jsx` | Modified | Use `api` for task list/delete |
+| `src/frontend/components/ProjectComments.jsx` | Modified | Use `api` for comments |
+| `src/frontend/components/EditTaskModal.jsx` | Modified | Use `api` for project/task updates |
+| `src/frontend/components/NewTaskModal.jsx` | Modified | Use `api` for project members and task create |
+| `src/frontend/components/AddProjectMember.jsx` | Modified | Use `api` for user search and member add |
+| `src/frontend/components/ProjectSettingsModal.jsx` | Modified | Use `api` for project fetch/update |
+| `src/frontend/components/taskDetails/TaskCommentsSection.jsx` | Modified | Use `api` for task comments |
+| `src/frontend/layout/Users.jsx` | Modified | Use `api` for auth users list |
+| `src/frontend/layout/ProjectBoard.jsx` | Modified | Use `api` for project fetch |
+| `src/frontend/layout/Tasks.jsx` | Modified | Use `api` for project and tasks fetch |
+| `src/frontend/layout/TaskDetailsPage.jsx` | Modified | Use `api` for task and history fetch |
+| `src/frontend/layout/NewProjectModal.jsx` | Modified | Use `api.post` instead of fetch |
+| `src/frontend/layout/TasksSettingsView.jsx` | Modified | Use `api` for project fetch/update |
+
+### Impacted Modules
+Frontend API layer, auth context, project/task CRUD, notifications, checklists, comments, Kanban board, user management
+
+### Risk Level
+**Low** — Refactor only; behavior unchanged except all calls now respect `VITE_API_URL` env var.
+
+---
+
+## 2026-07-13T13:25:00+05:30
+
+### Summary
+Added `docs/feature.md` — comprehensive feature list documenting auth, projects, tasks, time tracking, checklists, Kanban, dashboard, notifications, admin, security, and API routes.
+
+### Files Changed
+
+| File | Change Type | Description |
+|---|---|---|
+| `docs/feature.md` | Added | Full application feature documentation |
+
+### Impacted Modules
+- Documentation only
+
+### Risk Level
+**Low** — Docs only.

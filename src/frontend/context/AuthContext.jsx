@@ -1,13 +1,8 @@
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
+import api from "../utils/api.js";
 
 const AuthContext = createContext();
-
-const api = axios.create({
-  baseURL: "http://localhost:3000",
-  withCredentials: true,
-});
 
 const SESSION_SUPERSEDED_CODE = "SESSION_SUPERSEDED";
 
@@ -68,11 +63,9 @@ export function AuthProvider({ children }) {
     };
 
     const apiInterceptor = api.interceptors.response.use((res) => res, onRejected);
-    const axiosInterceptor = axios.interceptors.response.use((res) => res, onRejected);
 
     return () => {
       api.interceptors.response.eject(apiInterceptor);
-      axios.interceptors.response.eject(axiosInterceptor);
     };
   }, [handleSessionInvalid]);
 

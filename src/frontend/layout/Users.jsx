@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState, useRef } from "react";
-import axios from "axios";
 import { Stack, CircularProgress, IconButton } from "@mui/material";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import SearchIcon from "@mui/icons-material/Search";
@@ -7,6 +6,7 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import DarkModeToggle from "../components/DarkModeToggle";
 import UserFeatureSettingsModal from "../components/UserFeatureSettingsModal";
 import { Search, ChevronDown, Check, X } from "lucide-react";
+import api from "../utils/api.js";
 
 const ROLE_OPTIONS = ["All", "Admin", "User"];
 
@@ -93,7 +93,7 @@ export default function UsersLayout() {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get("http://localhost:3000/api/auth/users", {
+      const res = await api.get("/api/auth/users", {
         params: {
           page,
           limit,

@@ -1,15 +1,10 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import QueryStatsRoundedIcon from "@mui/icons-material/QueryStatsRounded";
-
-const api = axios.create({
-  baseURL: "http://localhost:3000",
-  withCredentials: true,
-});
+import api from "../utils/api.js";
 
 export default function UserFeatureSettingsModal({ user, open, onClose, onSaved }) {
   const [loading, setLoading] = useState(false);

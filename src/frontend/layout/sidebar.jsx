@@ -55,7 +55,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
               <TaskAltRoundedIcon sx={{ fontSize: "1.2rem" }} />
             </div>
             <span className="text-[20px] font-[900] text-[#1D3557] dark:text-slate-100 tracking-tight leading-none whitespace-nowrap overflow-hidden">
-              Just do it.
+              TaskFlow
             </span>
           </div>
         )}

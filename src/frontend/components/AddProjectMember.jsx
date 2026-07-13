@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { Search, UserPlus, Check } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import api from "../utils/api.js";
 
 export default function AddProjectMember({ projectId, ownerId, initialMembers = [], onMembersChange }) {
   const { user, isAdmin } = useAuth();
@@ -43,7 +43,7 @@ export default function AddProjectMember({ projectId, ownerId, initialMembers = 
     const timer = setTimeout(async () => {
       setSearching(true);
       try {
-        const res = await axios.get("http://localhost:3000/api/taskmanager/users/search", {
+        const res = await api.get("/api/taskmanager/users/search", {
           params: { q: query.trim(), projectId },
         });
         setResults(res.data);
@@ -67,8 +67,8 @@ export default function AddProjectMember({ projectId, ownerId, initialMembers = 
 
     setAdding(true);
     try {
-      const res = await axios.post(
-        `http://localhost:3000/api/taskmanager/projects/${projectId}/members`,
+      const res = await api.post(
+        `/api/taskmanager/projects/${projectId}/members`,
         { userId: selectedUser.id }
       );
       const updatedMembers = [...members, res.data];

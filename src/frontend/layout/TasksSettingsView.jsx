@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
-import axios from "axios";
 import ProjectStatusMenu from "../components/ProjectStatus";
 import ProjectPriorityMenu from "../components/ProjectPriority";
+import api from "../utils/api.js";
 
 export default function TasksSettingsView({ projectId }) {
 
@@ -17,8 +17,8 @@ export default function TasksSettingsView({ projectId }) {
 
   useEffect(() => {
 
-    axios
-      .get(`http://localhost:3000/api/taskmanager/projects/${id}`)
+    api
+      .get(`/api/taskmanager/projects/${id}`)
       .then(res => {
         const p = res.data;
 
@@ -46,8 +46,8 @@ export default function TasksSettingsView({ projectId }) {
     e.preventDefault();
 
     try {
-      await axios.put(
-        `http://localhost:3000/api/taskmanager/projects/${id}`,
+      await api.put(
+        `/api/taskmanager/projects/${id}`,
         {
           projectName,
           projectDescription,

@@ -1,15 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext.jsx";
 import DarkModeToggle from "../components/DarkModeToggle.jsx";
 import ArrowBackButton from "../components/ArrowBackButton.jsx";
-
-const api = axios.create({
-  baseURL: "http://localhost:3000",
-  withCredentials: true,
-});
+import api from "../utils/api.js";
 
 export default function AccountSettings() {
   const { user, logout } = useAuth();

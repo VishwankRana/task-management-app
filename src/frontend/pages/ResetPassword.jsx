@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
 import { useAuth } from "../context/AuthContext.jsx";
 import DarkModeToggle from "../components/DarkModeToggle.jsx";
 import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
-
-const api = axios.create({
-  baseURL: "http://localhost:3000",
-  withCredentials: true,
-});
+import api from "../utils/api.js";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -76,7 +71,7 @@ export default function ResetPassword() {
           <TaskAltRoundedIcon sx={{ fontSize: "1.5rem" }} />
         </div>
         <span className="text-[25px] font-[700] text-[#1D3557] dark:text-slate-100 tracking-tight leading-none">
-          Just do it.
+          TaskFlow
         </span>
       </div>
       <div className="absolute top-4 right-4">

@@ -1,0 +1,33 @@
+# Render Blueprint — API backend (deploy frontend separately on Vercel)
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: task-manager-api
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npx prisma generate
+    startCommand: npx prisma migrate deploy && node src/backend/server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: COOKIE_CROSS_SITE
+        value: "true"
+      - key: CORS_ALLOW_VERCEL
+        value: "true"
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: APP_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: PASSWORD_RESET_EXPIRY_MINUTES
+        value: "30"

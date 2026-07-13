@@ -8,7 +8,15 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), tsconfigPaths()],
   root: './src/frontend',
   publicDir: '../../public',
-  cacheDir: 'C:/Users/Vishw/.vite-cache/task-manager',
+  cacheDir: '../../.vite-cache',
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+    },
+  },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router', 'react-router-dom', '@mui/material', '@mui/icons-material', 'cookie'],
   },

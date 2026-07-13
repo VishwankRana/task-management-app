@@ -3,7 +3,6 @@ import { Button } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { useParams } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
-import axios from "axios";
 import toast from "react-hot-toast";
 import NewTaskButton from "./NewTaskBtn";
 import PrioritySelect from "./PrioritySelect";
@@ -14,6 +13,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
+import api from "../utils/api.js";
 
 export default function NewTaskModal({ setTaskList }) {
   const { isDark } = useTheme();
@@ -33,8 +33,8 @@ export default function NewTaskModal({ setTaskList }) {
   useEffect(() => {
     if (!open || !isAdmin || !projectId) return;
 
-    axios
-      .get(`http://localhost:3000/api/taskmanager/projects/${projectId}`)
+    api
+      .get(`/api/taskmanager/projects/${projectId}`)
       .then((res) => setMembers(res.data.members ?? []))
       .catch((err) => console.error(err));
   }, [open, isAdmin, projectId]);
@@ -89,8 +89,8 @@ export default function NewTaskModal({ setTaskList }) {
     };
 
     try {
-      const response = await axios.post(
-        `http://localhost:3000/api/taskmanager/projects/${projectId}/tasks`,
+      const response = await api.post(
+        `/api/taskmanager/projects/${projectId}/tasks`,
         TaskData
       );
       setTaskList((prev) => [...prev, response.data]);

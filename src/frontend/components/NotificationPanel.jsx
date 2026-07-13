@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { IconButton } from "@mui/material";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import AssignmentIndRoundedIcon from "@mui/icons-material/AssignmentIndRounded";
@@ -7,6 +6,7 @@ import EventRoundedIcon from "@mui/icons-material/EventRounded";
 import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
 import PriorityHighRoundedIcon from "@mui/icons-material/PriorityHighRounded";
 import { useTheme } from "../context/ThemeContext";
+import api from "../utils/api.js";
 
 const TYPE_CONFIG = {
   TASK_ASSIGNED: {
@@ -56,7 +56,7 @@ export default function NotificationPanel() {
 
   async function fetchNotifications() {
     try {
-      const res = await axios.get("http://localhost:3000/api/notifications");
+      const res = await api.get("/api/notifications");
       setNotifications(res.data.notifications ?? []);
       setUnreadCount(res.data.unreadCount ?? 0);
     } catch (err) {
@@ -91,7 +91,7 @@ export default function NotificationPanel() {
 
   async function markAsRead(id) {
     try {
-      await axios.patch(`http://localhost:3000/api/notifications/${id}/read`);
+      await api.patch(`/api/notifications/${id}/read`);
       setNotifications((prev) =>
         prev.map((n) => (n.id === id ? { ...n, read: true } : n))
       );
@@ -103,7 +103,7 @@ export default function NotificationPanel() {
 
   async function markAllAsRead() {
     try {
-      await axios.patch("http://localhost:3000/api/notifications/read-all");
+      await api.patch("/api/notifications/read-all");
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
       setUnreadCount(0);
     } catch (err) {

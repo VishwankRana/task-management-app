@@ -1,7 +1,6 @@
 import { Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import toast from "react-hot-toast";
 import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import BallotRoundedIcon from "@mui/icons-material/BallotRounded";
@@ -17,6 +16,7 @@ import AddProjectMember from "../components/AddProjectMember";
 import ProjectComments from "../components/ProjectComments";
 import ViewKanbanRoundedIcon from "@mui/icons-material/ViewKanbanRounded";
 import { useAuth } from "../context/AuthContext";
+import api from "../utils/api.js";
 
 export default function TasksLayout() {
   const { projectId } = useParams();
@@ -37,16 +37,16 @@ export default function TasksLayout() {
   useEffect(() => {
     if (!projectId) return;
 
-    axios
-      .get(`http://localhost:3000/api/taskmanager/projects/${projectId}`)
+    api
+      .get(`/api/taskmanager/projects/${projectId}`)
       .then(res => {
         setProjectTitle(res.data);
         setProjectMembers(res.data.members ?? []);
       })
       .catch(err => console.error(err));
 
-    axios
-      .get(`http://localhost:3000/api/taskmanager/projects/${projectId}/tasks`)
+    api
+      .get(`/api/taskmanager/projects/${projectId}/tasks`)
       .then(res => setTaskList(res.data))
       .catch(err => console.error(err));
   }, [projectId]);

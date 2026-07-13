@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
+import api from "../utils/api.js";
 
 export default function useTasks() {
   const { isAuthenticated, loading: authLoading, user, sessionVersion } = useAuth();
@@ -15,16 +16,8 @@ export default function useTasks() {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/taskmanager/tasks", {
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        throw new Error(`Failed to fetch tasks (${res.status})`);
-      }
-
-      const data = await res.json();
-      setTasks(Array.isArray(data) ? data : []);
+      const res = await api.get("/api/taskmanager/tasks");
+      setTasks(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Error fetching tasks:", err);
       setTasks([]);

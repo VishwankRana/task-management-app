@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { Stack } from "@mui/material";
 import TaskDetailsHeader from "../components/taskDetails/TaskDetailsHeader";
@@ -9,7 +8,9 @@ import TaskInfoCard from "../components/taskDetails/TaskInfoCard";
 import LiveTimerCard from "../components/taskDetails/LiveTimerCard";
 import TaskTimelineCard from "../components/taskDetails/TaskTimelineCard";
 import TaskCommentsSection from "../components/taskDetails/TaskCommentsSection";
+import TaskChecklistSection from "../components/taskDetails/TaskChecklistSection";
 import EditTaskModal from "../components/EditTaskModal";
+import api from "../utils/api.js";
 
 export default function TaskDetailsPage() {
   const { projectId, taskId } = useParams();
@@ -22,7 +23,7 @@ export default function TaskDetailsPage() {
 
   const fetchTask = useCallback(async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/taskmanager/tasks/${taskId}`);
+      const res = await api.get(`/api/taskmanager/tasks/${taskId}`);
       setTask(res.data);
     } catch (err) {
       console.error(err);
@@ -36,9 +37,7 @@ export default function TaskDetailsPage() {
   const fetchHistory = useCallback(async () => {
     setHistoryLoading(true);
     try {
-      const res = await axios.get(
-        `http://localhost:3000/api/taskmanager/tasks/${taskId}/history`
-      );
+      const res = await api.get(`/api/taskmanager/tasks/${taskId}/history`);
       setHistory(res.data);
     } catch (err) {
       console.error(err);
@@ -79,8 +78,10 @@ export default function TaskDetailsPage() {
       />
 
       <div className="w-full px-5 space-y-5">
+        <TaskDescriptionCard description={task.description} />
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
-          <TaskDescriptionCard description={task.description} />
+          <TaskChecklistSection taskId={Number(taskId)} />
           <TaskInfoCard task={task} />
         </div>
 

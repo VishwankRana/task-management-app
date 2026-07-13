@@ -3,10 +3,10 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton }
 import CloseIcon from "@mui/icons-material/Close";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import ErrorIcon from "@mui/icons-material/Error";
-import axios from "axios";
 import toast from "react-hot-toast";
 import ProjectStatusMenu from "./ProjectStatus";
 import ProjectPriorityMenu from "./ProjectPriority";
+import api from "../utils/api.js";
 
 export default function ProjectSettingsModal({ open, onClose, projectId }) {
   const [projectName, setProjectName] = useState("");
@@ -19,8 +19,8 @@ export default function ProjectSettingsModal({ open, onClose, projectId }) {
   useEffect(() => {
     if (!open || !projectId) return;
 
-    axios
-      .get(`http://localhost:3000/api/taskmanager/projects/${projectId}`)
+    api
+      .get(`/api/taskmanager/projects/${projectId}`)
       .then((res) => {
         const p = res.data;
         setProjectName(p.projectName || "");
@@ -36,7 +36,7 @@ export default function ProjectSettingsModal({ open, onClose, projectId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:3000/api/taskmanager/projects/${projectId}`, {
+      await api.put(`/api/taskmanager/projects/${projectId}`, {
         projectName,
         projectDescription,
         projectPriority,

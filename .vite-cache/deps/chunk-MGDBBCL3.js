@@ -1,0 +1,20 @@
+import {
+  createSvgIcon
+} from "./chunk-Y6N2FV63.js";
+import {
+  require_jsx_runtime
+} from "./chunk-R5F65CVE.js";
+import {
+  __toESM
+} from "./chunk-G3PMV62Z.js";
+
+// node_modules/@mui/icons-material/esm/AddRounded.js
+var import_jsx_runtime = __toESM(require_jsx_runtime());
+var AddRounded_default = createSvgIcon((0, import_jsx_runtime.jsx)("path", {
+  d: "M18 13h-5v5c0 .55-.45 1-1 1s-1-.45-1-1v-5H6c-.55 0-1-.45-1-1s.45-1 1-1h5V6c0-.55.45-1 1-1s1 .45 1 1v5h5c.55 0 1 .45 1 1s-.45 1-1 1"
+}), "AddRounded");
+
+export {
+  AddRounded_default
+};
+//# sourceMappingURL=chunk-MGDBBCL3.js.map

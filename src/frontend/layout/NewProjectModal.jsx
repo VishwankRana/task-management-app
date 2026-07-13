@@ -10,6 +10,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import dayjs from "dayjs";
 import toast from "react-hot-toast";
 import { useTheme } from "../context/ThemeContext";
+import api from "../utils/api.js";
 
 export default function NewProjectModal() {
   const { openNewPrjModal, setOpenNewPrjModal, setProjects } = useProject();
@@ -45,27 +46,8 @@ export default function NewProjectModal() {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/api/taskmanager/projects", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(projectData),
-      });
-
-      const body = await (async () => {
-        try {
-          return await res.json();
-        } catch {
-          return await res.text();
-        }
-      })();
-
-      if (!res.ok) {
-        console.error("server error:", body);
-        throw new Error(body?.message || body || res.statusText);
-      }
+      const res = await api.post("/api/taskmanager/projects", projectData);
+      const body = res.data;
 
       if (typeof setProjects === "function") {
         setProjects((prev) => [...prev, body]);

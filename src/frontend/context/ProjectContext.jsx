@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext.jsx';
+import api from '../utils/api.js';
 
 const ProjectContext = createContext();
 
@@ -18,16 +19,8 @@ export function ProjectProvider({ children }) {
 
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:3000/api/taskmanager/projects", {
-                credentials: "include",
-            });
-
-            if (!res.ok) {
-                throw new Error(`Failed to fetch projects (${res.status})`);
-            }
-
-            const data = await res.json();
-            setProjects(Array.isArray(data) ? data : []);
+            const res = await api.get("/api/taskmanager/projects");
+            setProjects(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             console.error("Error fetching projects:", err);
             setProjects([]);

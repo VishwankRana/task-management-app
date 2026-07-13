@@ -1,9 +1,12 @@
 import jwt from 'jsonwebtoken';
 
+const isProd = process.env.NODE_ENV === 'production';
+const crossSite = process.env.COOKIE_CROSS_SITE === 'true' || isProd;
+
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax',
+  secure: isProd,
+  sameSite: crossSite ? 'none' : 'lax',
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
@@ -13,7 +16,6 @@ export function signAuthToken(user) {
   return jwt.sign(
     {
       userId: user.id,
-      email: user.email,
       role: user.role,
       sessionVersion: user.sessionVersion ?? 0,
     },
